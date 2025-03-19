@@ -1,0 +1,41 @@
+# IDEs and Editors
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+env/
+.env/
+Pipfile.lock
+poetry.lock
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+*.out
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Git
+*.orig
+*.rej
