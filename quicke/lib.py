@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models.options import Options
 
 class BaseModel(models.Model):
+    """Django model extension with UUID pk, name, and CUD timestamps"""
     id = models.UUIDField(primary_key=True, editable=False, auto_created=True, default=uuid.uuid4)
     name = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,6 +17,33 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
+
+    def to_dict(self, exclude=None):
+        """
+        Convert model instance to dictionary, including inherited fields.
+        If a field's value is another BaseModel instance, recursively call to_dict().
+        :param exclude: Optional list of field names to exclude.
+        :return: Dictionary representation of the model instance.
+        """
+        exclude = set(exclude or [])
+        data = {}
+
+        for field in self._meta.get_fields():
+            if field.name in exclude:
+                continue
+
+            value = getattr(self, field.name)
+
+            if isinstance(value, BaseModel):
+                # Recursively call to_dict() on related BaseModel instances
+                data[field.name] = value.to_dict()
+            elif field.is_relation and field.many_to_one:
+                # Include foreign key ID instead of the whole object (if not BaseModel)
+                data[field.name + "_id"] = value.id if value else None
+            elif field.concrete:
+                data[field.name] = value
+
+        return data
 
 
 def ensure_file(output_path: str):

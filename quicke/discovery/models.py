@@ -69,7 +69,9 @@ def find_field_default(metadata, field_name):
 def map_django_model(map_params) -> Dict[str, str]:
     model_cls, metadata, exclude_fields = map_params
     field_mappings: Dict[str, str] = {}
-    admin.site.register(model_cls, ModelAdmin)
+
+    if model_cls not in admin.site._registry:
+        admin.site.register(model_cls, ModelAdmin)
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:
@@ -78,6 +80,7 @@ def map_django_model(map_params) -> Dict[str, str]:
         # Infer TypeScript types based on Django field types
         field_mappings[field.name] = find_field_default(metadata, field.name) or map_django_field(field)
 
+    return field_mappings
 
 def map_django_field(field) -> str:
     """Map Django field types to TypeScript types."""
@@ -90,7 +93,7 @@ def map_django_field(field) -> str:
     elif isinstance(field, models.DateTimeField):
         return "Date"
     elif isinstance(field, models.UUIDField):
-        return "string // UUID"
+        return "string"
     elif isinstance(field, models.JSONField):
         return "unknown"
     elif isinstance(field, models.ForeignKey):
@@ -121,6 +124,7 @@ def map_python_class(map_params) -> Dict[str, str]:
                                      map_python_type(type_hints[field_name]) if field_name in type_hints else \
             infer_type_from_value(field_value)
 
+    return field_mappings
 
 def map_python_type(py_type) -> str:
     """Map Python type hints to TypeScript types."""

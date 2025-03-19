@@ -33,9 +33,9 @@ class AppRegistry(TypedDict):
 
 
 def discover_apps() -> AppRegistry:
-    """Centralized discovery function for models and endpoints across all quicke_APPS."""
+    """Centralized discovery function for models and endpoints across all QUICKE_APPS."""
 
-    quicke_apps: List[str] = getattr(settings, "quicke_APPS", [])
+    quicke_apps: List[str] = getattr(settings, "QUICKE_APPS", [])
     registry: Dict[str, AppMetadata] = {}
 
     for app_name in quicke_apps:

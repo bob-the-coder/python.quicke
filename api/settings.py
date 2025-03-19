@@ -31,15 +31,19 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'quicke',
+    "apps.demo",
+    "apps.cnc",
     'api',
 ]
 
-quicke_APPS = [
+QUICKE_APPS = [
+    "apps.demo",
+    "apps.cnc",
 ]
 
 # TypeScript generation settings
-quicke_TS_OUTPUT_DIR = "frontend/src/apps-new"
-quicke_TS_AUTO_GENERATE = True  # Auto-run on startup
+QUICKE_TS_OUTPUT_DIR = "frontend/src/"
+QUICKE_TS_AUTO_GENERATE = True  # Auto-run on startup
 
 
 REST_FRAMEWORK = {

@@ -2,10 +2,11 @@
 from django.conf import settings
 from quicke.discovery.apps import discover_apps
 from quicke.lib import resolve_base_path
+from quicke.tsgen.snippets import FETCH_JSON
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
-TS_OUTPUT_DIR = getattr(settings, "quicke_TS_OUTPUT_DIR", "frontend/src/apps")
+TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "frontend/src/apps")
 
 
 def generate_typescript():
@@ -56,7 +57,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
     endpoint_imports = adjust_import_paths(endpoint_imports, output_dir)
 
     ts_code.append(generate_ts_imports(endpoint_imports) + "\n")
-    ts_code.append("import { fetchJSON } from '@/lib/api';\n")
+    ts_code.append(f"{FETCH_JSON}\n")
 
     for endpoint_name, metadata in endpoints.items():
         method = metadata["method"].upper()

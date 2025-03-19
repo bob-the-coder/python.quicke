@@ -33,7 +33,7 @@ def get_urlpatterns():
     print(f"✅ Registered {len(_urlpatterns)} auto-discovered endpoints, including DRF views!")
 
     from quicke.tsgen.ts import generate_typescript
-    if getattr(settings, "quicke_TS_AUTO_GENERATE", False):
+    if getattr(settings, "QUICKE_TS_AUTO_GENERATE", False):
         generate_typescript()
 
     return _urlpatterns
