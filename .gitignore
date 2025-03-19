@@ -39,3 +39,5 @@ Thumbs.db
 # Git
 *.orig
 *.rej
+
+.env.dev
