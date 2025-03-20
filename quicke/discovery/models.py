@@ -4,7 +4,6 @@ from types import ModuleType
 from typing import Dict, List, Tuple, TypedDict, get_type_hints, Any
 
 from django.db import models
-from django.contrib import admin
 
 from quicke.util import merge_imports
 
@@ -58,12 +57,6 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
         map_params = model_cls, metadata, exclude_fields
 
         if issubclass(model_cls, models.Model):
-            # ✅ Auto-assign app_label dynamically before registering
-            # Extract the app label from the module name (e.g., "parent.app" → "app")
-            # app_label = module.__name__.split(".")[-1]
-            # if not hasattr(model_cls._meta, "app_label") or model_cls._meta.app_label != app_label:
-            #     print('y')
-            #     model_cls._meta.app_label = app_label
             field_mappings = map_django_model(map_params)
         else:
             field_mappings = map_python_class(map_params)
@@ -86,9 +79,6 @@ def find_field_default(metadata, field_name):
 def map_django_model(map_params) -> Dict[str, str]:
     model_cls, metadata, exclude_fields = map_params
     field_mappings: Dict[str, str] = {}
-
-    if model_cls not in admin.site._registry:
-        admin.site.register(model_cls)
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:
