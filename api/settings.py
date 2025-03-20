@@ -43,7 +43,7 @@ QUICKE_APPS = [
 
 # TypeScript generation settings
 QUICKE_TS_OUTPUT_DIR = "frontend/src/"
-QUICKE_TS_AUTO_GENERATE = True  # Auto-run on startup
+QUICKE_TS_AUTO_GENERATE = False  # Auto-run on startup
 
 
 REST_FRAMEWORK = {

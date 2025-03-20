@@ -6,6 +6,7 @@ import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
+TS_FETCH_JSON_FILENAME = "fetchJSON.ts"
 TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "")
 
 
@@ -13,8 +14,13 @@ def generate_typescript():
     """Generate TypeScript models and API endpoints for each discovered app."""
     from quicke import APP_REGISTRY
 
+    base_output_dir = resolve_base_path(TS_OUTPUT_DIR)
+
+    # Generate fetchJSON.ts once at the base output directory
+    generate_fetch_json(base_output_dir)
+
     for app_name, app in APP_REGISTRY.items():
-        app_output_dir = os.path.join(resolve_base_path(TS_OUTPUT_DIR), app_name.replace(".", "/"))
+        app_output_dir = os.path.join(base_output_dir, app_name.replace(".", "/"))
 
         # Ensure app directory exists
         os.makedirs(app_output_dir, exist_ok=True)
@@ -29,7 +35,13 @@ def generate_typescript():
         if not app["n_endpoints"]:
             print(f"⚠️ No endpoints discovered in {app_name}. Skipping code generation")
         else:
-            generate_typescript_endpoints(app["endpoints"], app["endpoint_imports"], app_output_dir)
+            generate_typescript_endpoints(app["endpoints"], app["endpoint_imports"], app_output_dir, base_output_dir)
+
+
+def generate_fetch_json(output_dir: str):
+    """Generate the fetchJSON utility file in the base output directory."""
+    ts_path = os.path.join(output_dir, TS_FETCH_JSON_FILENAME)
+    write_ts_file(ts_path, FETCH_JSON)
 
 
 def generate_typescript_models(models: dict, model_imports: list, output_dir: str):
@@ -52,15 +64,18 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     write_ts_file(ts_path, "\n".join(ts_code))
 
 
-def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, output_dir: str):
+def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, output_dir: str, base_output_dir: str):
     """Generate TypeScript API functions with relative imports."""
     ts_code = ["// Auto-generated TypeScript API functions\n"]
 
     # Adjust import paths relative to the app folder
     endpoint_imports = adjust_import_paths(endpoint_imports, output_dir)
 
+    # Compute the relative import path for fetchJSON.ts
+    fetch_json_import = get_relative_import(output_dir, base_output_dir, TS_FETCH_JSON_FILENAME)
+    ts_code.append(f"import {{ fetchJSON }} from '{fetch_json_import}';\n")
+
     ts_code.append(generate_ts_imports(endpoint_imports) + "\n")
-    ts_code.append(f"{FETCH_JSON}\n")
 
     for endpoint_name, metadata in endpoints.items():
         method = metadata["method"].upper()
@@ -85,7 +100,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         query_str = " + query ? '?' + new URLSearchParams(query).toString() : ''" if query_params else ""
 
         # Construct URL with path params
-        formatted_ts_url = f"`{ts_url.replace("{", "${params.")}`" if route_params else f"'{ts_url}'"
+        formatted_ts_url = f"`{ts_url.replace('{', '${params.')} ` " if route_params else f"'{ts_url}'"
 
         # Generate function
         ts_code.append(f"export async function endpoint_{endpoint_name}({param_str}): Promise<{response_type}> {{")
@@ -100,9 +115,14 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         ts_code.append(f'\treturn fetchJSON({formatted_ts_url}{query_str}, {{{request_options_str}}});')
         ts_code.append("}\n")
 
-
     ts_path = os.path.join(output_dir, TS_ENDPOINTS_FILENAME)
     write_ts_file(ts_path, "\n".join(ts_code))
+
+
+def get_relative_import(output_dir: str, base_output_dir: str, filename: str) -> str:
+    """Compute the relative import path from the given app directory to the base output directory."""
+    rel_path = os.path.relpath(base_output_dir, output_dir)
+    return f"{rel_path}/{filename}".replace("\\", "/")  # Normalize for cross-platform compatibility
 
 
 def write_ts_file(file_path: str, content: str):
@@ -110,7 +130,7 @@ def write_ts_file(file_path: str, content: str):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             if f.read() == content:
                 print(f"☑️ No changes in {file_path}. Skipping write.")
                 return
