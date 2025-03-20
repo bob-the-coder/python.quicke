@@ -9,13 +9,13 @@ from quicke.discovery.models import discover_models
 from quicke.discovery.endpoints import discover_endpoints
 from quicke.util import merge_imports
 
-quicke_APP_REGISTRY = {
+APP_REGISTRY = {
     "apps": {}
 }
 
 
 class AppMetadata(TypedDict):
-    """Defines metadata for a single app with context-specific imports."""
+    """Defines metadata for a single apps with context-specific imports."""
     model_imports: List[Tuple[str, List[str]]]
     """TypeScript imports specific to models."""
     endpoint_imports: List[Tuple[str, List[str]]]
@@ -29,7 +29,7 @@ class AppMetadata(TypedDict):
 class AppRegistry(TypedDict):
     """Registry of discovered apps, each with its own metadata."""
     apps: Dict[str, AppMetadata]
-    """Dictionary where keys are app names and values contain metadata."""
+    """Dictionary where keys are apps names and values contain metadata."""
 
 
 def discover_apps() -> AppRegistry:
@@ -54,7 +54,7 @@ def discover_apps() -> AppRegistry:
         model_data = discover_models(module)
         endpoint_data = discover_endpoints(module)
 
-        # Store metadata separately for each app with context-specific imports
+        # Store metadata separately for each apps with context-specific imports
         registry[app_name] = {
             "model_imports": merge_imports(model_data["imports"]),
             "endpoint_imports": merge_imports(endpoint_data["imports"]),

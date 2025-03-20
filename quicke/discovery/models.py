@@ -33,26 +33,45 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
     imports: List[Tuple[str, List[str]]] = []
     model_mappings = {}
 
-    for attr_name in dir(models_module):
-        model_cls = getattr(models_module, attr_name)
+    # Extract the app label from the module name (e.g., "parent.app" → "app")
+    app_label = module.__name__.split(".")[-1]
+    print(app_label)
 
-        # Only process decorated models (either Django models or basic classes)
+    all_classes = inspect.getmembers(models_module, inspect.isclass)
+
+    # Filter only classes defined in this module (not imported)
+    local_classes = {
+        name: cls
+        for name, cls in all_classes
+        if cls.__module__ == models_module.__name__
+    }
+
+    for model_name, model_cls in local_classes.items():
         if not hasattr(model_cls, "model_metadata"):
-            continue
+            continue  # Skip non-decorated classes
 
         metadata = model_cls.model_metadata or {}
-        model_name = metadata.get("name", model_cls.__name__)
+        ts_model_name = metadata.get("name", model_name)
         exclude_fields = set(metadata.get("exclude_fields", []))
         model_imports = metadata.get("imports", [])
 
-        # Collect imports in the new format
+        # Collect imports
         imports.extend(model_imports)
 
+        # Map model fields to TypeScript
         map_params = model_cls, metadata, exclude_fields
-        field_mappings = map_django_model(map_params) if issubclass(model_cls, models.Model) else \
-            map_python_class(map_params)
 
-        model_mappings[model_name] = field_mappings
+        if issubclass(model_cls, models.Model):
+            # ✅ Auto-assign app_label dynamically before registering
+            if not hasattr(model_cls._meta, "app_label") or model_cls._meta.app_label != app_label:
+                print('y')
+                model_cls._meta.app_label = app_label
+            field_mappings = map_django_model(map_params)
+        else:
+            field_mappings = map_python_class(map_params)
+
+        # Store TypeScript mapping
+        model_mappings[ts_model_name] = field_mappings
 
     return {
         "imports": merge_imports(imports),  # Merging new import format
@@ -71,7 +90,10 @@ def map_django_model(map_params) -> Dict[str, str]:
     field_mappings: Dict[str, str] = {}
 
     if model_cls not in admin.site._registry:
+        print(f"Registering model: {model_cls.__name__}")  # Debugging
         admin.site.register(model_cls, ModelAdmin)
+    else:
+        print(f"Already registered: {model_cls.__name__}")
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:
@@ -81,6 +103,7 @@ def map_django_model(map_params) -> Dict[str, str]:
         field_mappings[field.name] = find_field_default(metadata, field.name) or map_django_field(field)
 
     return field_mappings
+
 
 def map_django_field(field) -> str:
     """Map Django field types to TypeScript types."""
@@ -125,6 +148,7 @@ def map_python_class(map_params) -> Dict[str, str]:
             infer_type_from_value(field_value)
 
     return field_mappings
+
 
 def map_python_type(py_type) -> str:
     """Map Python type hints to TypeScript types."""

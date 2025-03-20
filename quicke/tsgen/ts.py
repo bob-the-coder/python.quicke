@@ -1,22 +1,25 @@
 ﻿from typing import List, Union
 from django.conf import settings
-from quicke.discovery.apps import discover_apps
 from quicke.lib import resolve_base_path
 from quicke.tsgen.snippets import FETCH_JSON
+import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
-TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "frontend/src/apps")
+TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "")
 
 
 def generate_typescript():
-    """Generate TypeScript models and API endpoints for each discovered app."""
-    app_registry = discover_apps()
+    """Generate TypeScript models and API endpoints for each discovered apps."""
+    if not TS_OUTPUT_DIR:
+        raise Exception("No output directory provided. Make sure django settings exports QUICKE_TS_OUTPUT_DIR")
 
-    for app_name, metadata in app_registry["apps"].items():
+    from quicke import APP_REGISTRY
+
+    for app_name, metadata in APP_REGISTRY["apps"].items():
         app_output_dir = os.path.join(resolve_base_path(TS_OUTPUT_DIR), app_name.replace(".", "/"))
 
-        # Ensure app directory exists
+        # Ensure apps directory exists
         os.makedirs(app_output_dir, exist_ok=True)
 
         # Generate models.ts
@@ -30,7 +33,7 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     """Generate TypeScript model definitions with relative imports."""
     ts_code = ["// Auto-generated TypeScript models\n"]
 
-    # Adjust import paths relative to the app folder
+    # Adjust import paths relative to the apps folder
     model_imports = adjust_import_paths(model_imports, output_dir)
 
     # Generate imports
@@ -46,14 +49,11 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     write_ts_file(ts_path, "\n".join(ts_code))
 
 
-import os
-
-
 def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, output_dir: str):
     """Generate TypeScript API functions with relative imports."""
     ts_code = ["// Auto-generated TypeScript API functions\n"]
 
-    # Adjust import paths relative to the app folder
+    # Adjust import paths relative to the apps folder
     endpoint_imports = adjust_import_paths(endpoint_imports, output_dir)
 
     ts_code.append(generate_ts_imports(endpoint_imports) + "\n")
@@ -72,7 +72,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         if route_params:
             params.append(f"params: {{ {', '.join(f'{param}: string' for param in route_params)} }}")
         if query_params:
-            params.append(f"query?: {{ {', '.join(f'{param}: string' for param in query_params)} }}")
+            params.append(f"query?: {{ {', '.join(f'{param}?: string' for param in query_params)} }}")
         if body_type:
             params.append(f"body: {body_type}")
 
@@ -119,7 +119,7 @@ def write_ts_file(file_path: str, content: str):
 
 
 def adjust_import_paths(imports: list, output_dir: str) -> list:
-    """Adjust `~` paths to be relative to the app folder."""
+    """Adjust `~` paths to be relative to the apps folder."""
     adjusted_imports = []
     for imp in imports:
         module_path = imp[0]
