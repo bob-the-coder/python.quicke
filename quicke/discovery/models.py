@@ -3,7 +3,6 @@ import inspect
 from types import ModuleType
 from typing import Dict, List, Tuple, TypedDict, get_type_hints, Any
 
-from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.contrib import admin
 
@@ -33,9 +32,6 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
     imports: List[Tuple[str, List[str]]] = []
     model_mappings = {}
 
-    # Extract the app label from the module name (e.g., "parent.app" → "app")
-    app_label = module.__name__.split(".")[-1]
-    print(app_label)
 
     all_classes = inspect.getmembers(models_module, inspect.isclass)
 
@@ -63,9 +59,11 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
 
         if issubclass(model_cls, models.Model):
             # ✅ Auto-assign app_label dynamically before registering
-            if not hasattr(model_cls._meta, "app_label") or model_cls._meta.app_label != app_label:
-                print('y')
-                model_cls._meta.app_label = app_label
+            # Extract the app label from the module name (e.g., "parent.app" → "app")
+            # app_label = module.__name__.split(".")[-1]
+            # if not hasattr(model_cls._meta, "app_label") or model_cls._meta.app_label != app_label:
+            #     print('y')
+            #     model_cls._meta.app_label = app_label
             field_mappings = map_django_model(map_params)
         else:
             field_mappings = map_python_class(map_params)
@@ -90,7 +88,7 @@ def map_django_model(map_params) -> Dict[str, str]:
     field_mappings: Dict[str, str] = {}
 
     if model_cls not in admin.site._registry:
-        admin.site.register(model_cls, ModelAdmin)
+        admin.site.register(model_cls)
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:

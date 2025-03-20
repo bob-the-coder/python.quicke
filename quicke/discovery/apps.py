@@ -29,7 +29,7 @@ class AppMetadata(TypedDict):
 APP_REGISTRY: Dict[str, AppMetadata] = {}
 
 
-def discover_apps() -> Dict[str, AppMetadata]:
+def discover_apps():
     """Centralized discovery function for models and endpoints across all QUICKE_APPS."""
 
     quicke_apps: List[str] = getattr(settings, "QUICKE_APPS", [])
