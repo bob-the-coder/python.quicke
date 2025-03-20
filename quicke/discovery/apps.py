@@ -9,7 +9,7 @@ from quicke.discovery.models import discover_models
 from quicke.discovery.endpoints import discover_endpoints
 from quicke.util import merge_imports
 
-quicke_APP_REGISTRY = {
+APP_REGISTRY = {
     "apps": {}
 }
 

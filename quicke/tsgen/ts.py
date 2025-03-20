@@ -1,8 +1,8 @@
 ﻿from typing import List, Union
 from django.conf import settings
-from quicke.discovery.apps import discover_apps
 from quicke.lib import resolve_base_path
 from quicke.tsgen.snippets import FETCH_JSON
+import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
@@ -11,9 +11,9 @@ TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "frontend/src/apps")
 
 def generate_typescript():
     """Generate TypeScript models and API endpoints for each discovered app."""
-    app_registry = discover_apps()
+    from quicke import APP_REGISTRY
 
-    for app_name, metadata in app_registry["apps"].items():
+    for app_name, metadata in APP_REGISTRY["apps"].items():
         app_output_dir = os.path.join(resolve_base_path(TS_OUTPUT_DIR), app_name.replace(".", "/"))
 
         # Ensure app directory exists
@@ -46,9 +46,6 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     write_ts_file(ts_path, "\n".join(ts_code))
 
 
-import os
-
-
 def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, output_dir: str):
     """Generate TypeScript API functions with relative imports."""
     ts_code = ["// Auto-generated TypeScript API functions\n"]
@@ -72,7 +69,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         if route_params:
             params.append(f"params: {{ {', '.join(f'{param}: string' for param in route_params)} }}")
         if query_params:
-            params.append(f"query?: {{ {', '.join(f'{param}: string' for param in query_params)} }}")
+            params.append(f"query?: {{ {', '.join(f'{param}?: string' for param in query_params)} }}")
         if body_type:
             params.append(f"body: {body_type}")
 
