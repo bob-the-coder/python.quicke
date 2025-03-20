@@ -14,11 +14,11 @@ class ModelMetadata(TypedDict, total=False):
     exclude_fields: Optional[List[str]]
 
 
-def model(metadata: Optional[ModelMetadata] = None):
+def model(options: Optional[ModelMetadata] = None):
     """Decorator for annotating Django models with TypeScript metadata."""
 
     def decorator(cls):
-        cls.model_metadata = metadata or ModelMetadata()  # Attach metadata to the class
+        cls.__quicke_model_metadata__ = options or ModelMetadata()  # Attach metadata to the class
         return cls
 
     return decorator

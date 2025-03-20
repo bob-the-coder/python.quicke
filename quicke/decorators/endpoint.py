@@ -69,7 +69,7 @@ def endpoint(url: str, metadata: TsEndpointMetadataOptions):
     }
 
     def decorator(func):
-        func.ts_endpoint = ep_metadata
+        func.__quicke_endpoint_metadata__ = ep_metadata
         return func
 
     return decorator

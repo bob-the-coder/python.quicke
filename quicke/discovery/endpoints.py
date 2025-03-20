@@ -35,10 +35,10 @@ def discover_endpoints(module: ModuleType) -> EndpointDiscoveryResult:
             continue
 
         # Only process decorated endpoints
-        if not hasattr(view_func, "ts_endpoint"):
+        if not hasattr(view_func, "__quicke_endpoint_metadata__"):
             continue
 
-        metadata = view_func.ts_endpoint
+        metadata = view_func.__quicke_endpoint_metadata__
         endpoint_name = view_func.__name__
         route_params = metadata.get("route_params", {})
         ts_imports = metadata.get("imports", [])

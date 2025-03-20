@@ -47,10 +47,10 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
     }
 
     for model_name, model_cls in local_classes.items():
-        if not hasattr(model_cls, "model_metadata"):
+        if not hasattr(model_cls, "__quicke_model_metadata__"):
             continue  # Skip non-decorated classes
 
-        metadata = model_cls.model_metadata or {}
+        metadata = model_cls.__quicke_model_metadata__ or {}
         ts_model_name = metadata.get("name", model_name)
         exclude_fields = set(metadata.get("exclude_fields", []))
         model_imports = metadata.get("imports", [])
@@ -134,8 +134,8 @@ def map_python_class(map_params) -> Dict[str, str]:
 
     # Extract class attributes (including those without type hints)
     for field_name, field_value in inspect.getmembers(model_cls):
-        if field_name == "model_metadata":
-            continue  # Skip model_metadata added by decorator
+        if field_name == "__quicke_model_metadata__":
+            continue  # Skip metadata field added by decorator
 
         if field_name.startswith("__") or inspect.ismethod(field_value):
             continue  # Skip dunder methods and class methods
