@@ -90,10 +90,7 @@ def map_django_model(map_params) -> Dict[str, str]:
     field_mappings: Dict[str, str] = {}
 
     if model_cls not in admin.site._registry:
-        print(f"Registering model: {model_cls.__name__}")  # Debugging
         admin.site.register(model_cls, ModelAdmin)
-    else:
-        print(f"Already registered: {model_cls.__name__}")
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:

@@ -1,19 +1,17 @@
 ﻿from django.urls import path
 from django.conf import settings
 import importlib
-from rest_framework.views import APIView  # Import DRF's base APIView
-
-from quicke.discovery.apps import discover_apps
+from rest_framework.views import APIView
 
 
 def get_urlpatterns():
     """Generate urlpatterns dynamically after Django is fully loaded."""
     # Fetch discovered apps (only after Django is initialized)
     import quicke
-    quicke.APP_REGISTRY = discover_apps()
+    quicke.discover_apps()
 
     _urlpatterns = []
-    for app_name, metadata in quicke.APP_REGISTRY["apps"].items():
+    for app_name, metadata in quicke.APP_REGISTRY.items():
         for endpoint_name, endpoint_data in metadata["endpoints"].items():
             django_url = endpoint_data["django_url"]
 
@@ -31,7 +29,7 @@ def get_urlpatterns():
 
             _urlpatterns.append(path(django_url, view))
 
-    print(f"✅ Registered {len(_urlpatterns)} auto-discovered endpoints, including DRF views!")
+    print(f"✅  Registered {len(_urlpatterns)} auto-discovered endpoints")
 
     from quicke.tsgen.ts import generate_typescript
     if getattr(settings, "QUICKE_TS_AUTO_GENERATE", False):

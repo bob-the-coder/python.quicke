@@ -9,9 +9,6 @@ from quicke.discovery.models import discover_models
 from quicke.discovery.endpoints import discover_endpoints
 from quicke.util import merge_imports
 
-APP_REGISTRY = {
-    "apps": {}
-}
 
 
 class AppMetadata(TypedDict):
@@ -24,19 +21,18 @@ class AppMetadata(TypedDict):
     """Discovered Django models mapped to TypeScript types."""
     endpoints: Dict[str, Dict[str, Union[str, List[str]]]]
     """Discovered Django endpoints mapped to TypeScript functions."""
+    n_models: int
+    n_models_imports: int
+    n_endpoints: int
+    n_endpoints_imports: int
+
+APP_REGISTRY: Dict[str, AppMetadata] = {}
 
 
-class AppRegistry(TypedDict):
-    """Registry of discovered apps, each with its own metadata."""
-    apps: Dict[str, AppMetadata]
-    """Dictionary where keys are apps names and values contain metadata."""
-
-
-def discover_apps() -> AppRegistry:
+def discover_apps() -> Dict[str, AppMetadata]:
     """Centralized discovery function for models and endpoints across all QUICKE_APPS."""
 
     quicke_apps: List[str] = getattr(settings, "QUICKE_APPS", [])
-    registry: Dict[str, AppMetadata] = {}
 
     for app_name in quicke_apps:
         # Check if the module exists before attempting to import it
@@ -54,12 +50,51 @@ def discover_apps() -> AppRegistry:
         model_data = discover_models(module)
         endpoint_data = discover_endpoints(module)
 
+        model_imports = merge_imports(model_data["imports"])
+        endpoint_imports = merge_imports(endpoint_data["imports"])
+        models = model_data["models"]
+        endpoints = endpoint_data["endpoints"]
+
         # Store metadata separately for each apps with context-specific imports
-        registry[app_name] = {
-            "model_imports": merge_imports(model_data["imports"]),
-            "endpoint_imports": merge_imports(endpoint_data["imports"]),
-            "models": model_data["models"],
-            "endpoints": endpoint_data["endpoints"],
+        APP_REGISTRY[app_name] = {
+            "model_imports": model_imports,
+            "endpoint_imports": endpoint_imports,
+            "models": models,
+            "endpoints": endpoints,
+            "n_models": len(models),
+            "n_models_imports": len(model_imports),
+            "n_endpoints": len(endpoints),
+            "n_endpoints_imports": len(endpoint_imports),
         }
 
-    return {"apps": registry}
+    output_discovery()
+
+
+def output_discovery():
+    from quicke import APP_REGISTRY
+    apps_data = [
+        {
+            "app_name": app_name,
+            "n_models": app["n_models"],
+            "n_models_imports": app["n_models_imports"],
+            "n_endpoints": app["n_endpoints"],
+            "n_endpoints_imports": app["n_endpoints_imports"],
+        }
+        for app_name, app in APP_REGISTRY.items()
+    ]
+
+    # Determine max column widths
+    column_widths = {
+        key: max(len(str(data[key])) for data in apps_data)
+        for key in apps_data[0]
+    }
+
+    # Print formatted output
+    for data in apps_data:
+        print(
+            f"✅  {data['app_name']:{column_widths['app_name']}} | "
+            f"Models: {data['n_models']:{column_widths['n_models']}} "
+            f"({data['n_models_imports']:{column_widths['n_models_imports']}} imports) | "
+            f"Endpoints: {data['n_endpoints']:{column_widths['n_endpoints']}} "
+            f"({data['n_endpoints_imports']:{column_widths['n_endpoints_imports']}} imports)"
+        )

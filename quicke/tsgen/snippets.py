@@ -1,6 +1,6 @@
 ﻿FETCH_JSON = """
 
-const createFetchJSON = (apiRoot: string) => {
+export const createFetchJSON = (apiRoot: string) => {
     return async (url: string, options: RequestInit = {}): Promise<any> => {
         const fullUrl = `${apiRoot}${url.startsWith("/") ? url : `/${url}`}`;
 
@@ -20,6 +20,6 @@ const createFetchJSON = (apiRoot: string) => {
     };
 };
 
-const fetchJSON = createFetchJSON(import.meta.env.VITE_QUICKE_API_ROOT);
+export const fetchJSON = createFetchJSON(import.meta.env.VITE_QUICKE_API_ROOT);
 
 """

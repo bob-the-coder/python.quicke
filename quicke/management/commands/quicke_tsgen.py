@@ -27,7 +27,7 @@ class Command(BaseCommand):
         if options["apps"]:
             app_registry = {
                 "apps": {
-                    app: data for app, data in (APP_REGISTRY["apps"] or {}).items() if app in options["apps"]
+                    app: data for app, data in (APP_REGISTRY or {}).items() if app in options["apps"]
                 }
             }
 
