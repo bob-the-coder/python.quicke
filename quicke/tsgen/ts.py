@@ -6,20 +6,17 @@ import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
-TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "")
+TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "frontend/src/apps")
 
 
 def generate_typescript():
-    """Generate TypeScript models and API endpoints for each discovered apps."""
-    if not TS_OUTPUT_DIR:
-        raise Exception("No output directory provided. Make sure django settings exports QUICKE_TS_OUTPUT_DIR")
-
+    """Generate TypeScript models and API endpoints for each discovered app."""
     from quicke import APP_REGISTRY
 
     for app_name, metadata in APP_REGISTRY["apps"].items():
         app_output_dir = os.path.join(resolve_base_path(TS_OUTPUT_DIR), app_name.replace(".", "/"))
 
-        # Ensure apps directory exists
+        # Ensure app directory exists
         os.makedirs(app_output_dir, exist_ok=True)
 
         # Generate models.ts
@@ -33,7 +30,7 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     """Generate TypeScript model definitions with relative imports."""
     ts_code = ["// Auto-generated TypeScript models\n"]
 
-    # Adjust import paths relative to the apps folder
+    # Adjust import paths relative to the app folder
     model_imports = adjust_import_paths(model_imports, output_dir)
 
     # Generate imports
@@ -53,7 +50,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
     """Generate TypeScript API functions with relative imports."""
     ts_code = ["// Auto-generated TypeScript API functions\n"]
 
-    # Adjust import paths relative to the apps folder
+    # Adjust import paths relative to the app folder
     endpoint_imports = adjust_import_paths(endpoint_imports, output_dir)
 
     ts_code.append(generate_ts_imports(endpoint_imports) + "\n")
@@ -119,7 +116,7 @@ def write_ts_file(file_path: str, content: str):
 
 
 def adjust_import_paths(imports: list, output_dir: str) -> list:
-    """Adjust `~` paths to be relative to the apps folder."""
+    """Adjust `~` paths to be relative to the app folder."""
     adjusted_imports = []
     for imp in imports:
         module_path = imp[0]

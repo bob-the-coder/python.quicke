@@ -4,6 +4,7 @@ import json
 import quicke
 from apps.demo.models import Demo
 
+
 @quicke.endpoint("demo", {
     "response_type": "Demo[]",
     "imports": [("./models", "Demo")]
@@ -11,9 +12,11 @@ from apps.demo.models import Demo
 def list_demo():
     return JsonResponse(list(Demo.objects.all().values()), safe=False)
 
-@quicke.endpoint("demo/{id}", {
+
+@quicke.endpoint("demo/<uuid:id>", {
     "response_type": "Demo",
-    "imports": [("./models", "Demo")]
+    "imports": [("./models", "Demo")],
+    "query_params": ["name", "sort"]
 })
 def retrieve_demo(id: int):
     try:
@@ -21,6 +24,7 @@ def retrieve_demo(id: int):
         return JsonResponse(demo.to_dict())  # Assuming `to_dict` is implemented
     except Demo.DoesNotExist:
         return JsonResponse({"error": "Not found"}, status=404)
+
 
 @csrf_exempt
 @quicke.endpoint("demo", {
@@ -34,8 +38,9 @@ def create_demo(request):
     demo = Demo.objects.create(**data)
     return JsonResponse(demo.to_dict(), status=201)
 
+
 @csrf_exempt
-@quicke.endpoint("demo/{id}", {
+@quicke.endpoint("demo/<uuid:id>", {
     "method": "PUT",
     "body_type": "Demo",
     "response_type": "Demo",
@@ -52,8 +57,9 @@ def update_demo(request, id: int):
     except Demo.DoesNotExist:
         return JsonResponse({"error": "Not found"}, status=404)
 
+
 @csrf_exempt
-@quicke.endpoint("demo/{id}", {
+@quicke.endpoint("demo/<uuid:id>", {
     "method": "DELETE",
     "response_type": "void",
     "imports": [("./models", "Demo")]
