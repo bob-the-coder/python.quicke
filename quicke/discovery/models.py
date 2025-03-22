@@ -70,7 +70,7 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
     }
 
 
-def find_field_default(metadata, field_name):
+def field_type_from_metadata(metadata, field_name):
     # Check for explicit field type overrides
     if "fields" in metadata and field_name in metadata["fields"]:
         return metadata["fields"][field_name]["type"]
@@ -85,7 +85,7 @@ def map_django_model(map_params) -> Dict[str, str]:
             continue  # Skip excluded fields
 
         # Infer TypeScript types based on Django field types
-        field_mappings[field.name] = find_field_default(metadata, field.name) or map_django_field(field)
+        field_mappings[field.name] = field_type_from_metadata(metadata, field.name) or map_django_field(field)
 
     return field_mappings
 
@@ -128,7 +128,7 @@ def map_python_class(map_params) -> Dict[str, str]:
         if field_name in exclude_fields:
             continue  # Skip excluded fields
 
-        field_mappings[field_name] = find_field_default(metadata, field_name) or \
+        field_mappings[field_name] = field_type_from_metadata(metadata, field_name) or \
                                      map_python_type(type_hints[field_name]) if field_name in type_hints else \
             infer_type_from_value(field_value)
 

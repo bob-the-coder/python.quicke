@@ -97,7 +97,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         param_str = "\n\t" + ",\n\t".join(params) + "\n" if params else ""
 
         # Generate query string if query parameters exist
-        query_str = " + query ? '?' + new URLSearchParams(query).toString() : ''" if query_params else ""
+        query_str = " + (query ? '?' + new URLSearchParams(query).toString() : '')" if query_params else ""
 
         # Construct URL with path params
         formatted_ts_url = f"`{ts_url.replace('{', '${params.')} ` " if route_params else f"'{ts_url}'"
@@ -159,7 +159,7 @@ def adjust_import_paths(imports: list, output_dir: str) -> list:
 
 
 def generate_ts_imports(ts_imports: List[List[Union[str, List[str]]]]) -> str:
-    """Generate TypeScript import statements from the new imports structure."""
+    """Generate TypeScript import statements from the new imports structure, ensuring proper merging."""
 
     if not ts_imports:
         return ""
@@ -170,6 +170,16 @@ def generate_ts_imports(ts_imports: List[List[Union[str, List[str]]]]) -> str:
         module_path = imp[0]
         names = imp[1] if len(imp) > 1 else []
 
+        # Normalize names into a list (splitting if needed)
+        if isinstance(names, str):
+            names = [name.strip() for name in names.split(",")]
+        elif isinstance(names, list):
+            flat_names = []
+            for item in names:
+                if isinstance(item, str):
+                    flat_names.extend(name.strip() for name in item.split(","))
+            names = flat_names
+
         # Merge imports from the same module path
         if module_path in merged_imports:
             merged_imports[module_path].update(names)
@@ -179,9 +189,8 @@ def generate_ts_imports(ts_imports: List[List[Union[str, List[str]]]]) -> str:
     import_lines = []
 
     for module_path, names in merged_imports.items():
-        names_list = ", ".join(sorted(names)) if names else ""
-        if names_list:
-            import_lines.append(f"import {{ {names_list} }} from '{module_path}';")
+        if names:
+            import_lines.append(f"import {{ {', '.join(sorted(names))} }} from '{module_path}';")
         else:
             import_lines.append(f"import '{module_path}';")  # Support for side-effect imports
 
