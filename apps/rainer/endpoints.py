@@ -57,12 +57,12 @@ def update_file(request):
 
     abs_path = get_file_path(branch, path)
     refactor_instructions = f"REFACTOR {branch} {path}\nFILE PATH {abs_path}\nREFACTOR INSTRUCTIONS\n```{content}```"
-    output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT"
+    output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"
     response = get_gpt().send_instructions([file_contents, refactor_instructions, output_instructions])
 
-    print(response)
+    # print(response)
 
-    # rainer.update_file(branch, path, content)
+    rainer.update_file(branch, path, f"{response}\n")
     return JsonResponse({}, status=200)
 
 

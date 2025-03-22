@@ -34,7 +34,7 @@ class OpenAIProvider:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                response_format={"type": "plaintext"}
+                response_format={"type": "text"}
             )
 
             response_message = response.choices[0].message.content
