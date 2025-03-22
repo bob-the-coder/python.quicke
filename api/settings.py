@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'quicke',
+    'rainer',
     "apps.demo",
     "apps.cnc",
     'api',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
 QUICKE_APPS = [
     "apps.demo",
     "apps.cnc",
+    "rainer"
 ]
 
 # TypeScript generation settings
