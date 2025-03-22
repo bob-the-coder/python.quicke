@@ -6,7 +6,7 @@ import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
-TS_FETCH_JSON_FILENAME = "fetchJSON.ts"
+TS_FETCH_JSON_FILENAME = "fetchJSON"
 TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "")
 
 
@@ -55,7 +55,7 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     ts_code.append(generate_ts_imports(model_imports))
 
     for model_name, fields in models.items():
-        ts_code.append(f"export interface {model_name} {{")
+        ts_code.append(f"export type {model_name} = {{")
         for field_name, field_type in fields.items():
             ts_code.append(f"  {field_name}: {field_type};")  # No default values
         ts_code.append("}\n")

@@ -22,4 +22,5 @@ dependencies = [
     "celery-singleton>=0.3.1",
     "python-dotenv>=1.0.1",
     "django-celery-beat>=2.7.0",
+    "tomli-w>=1.2.0",
 ]

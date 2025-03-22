@@ -5,6 +5,14 @@ import quicke
 from apps.demo.models import Demo
 
 
+@quicke.endpoint("demo-basic", {
+    "response_type": "DemoBasic",
+    "imports": [("./models", "DemoBasic")]
+})
+def demo_basic():
+    return JsonResponse(list(Demo.objects.all().values()), safe=False)
+
+
 @quicke.endpoint("demo", {
     "response_type": "Demo[]",
     "imports": [("./models", "Demo")]
