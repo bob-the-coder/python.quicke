@@ -40,7 +40,7 @@ def generate_typescript():
 
 def generate_fetch_json(output_dir: str):
     """Generate the fetchJSON utility file in the base output directory."""
-    ts_path = os.path.join(output_dir, TS_FETCH_JSON_FILENAME)
+    ts_path = os.path.join(output_dir, f"{TS_FETCH_JSON_FILENAME}.ts")
     write_ts_file(ts_path, FETCH_JSON)
 
 

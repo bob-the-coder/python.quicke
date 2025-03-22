@@ -4,8 +4,6 @@ from typing import List
 import openai
 from django.conf import settings
 
-from rainer.endpoints import get_rainer_tree
-
 logger = logging.getLogger(__name__)
 
 # {"role": "user", "content": MODERATOR_ONE},
@@ -36,7 +34,7 @@ class OpenAIProvider:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                response_format={"type": "json_object"}
+                response_format={"type": "plaintext"}
             )
 
             response_message = response.choices[0].message.content

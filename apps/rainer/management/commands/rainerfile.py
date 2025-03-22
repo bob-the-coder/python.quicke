@@ -1,8 +1,4 @@
-import json
-
 from django.core.management import BaseCommand
-
-from rainer import build_rainer_tree
 
 
 class Command(BaseCommand):
@@ -18,6 +14,6 @@ class Command(BaseCommand):
             print("File name cannot be empty")
             return
 
-        from rainer import get_file_contents
+        from apps.rainer import get_file_contents
 
         print(get_file_contents(branch, file_name))

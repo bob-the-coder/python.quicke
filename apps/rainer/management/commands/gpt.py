@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from rainer.gpt import get_gpt
+from apps.rainer.gpt import get_gpt
 
 
 class Command(BaseCommand):

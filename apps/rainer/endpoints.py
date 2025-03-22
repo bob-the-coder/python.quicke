@@ -2,14 +2,17 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
-import rainer
+from apps import rainer
+from apps.rainer import get_file_path
+from apps.rainer.gpt import get_gpt
 
 
 @quicke.endpoint("rainer/tree", {
-    "response_type": "string"
+    "response_type": "RainerTree",
+    "imports": [("./types", "RainerTree")]
 })
 def get_rainer_tree(request):
-    return JsonResponse(json.dumps(rainer.trees, indent=4), safe=False)
+    return JsonResponse(rainer.trees, safe=False)
 
 
 @quicke.endpoint("rainer/file", {
@@ -33,6 +36,7 @@ def create_file(request):
     branch = data["branch"]
     path = data["path"]
     content = data.get("content", "")
+
     rainer.create_file(branch, path, content)
     return JsonResponse({}, status=201)
 
@@ -48,7 +52,17 @@ def update_file(request):
     branch = data["branch"]
     path = data["path"]
     content = data["content"]
-    rainer.update_file(branch, path, content)
+
+    file_contents = rainer.get_file_contents(branch, path)
+
+    abs_path = get_file_path(branch, path)
+    refactor_instructions = f"REFACTOR {branch} {path}\nFILE PATH {abs_path}\nREFACTOR INSTRUCTIONS\n```{content}```"
+    output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT"
+    response = get_gpt().send_instructions([file_contents, refactor_instructions, output_instructions])
+
+    print(response)
+
+    # rainer.update_file(branch, path, content)
     return JsonResponse({}, status=200)
 
 

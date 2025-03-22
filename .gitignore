@@ -41,4 +41,5 @@ Thumbs.db
 *.rej
 
 .env.dev
+.env
 frontend/
