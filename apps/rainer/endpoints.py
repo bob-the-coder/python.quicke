@@ -47,7 +47,7 @@ def create_file(request):
     rainer.create_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
-        llm_model="YourLLMModel",
+        llm_model="gpt-4o-mini",
         instructions=instructions,
         response=response,
         rainer_branch=branch,
@@ -78,7 +78,7 @@ def update_file(request):
     rainer.update_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
-        llm_model="YourLLMModel",
+        llm_model="gpt-4o-mini",
         instructions=instructions,
         response=response,
         rainer_branch=branch,

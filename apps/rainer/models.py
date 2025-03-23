@@ -31,6 +31,9 @@ class CodeGenerationData(BaseModel):
     rainer_path: str = models.CharField(max_length=255, default="")
     drop_number: int = models.IntegerField(default=0)
 
+    class Meta:
+        ordering = ("-created_at", "rainer_branch", "rainer_path", "llm_model")
+
     @property
     def rainer_file_instance(self) -> RainerFile:
         return RainerFile(branch=self.rainer_branch, path=self.rainer_path)
@@ -40,29 +43,31 @@ class CodeGenerationData(BaseModel):
         self.rainer_branch = value.branch
         self.rainer_path = value.path
 
+    import random
+
     @classmethod
     def create_drop_number(cls) -> int:
+        scroll = 1
 
         # Define probabilities for each number
-        scroll = 1
         probabilities = {
-            [f"{scroll - 1}"]: 1,  # astronomically rare
-            [f"{scroll}"]: 1000,  # more than common
+            scroll - 1: 1,  # astronomically rare
+            scroll: 1000,  # more than common
         }
 
         # Normalize remaining probabilities
         max_roll = 10
-        for i in range(scroll + 1, max_roll):
-            probabilities[i] = 100  # all other numbers are normalized with a probability of 1
+        for i in range(scroll + 1, max_roll + 1):
+            probabilities[i] = 100  # all other numbers are normalized with a probability of 100
 
         # Select a number based on defined probabilities
         total_weight = sum(probabilities.values())
         random_choice = random.randint(1, total_weight)
         cumulative_weight = 0
-        
+
         for number, weight in probabilities.items():
             cumulative_weight += weight
             if random_choice <= cumulative_weight:
                 return number
 
-        return 0  # Fallback, should not be reached with the above logic.
+        return 0  # Fallback, should not be reached
