@@ -15,7 +15,7 @@ def build_backend_tree(base_dir: str) -> Dict[str, str]:
     abs_base = os.path.abspath(base_dir)
     for entry in os.scandir(abs_base):
         if entry.is_dir() and entry.name != "__pycache__":
-            for target_file in ("endpoints.py", "models.py", "instructions.py"):
+            for target_file in ("endpoints.py", "models.py", "instructions.py", "admin.py"):
                 target_path = os.path.join(entry.path, target_file)
                 if os.path.isfile(target_path):
                     rel_path = os.path.relpath(target_path, abs_base).replace("\\", "/")
@@ -36,24 +36,63 @@ def build_frontend_tree(base_dir: str) -> Dict[str, str]:
 
 
 # 3. Unified tree builder for both branches
-def build_rainer_tree() -> Dict[str, Dict[str, str]]:
+def build_rainer_trees() -> Dict[str, Dict[str, str]]:
     return {
         "backend": build_backend_tree(RAINER_OPTIONS["backend"]),
         "frontend": build_frontend_tree(RAINER_OPTIONS["frontend"]),
     }
 
 
-trees = build_rainer_tree()
+# 10. Ensure migrations are created and applied
+def ensure_migrations(app_name = "rainer") -> None:
+    from django.db import connections
+    from django.core.management import call_command
+    from django.db.migrations.executor import MigrationExecutor
+    from django.db.migrations.loader import MigrationLoader
+
+
+    """Ensure that migrations are created and applied for the given Django app."""
+    try:
+        # Get the connection to the database
+        connection = connections['default']
+
+        # Make migrations for the app if needed
+        print(f"Making migrations for the app: {app_name}...")
+        call_command("makemigrations", app_name)
+
+        # Initialize MigrationExecutor to check the current status of migrations
+        executor = MigrationExecutor(connection)
+
+        # Get applied migrations
+        applied_migrations = {migration[0]: migration[1] for migration in executor.loader.applied_migrations}
+
+        # Get the migrations to be applied
+        migration_plan = executor.migration_plan(executor.loader.graph.nodes)
+
+        if migration_plan:
+            print(f"Unapplied migrations found for {app_name}. Applying migrations...")
+            # Apply unapplied migrations
+            call_command("migrate", app_name)
+        else:
+            print(f"No unapplied migrations for {app_name}.")
+
+    except Exception as e:
+        print(f"Error occurred while checking or applying migrations for {app_name}: {e}")
+
+
+trees = build_rainer_trees()
 paths = {
     "backend": os.path.abspath(RAINER_OPTIONS["backend"]),
     "frontend": os.path.abspath(RAINER_OPTIONS["frontend"]),
 }
 
-
 # 3b. Refresh trees by rebuilding them
 def refresh_trees() -> None:
     global trees
-    trees = build_rainer_tree()
+    ensure_migrations()
+    trees = build_rainer_trees()
+
+
 
 
 # 4. File content reader
@@ -100,6 +139,8 @@ def delete_file(branch: str, relative_path: str) -> None:
     if os.path.isfile(abs_path):
         os.remove(abs_path)
 
+    refresh_trees()
+
 
 # 8. Delete a directory (and its contents) in branch
 def delete_directory(branch: str, relative_path: str) -> None:
@@ -108,6 +149,8 @@ def delete_directory(branch: str, relative_path: str) -> None:
     if os.path.isdir(abs_path):
         shutil.rmtree(abs_path)
 
+    refresh_trees()
+
 
 # 9. Create a directory in branch
 def create_directory(branch: str, relative_path: str) -> None:
@@ -115,4 +158,5 @@ def create_directory(branch: str, relative_path: str) -> None:
     abs_path = os.path.join(base_path, relative_path)
     os.makedirs(abs_path, exist_ok=True)
 
+    refresh_trees()
 
