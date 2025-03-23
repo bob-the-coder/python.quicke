@@ -5,6 +5,7 @@ import quicke
 from apps import rainer
 from apps.rainer import get_file_path
 from apps.rainer.gpt import get_gpt
+from apps.rainer.instructions import build_file_ref, build_refactor_instructions, unpack_file_ref
 
 
 @quicke.endpoint("rainer/tree", {
@@ -50,51 +51,19 @@ def create_file(request):
     "imports": [("./types", "UpdateRainerFile")]
 })
 def update_file(request):
-    data = json.loads(request.body)
-    branch = data["branch"]
-    path = data["path"]
-    content = data["content"]
-    file_references = data.get("file_references", [])
+    refactor = json.loads(request.body)
 
-    file_contents = rainer.get_file_contents(branch, path)
-    abs_path = get_file_path(branch, path)
-
-    file_reference_instructions = []
-    for reference in file_references:
-        ref_branch = reference.get("branch", "no_branch")
-        ref_path = reference.get("path", "no_branch")
-
-        ref_abs_path = get_file_path(ref_branch, ref_path)
-        ref_contents = rainer.get_file_contents(ref_branch, ref_path)
-
-        file_reference_instructions.append(f"""
-FILE REFERENCE - BRANCH: {ref_branch} | PATH: {ref_path}
-FILE REFERENCE LOCATION: {ref_abs_path}
-FILE REFERENCE CONTENT: ```
-{ref_contents}
-```
-""")
-
-    refactor_instruction = f"""
-REFACTOR {branch} {path}
-FILE PATH {abs_path}
-REFACTOR INSTRUCTIONS
-```{content}```"""
-
-    output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"
-
-    final_instructions = [
-        file_contents,
-        *file_reference_instructions,
-        refactor_instruction,
-        output_instructions
+    reference_definitions = [
+        build_file_ref(ref)
+        for ref in refactor["file_references"]
     ]
-    print(final_instructions)
-    return JsonResponse({}, status=200)
+    instructions = build_refactor_instructions(refactor)
 
-    response = get_gpt().send_instructions(final_instructions)
+    print(reference_definitions + instructions)
 
-    # print(response)
+    response = get_gpt().send_instructions(instructions)
+
+    branch, path = unpack_file_ref(refactor)
 
     rainer.update_file(branch, path, f"{response}\n")
     return JsonResponse({}, status=200)
