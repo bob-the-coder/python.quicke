@@ -4,8 +4,7 @@ import json
 import quicke
 from apps import rainer
 from apps.rainer.gpt import get_gpt
-from apps.rainer.instructions import build_file_ref_def, build_refactor_instructions, unpack_file_ref, \
-    get_file_ref_definitions
+from apps.rainer.instructions import build_refactor_instructions, unpack_file_ref, get_file_ref_definitions
 
 
 @quicke.endpoint("rainer/tree", {
@@ -37,7 +36,7 @@ def create_file(request):
     refactor = json.loads(request.body)
 
     reference_definitions = get_file_ref_definitions(refactor)
-    instructions = build_refactor_instructions(refactor, "update")
+    instructions = build_refactor_instructions(refactor, "create")
 
     response = get_gpt().send_instructions(reference_definitions + instructions)
 

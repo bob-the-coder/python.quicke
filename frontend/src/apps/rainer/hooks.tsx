@@ -18,7 +18,7 @@ type FileIdentifier = { branch: string; path: string };
 interface RainerContextType {
   getTree: ReturnType<typeof useTree>["data"];
   getFile: (key: FileIdentifier) => ReturnType<typeof useFile>;
-  createFile: (payload: { branch: string; path: string; content?: string }) => void;
+  createFile: (payload: RefactorRainerFile) => void;
   updateFile: (payload: RefactorRainerFile) => void;
   deleteFile: (key: FileIdentifier) => void;
   createDirectory: (key: FileIdentifier) => void;
