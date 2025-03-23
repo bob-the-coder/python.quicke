@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <!-- Add theme initialization script -->
+    <script>
+      // Check for stored theme preference or use dark as default
+      const theme = localStorage.getItem('user-preferences') 
+        ? JSON.parse(localStorage.getItem('user-preferences')).theme 
+        : 'dark';
+      
+      // Apply theme class immediately to prevent flash
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+    </script>
+  </head>
+  <body>
+    <div id="root" class="h-screen w-screen"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

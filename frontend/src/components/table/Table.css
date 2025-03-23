@@ -1,0 +1,75 @@
+.es-table,
+.es-table-dark {
+    width: 100%;
+    font-weight: 500;
+}
+
+.es-table-header {
+    background-color: #EBE4F8;
+}
+
+.es-table-body .es-table-row:hover {
+    background-color: #EFEFF8;
+}
+
+.es-table-dark {
+    background: transparent;
+    color: #D9D9D9;
+}
+
+.es-table-dark .es-table-header {
+    background-color: #404040;
+}
+
+.es-table-dark .es-table-body .es-table-row + .es-table-row {
+    border-top: 1px solid #404040;
+}
+
+.es-table-dark .es-table-body .es-table-row:hover {
+    background-color: #484848;
+}
+
+.es-table-dark .es-table-cell:hover {
+    background-color: #505050;
+    color: white;
+    font-weight: 700;
+}
+
+.cell-align-left {
+    text-align: left;
+}
+
+.cell-align-center {
+    text-align: center;
+}
+
+.cell-align-right {
+    text-align: right;
+}
+
+.es-table-cell--content {
+    line-height: 24px;
+}
+
+.es-table-cell {
+    padding: 15px 16px;
+    font-size: 13px;
+}
+
+.es-table-cell.es-table--sortable {
+    cursor: pointer;
+}
+
+.es-table-cell:hover {
+    background-color: #E5E5F8;
+}
+
+.es-table-header-cell {
+    padding: 20px 16px;
+    user-select: none;
+    font-family: Inter-Bold, sans-serif;
+}
+
+.es-table-header-cell:hover {
+    background-color: #D3D3F8;
+}

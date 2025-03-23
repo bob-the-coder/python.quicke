@@ -1,0 +1,19 @@
+.screen-backdrop-icon {
+    --size: 500px;
+
+    font-size: var(--size);
+    line-height: var(--size);
+    width: var(--size);
+    height: var(--size);
+
+    >img {
+        width: var(--size);
+        height: var(--size);
+    }
+
+    position: absolute;
+    opacity: 0.1;
+    color: var(--theme-color-main);
+    right: -150px;
+    bottom: -100px;
+}

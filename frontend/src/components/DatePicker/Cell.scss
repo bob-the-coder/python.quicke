@@ -1,0 +1,12 @@
+.cell {
+    &:hover {
+        background-color: grey;
+        cursor: pointer;
+    }
+    &.selected {
+        background-color: blue;
+    }
+    &.current_day {
+        color: red;
+    }
+}

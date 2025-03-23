@@ -1,0 +1,33 @@
+.es-table--page-controls {
+    display: flex;
+}
+
+.es-table--page-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    min-width: 40px;
+    cursor: pointer;
+    border-radius: 6px;
+    user-select: none;
+    background-color: transparent;
+    border: 0;
+    outline: none !important;
+    padding: 0 8px;
+}
+
+.es-table--page-button:not(.es-table--page-current):not(.es-table--page-spread):not([disabled]):hover {
+    background-color: #d9d9d9;
+}
+
+.es-table-dark .es-table--page-button:not(.es-table--page-current):not(.es-table--page-spread):not([disabled]):hover {
+    background-color: #505050;
+}
+
+.es-table--page-current {
+    background: #283593;
+    color: white;
+    font-weight: 700;
+    cursor: default
+}

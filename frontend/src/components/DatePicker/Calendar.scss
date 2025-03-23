@@ -1,0 +1,38 @@
+.calendar_container {
+    .calendar {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .calendar-header {
+            display: flex;
+            justify-content: space-around;
+        }
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+        }
+        // .week {
+        //     display: inline-flex;
+        //     align-items: flex-start;
+        //     justify-content: space-around;
+        //     width: 100%;
+        //     .date {
+        //         border: none;
+        //         width: 30px;
+        //         height: 100%;
+        //         padding: 10px;
+        //         display: flex;
+        //         justify-content: center;
+        //         align-items: center;
+        //         &.today {
+        //             color: red;
+        //             font-weight: 700;
+        //         }
+        //         &.selected {
+        //             background-color: grey;
+        //         }
+        //     }
+        // }
+    }
+}

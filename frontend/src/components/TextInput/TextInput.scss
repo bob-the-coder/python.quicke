@@ -1,0 +1,41 @@
+.input_component {
+  --highlight-color: #9747FF;
+
+  label {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 32px;
+  }
+
+  > input {
+    background: transparent;
+    padding: 10px 0;
+    color: white;
+    border: 2px solid #cfcbd9ca;
+    font-weight: 400;
+
+    &:focus {
+      outline: none;
+      border-color: var(--highlight-color);
+    }
+  }
+
+  &:focus-within {
+    input {
+      outline: none;
+      border-color: var(--highlight-color);
+    }
+
+    label {
+      color: var(--highlight-color);
+    }
+  }
+
+  &.has-error {
+    --highlight-color: #ce0357;
+
+    .error-alert {
+      color: var(--highlight-color);
+    }
+  }
+}

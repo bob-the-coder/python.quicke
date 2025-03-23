@@ -1,0 +1,22 @@
+
+  .bg-gradient-fancy {
+    background: radial-gradient(circle at 0% 0%, #C498AF00 0%, transparent 100%), linear-gradient(60deg, #885241 0%, #141234 74%, #885241 174%);
+  }
+
+  .bg-gradient-fancy:hover {
+    background: radial-gradient(circle at 0% 0%, #C498AF00 0%, transparent 100%), linear-gradient(60deg, #885241 -37%, #252345 37%, #885241 137%);
+    box-shadow: 0 0 16px -5px #ffffff73;
+  }
+
+  .animation.spin {
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    animation: spin .6s infinite linear;
+  }
+  
+  th {
+    text-align: initial;
+  }

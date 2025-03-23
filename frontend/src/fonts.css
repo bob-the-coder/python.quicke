@@ -1,0 +1,27 @@
+﻿/* =============== GEIST =============== */
+@font-face {
+    font-family: "Geist";
+    src: url("/fonts/Geist[wght].ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+.font-geist {
+    font-family: "Geist", sans-serif;
+}
+
+:root {
+  --font-geist: "Geist", sans-serif;
+}
+
+/* =============== TEX GYRE HEROS =============== */
+@font-face {
+    font-family: "Inter";
+    src: url("/fonts/InterTight-VariableFont_wght.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+.font-inter {
+    font-family: "Inter";
+}

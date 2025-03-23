@@ -1,0 +1,36 @@
+.es-title {
+    font-family: Montserrat-Bold;
+    font-style: bold;
+    font-weight: 700;
+    margin: 0;
+    width: 100%;
+}
+
+.es-title--align-left {
+    text-align: left;
+}
+
+.es-title--align-right {
+    text-align: right;
+}
+
+.es-title--align-center {
+    text-align: center;
+}
+
+.page-title {
+    font-size: 32px;
+    line-height: 40px;
+}
+
+.section-title {
+    line-height: 24px;
+    font-size: 20px;
+}
+
+.author-title {
+    line-height: 20px;
+    font-size: 16px;
+    color: #777777;
+    font-family: Montserrat-Regular;
+}

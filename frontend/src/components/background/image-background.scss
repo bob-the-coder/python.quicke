@@ -1,0 +1,34 @@
+.image-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0.1;
+
+  > * {
+    position: inherit;
+    top: inherit;
+    left: inherit;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  img {
+    object-fit: cover;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .image-background-overlay {
+    //background: linear-gradient(60deg, black -100%, var(--bg-color-light) 50%);
+    z-index: 1;
+  }
+  
+  ~ * {
+    z-index: 1;
+  }
+}
+
