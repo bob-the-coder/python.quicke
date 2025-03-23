@@ -94,7 +94,7 @@ export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props)
   };
 
   return (
-    <div className="grid gap-2">
+    <div className="w-full grid gap-2">
       {label && <Label>{label}</Label>}
       <Select value={value?.path || ""} onValueChange={handleChange}>
         <SelectTrigger className="w-full">

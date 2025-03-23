@@ -1,6 +1,5 @@
 import React, {ForwardedRef, forwardRef} from 'react'
 
-import {PrefabIcon} from "@/prefabs/icon-prefabs";
 import {ReactUtility} from "@/lib/react.util";
 import {Button, ButtonProps} from "@/components/ui/button"
 import createPrefab = ReactUtility.createPrefab;

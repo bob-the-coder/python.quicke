@@ -50,6 +50,12 @@ paths = {
 }
 
 
+# 3b. Refresh trees by rebuilding them
+def refresh_trees() -> None:
+    global trees
+    trees = build_rainer_tree()
+
+
 # 4. File content reader
 def get_file_contents(branch: str, relative_path: str) -> str:
     branch = trees[branch]
@@ -72,6 +78,8 @@ def create_file(branch: str, relative_path: str, text_content: str = "") -> None
     os.makedirs(os.path.dirname(abs_path), exist_ok=True)
     with open(abs_path, "w", encoding="utf-8") as f:
         f.write(text_content)
+
+    refresh_trees()
 
 
 # 6. Update file contents in branch

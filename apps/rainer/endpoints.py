@@ -44,6 +44,7 @@ def create_file(request):
 
     branch, path = unpack_file_ref(refactor)
     rainer.create_file(branch, path, f"{response}\n")
+
     return JsonResponse({}, status=201)
 
 
