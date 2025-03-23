@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRainer } from "@/apps/rainer/hooks";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { RainerFilePicker } from "@/apps/rainer/ui/RainerFilePicker";
 import { FormRainerFileUpdate } from "@/apps/rainer/ui/FormRainerFileUpdate";
 import { RainerFileTree } from "@/apps/rainer/ui/RainerFileTree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -61,15 +60,6 @@ export default function RainerDashboard() {
                         <TabsTrigger value="frontend">Frontend</TabsTrigger>
                     </TabsList>
 
-                    <div className="flex gap-2 items-center w-full ">
-                        <RainerFilePicker
-                            branch={selectedBranch}
-                            value={selectedPath}
-                            onChange={(val) => handleSelectFile(val.path)} // Handle file selection
-                        />
-                        <CreateFileModal branch={selectedBranch}/> {/* Pass selected branch to CreateFileModal */}
-
-                    </div>
                     <div className="flex w-full items-center gap-2 ">
                         <BiSearch className={'flex-shrink-0 text-lg'}/>
                         <input
@@ -79,6 +69,7 @@ export default function RainerDashboard() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="border border-muted rounded px-2 py-1 w-full"
                         />
+                        <CreateFileModal branch={selectedBranch}/>
                     </div>
                 </div>
 

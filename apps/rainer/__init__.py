@@ -37,10 +37,18 @@ def build_frontend_tree(base_dir: str) -> Dict[str, str]:
 
 # 3. Unified tree builder for both branches
 def build_rainer_trees() -> Dict[str, Dict[str, str]]:
-    return {
-        "backend": build_backend_tree(RAINER_OPTIONS["backend"]),
-        "frontend": build_frontend_tree(RAINER_OPTIONS["frontend"]),
+    new_trees = {
+        "backend": {
+            **build_backend_tree(RAINER_OPTIONS["backend"]),
+            "__path__": RAINER_OPTIONS["backend"],
+        },
+        "frontend": {
+            **build_frontend_tree(RAINER_OPTIONS["frontend"]),
+            "__path__": RAINER_OPTIONS["frontend"],
+        }
     }
+
+    return new_trees
 
 
 # 10. Ensure migrations are created and applied

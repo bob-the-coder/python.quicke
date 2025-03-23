@@ -47,7 +47,7 @@ export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props)
             />
           </div>
           <ScrollbarCustom noScrollX={true} className={'w-full'}>
-            <RainerFileTree path={value || ""} tree={getTree![branch]} onSelect={handleChange}
+            <RainerFileTree path={value || ""} tree={(getTree || {})[branch] || {}} onSelect={handleChange}
                             searchQuery={searchQuery}/>
           </ScrollbarCustom>
         </SelectContent>
