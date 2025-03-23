@@ -28,8 +28,9 @@ def get_file_contents(request):
 @csrf_exempt
 @quicke.endpoint("rainer/file/new", {
     "method": "POST",
-    "body_type": "{branch: string, path: string, content?: string}",
-    "response_type": "void"
+    "body_type": "RainerFile & {content?: string}",
+    "response_type": "void",
+    "imports": [("./models", "RainerFile")]
 })
 def create_file(request):
     data = json.loads(request.body)
@@ -44,21 +45,54 @@ def create_file(request):
 @csrf_exempt
 @quicke.endpoint("rainer/file/update", {
     "method": "PUT",
-    "body_type": "{branch: string, path: string, content: string}",
-    "response_type": "void"
+    "body_type": "UpdateRainerFile",
+    "response_type": "void",
+    "imports": [("./types", "UpdateRainerFile")]
 })
 def update_file(request):
     data = json.loads(request.body)
     branch = data["branch"]
     path = data["path"]
     content = data["content"]
+    file_references = data.get("file_references", [])
 
     file_contents = rainer.get_file_contents(branch, path)
-
     abs_path = get_file_path(branch, path)
-    refactor_instructions = f"REFACTOR {branch} {path}\nFILE PATH {abs_path}\nREFACTOR INSTRUCTIONS\n```{content}```"
+
+    file_reference_instructions = []
+    for reference in file_references:
+        ref_branch = reference.get("branch", "no_branch")
+        ref_path = reference.get("path", "no_branch")
+
+        ref_abs_path = get_file_path(ref_branch, ref_path)
+        ref_contents = rainer.get_file_contents(ref_branch, ref_path)
+
+        file_reference_instructions.append(f"""
+FILE REFERENCE - BRANCH: {ref_branch} | PATH: {ref_path}
+FILE REFERENCE LOCATION: {ref_abs_path}
+FILE REFERENCE CONTENT: ```
+{ref_contents}
+```
+""")
+
+    refactor_instruction = f"""
+REFACTOR {branch} {path}
+FILE PATH {abs_path}
+REFACTOR INSTRUCTIONS
+```{content}```"""
+
     output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"
-    response = get_gpt().send_instructions([file_contents, refactor_instructions, output_instructions])
+
+    final_instructions = [
+        file_contents,
+        *file_reference_instructions,
+        refactor_instruction,
+        output_instructions
+    ]
+    print(final_instructions)
+    return JsonResponse({}, status=200)
+
+    response = get_gpt().send_instructions(final_instructions)
 
     # print(response)
 

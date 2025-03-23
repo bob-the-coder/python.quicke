@@ -89,7 +89,7 @@ function renderTree(
   return entries;
 }
 
-export function RainerFilePicker({ branch, value, onChange, label = "Select File" }: Props) {
+export function RainerFilePicker({ branch, value, onChange, label = "" }: Props) {
   const { getTree } = useRainer();
 
   const filePaths = React.useMemo(() => {
@@ -105,7 +105,7 @@ export function RainerFilePicker({ branch, value, onChange, label = "Select File
 
   return (
     <div className="grid gap-2">
-      <Label>{label}</Label>
+      {label && <Label>{label}</Label>}
       <Select value={value?.path || ""} onValueChange={handleChange}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder={`Select a ${branch} file`} />

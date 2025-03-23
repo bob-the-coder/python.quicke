@@ -11,6 +11,7 @@ import {
   endpoint_create_directory,
   endpoint_delete_directory,
 } from "./endpoints";
+import {UpdateRainerFile} from "@/apps/rainer/types";
 
 type FileIdentifier = { branch: string; path: string };
 
@@ -18,7 +19,7 @@ interface RainerContextType {
   getTree: ReturnType<typeof useTree>["data"];
   getFile: (key: FileIdentifier) => ReturnType<typeof useFile>;
   createFile: (payload: { branch: string; path: string; content?: string }) => void;
-  updateFile: (payload: { branch: string; path: string; content: string }) => void;
+  updateFile: (payload: UpdateRainerFile) => void;
   deleteFile: (key: FileIdentifier) => void;
   createDirectory: (key: FileIdentifier) => void;
   deleteDirectory: (key: FileIdentifier) => void;

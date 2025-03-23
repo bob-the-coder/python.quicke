@@ -2,7 +2,8 @@
 
 import { fetchJSON } from '../../fetchJSON';
 
-import { RainerTree } from './types';
+import { RainerFile } from './models';
+import { RainerTree, UpdateRainerFile } from './types';
 
 export async function endpoint_create_directory(
 	body: {branch: string, path: string}
@@ -14,7 +15,7 @@ export async function endpoint_create_directory(
 }
 
 export async function endpoint_create_file(
-	body: {branch: string, path: string, content?: string}
+	body: RainerFile & {content?: string}
 ): Promise<void> {
 	return fetchJSON('rainer/file/new', {
 		method: "POST",
@@ -53,7 +54,7 @@ export async function endpoint_get_rainer_tree(): Promise<RainerTree> {
 }
 
 export async function endpoint_update_file(
-	body: {branch: string, path: string, content: string}
+	body: UpdateRainerFile
 ): Promise<void> {
 	return fetchJSON('rainer/file/update', {
 		method: "PUT",
