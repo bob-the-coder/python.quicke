@@ -1,14 +1,12 @@
 import { useTheme } from "@/lib/preferences-context";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ButtonVariant from "@/components/Button/Button";
-import { useSidebar } from "@/lib/preferences-context";
 import { useEffect } from "react";
+import {Button} from "@/components/ui/button";
 
 export const ThemeToggle = () => {
   const { toggleTheme, text, icon, label } = useTheme();
-  const { isOpen } = useSidebar();
-  
+
   // Add a one-time effect to ensure theme is properly applied after component mounts
   useEffect(() => {
     // Force the CSS variables to update by triggering a reflow
@@ -29,7 +27,7 @@ export const ThemeToggle = () => {
   
   return (
     <div className="w-full">
-      <ButtonVariant.Ghost
+      <Button variant={'ghost'}
         onClick={handleToggle}
         aria-label={label}
         className={cn(
@@ -42,7 +40,7 @@ export const ThemeToggle = () => {
           <Moon size={18} />
         )}
         <span className="ml-2">{text}</span>
-      </ButtonVariant.Ghost>
+      </Button>
     </div>
   );
 };

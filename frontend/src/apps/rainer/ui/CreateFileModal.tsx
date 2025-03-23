@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { FormRainerFileCreate } from "./FormRainerFileCreate";
 import { RiAddFill } from "react-icons/ri";
 
-export function CreateFileModal({ branch = "backend" }) {
+export function CreateFileModal({ branch = "backend" as const }) {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
 
     return (
         <>

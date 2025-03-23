@@ -1,8 +1,8 @@
 import  {ForwardedRef, forwardRef, HTMLAttributes, ReactNode, useCallback, useMemo} from 'react'
 import {Label} from "@/components/ui/label";
-import ButtonVariant from "@/components/Button/Button";
 import {Input} from "@/components/ui/input";
 import {LuMinus, LuPlus} from "react-icons/lu";
+import {Button} from "@/components/ui/button";
 
 const isSafe = (v?: number) => v !== undefined && Number.isSafeInteger(v);
 
@@ -72,19 +72,19 @@ const NumberInput = forwardRef((
                 </Label>
             )}
             <div className="flex">
-                <ButtonVariant.Outline size={'icon'} className={'flex-shrink-0 rounded-r-none'}
+                <Button variant={'outline'} size={'icon'} className={'flex-shrink-0 rounded-r-none'}
                                          onClick={() => handleChange(prev)}>
                     <LuMinus/>
-                </ButtonVariant.Outline>
+                </Button>
                 <Input id={id} ref={ref}
                        type={'numeric'}
                        className={'rounded-none text-center'}
                        value={value}
                        onChange={e => handleChange(+e.target.value)}/>
-                <ButtonVariant.Outline size={'icon'} className={'text-xs flex-shrink-0 rounded-l-none'}
+                <Button variant={'outline'} size={'icon'} className={'text-xs flex-shrink-0 rounded-l-none'}
                                          onClick={() => handleChange(next)}>
                     <LuPlus/>
-                </ButtonVariant.Outline>
+                </Button>
             </div>
         </div>
     )

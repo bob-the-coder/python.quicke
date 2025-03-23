@@ -1,9 +1,9 @@
 import {cn} from "@/lib/utils";
 import logoPath from '@/assets/DFA.webp';
 import {ArrowRight, ArrowLeft} from "lucide-react";
-import ButtonVariant from "@/components/Button/Button";
 import {useSidebar, useTheme} from "@/lib/preferences-context";
 import {ReactNode} from "react";
+import {Button} from "@/components/ui/button";
 
 
 interface SidebarProps {
@@ -37,13 +37,13 @@ export const Sidebar = ({
 
             <div className="relative ">
                 <hr className="border-foreground/10"/>
-                <ButtonVariant.Ghost
+                <Button variant={'outline'}
                     className="absolute -right-7 top-1/2 -translate-y-1/2 z-50 bg-background border-foreground/10 border hover:bg-foreground/5 rounded-full w-8 h-8 p-0 flex items-center justify-center"
                     onClick={toggle}
                     size="sm"
                 >
                     {isOpen ? <ArrowLeft size={16}/> : <ArrowRight size={16}/>}
-                </ButtonVariant.Ghost>
+                </Button>
             </div>
 
             {/* Navigation component passed as children */}
