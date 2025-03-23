@@ -12,6 +12,7 @@ export type CodeGenerationData = {
   response: string;
   rainer_branch: string;
   rainer_path: string;
+  drop_number: number;
 }
 
 export type RainerFile = {

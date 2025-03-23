@@ -5,7 +5,7 @@ import { fetchJSON } from '../../fetchJSON';
 import { Demo, DemoBasic } from './models';
 
 export async function endpoint_create_demo(
-	body: Demo
+	body: RainerFile
 ): Promise<Demo> {
 	return fetchJSON('demo', {
 		method: "POST",

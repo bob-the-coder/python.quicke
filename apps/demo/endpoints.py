@@ -37,7 +37,7 @@ def retrieve_demo(id: int):
 @csrf_exempt
 @quicke.endpoint("demo", {
     "method": "POST",
-    "body_type": "Demo",
+    "body_type": "RainerFile",  # Updated body type
     "response_type": "Demo",
     "imports": [("./models", "Demo")]
 })

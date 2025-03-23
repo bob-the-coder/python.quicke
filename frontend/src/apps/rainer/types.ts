@@ -6,3 +6,7 @@ export type RainerTree = {
 }
 
 export type RefactorRainerFile = RainerFile & {content: string; file_references: RainerFile[]};
+
+export type FileDrops = {
+    [dropNumber: string]: number;
+}

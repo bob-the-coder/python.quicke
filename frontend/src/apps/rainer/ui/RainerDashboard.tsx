@@ -10,7 +10,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ScrollbarCustom } from "@/components/ScrollbarCustom";
 import { CopyToClipboard } from "@/components/CopyToClipboard";
 import { CreateFileModal } from "@/apps/rainer/ui/CreateFileModal";
-import {BiSearch} from "react-icons/bi"; // Import CreateFileModal
+import {BiSearch} from "react-icons/bi";
+import RainerFileDrops from "@/apps/rainer/ui/RainerFileDrops"; // Import CreateFileModal
 
 export default function RainerDashboard() {
     const { search } = useLocation(); // Get the current query parameters from the URL
@@ -103,9 +104,13 @@ export default function RainerDashboard() {
                 {selectedPath ? (
                     <div className="h-full flex w-full">
                         <div className="flex-1 flex flex-col">
-                            <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4">
-                            <Badge className="text-xl">{selectedBranch}</Badge>
+                            <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4 relative">
+                                <Badge className="text-xl">{selectedBranch}</Badge>
                                 {selectedPath}
+
+                                <div className="absolute right-0">
+                                    <RainerFileDrops file={{branch: selectedBranch, path: selectedPath}} />
+                                </div>
                             </h1>
                             <div className="h-full w-full p-2">
                                 <ScrollbarCustom>

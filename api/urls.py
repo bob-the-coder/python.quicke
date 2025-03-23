@@ -16,6 +16,7 @@ from .settings import QUICKE_APPS
 for app in QUICKE_APPS:
     ensure_migrations(app.replace("apps.", ""))
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),

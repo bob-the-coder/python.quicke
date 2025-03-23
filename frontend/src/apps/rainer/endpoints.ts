@@ -2,7 +2,8 @@
 
 import { fetchJSON } from '../../fetchJSON';
 
-import { RainerFile, RainerTree, RefactorRainerFile } from './types';
+import { FileDrops, RainerTree, RefactorRainerFile } from './types';
+import { RainerFile } from './models';
 
 export async function endpoint_create_directory(
 	body: {branch: string, path: string}
@@ -43,6 +44,15 @@ export async function endpoint_get_file_contents(
 ): Promise<string> {
 	return fetchJSON('rainer/file' + (query ? '?' + new URLSearchParams(query).toString() : ''), {
 		method: "GET"
+	});
+}
+
+export async function endpoint_get_file_drops(
+	body: RainerFile
+): Promise<FileDrops> {
+	return fetchJSON('rainer/file/drops', {
+		method: "POST",
+		body: JSON.stringify(body)
 	});
 }
 
