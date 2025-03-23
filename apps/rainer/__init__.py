@@ -15,7 +15,7 @@ def build_backend_tree(base_dir: str) -> Dict[str, str]:
     abs_base = os.path.abspath(base_dir)
     for entry in os.scandir(abs_base):
         if entry.is_dir() and entry.name != "__pycache__":
-            for target_file in ("endpoints.py", "models.py"):
+            for target_file in ("endpoints.py", "models.py", "instructions.py"):
                 target_path = os.path.join(entry.path, target_file)
                 if os.path.isfile(target_path):
                     rel_path = os.path.relpath(target_path, abs_base).replace("\\", "/")

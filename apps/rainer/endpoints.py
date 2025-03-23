@@ -61,7 +61,11 @@ def update_file(request):
 
     print(reference_definitions + instructions)
 
-    response = get_gpt().send_instructions(instructions)
+    output_instruction = """
+>OUTPUT ONLY THE FULL, UPDATED FILE CODE
+>OUTPUT AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"""
+
+    response = get_gpt().send_instructions(reference_definitions + instructions + [output_instruction])
 
     branch, path = unpack_file_ref(refactor)
 

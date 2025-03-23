@@ -60,11 +60,8 @@ FILE PATH {abs_path}
 REFACTOR INSTRUCTIONS
 ```{refactor_changes}```"""
 
-    output_instructions = "OUTPUT THE UPDATED FILE AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"
-
     return [
         file_contents,
         *file_reference_instructions,
-        refactor_instruction,
-        output_instructions
+        refactor_instruction
     ]
