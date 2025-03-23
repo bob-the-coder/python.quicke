@@ -1,39 +1,40 @@
-// app/rainer-dashboard.tsx
-
 "use client";
 
 import {useState, useEffect} from "react";
 import {useRainer} from "@/apps/rainer/hooks";
-import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Tabs, TabsList, TabsTrigger, TabsContent} from "@/components/ui/tabs";
 import {Badge} from "@/components/ui/badge";
 import {RainerFilePicker} from "@/apps/rainer/ui/RainerFilePicker";
 import {FormRainerFileUpdate} from "@/apps/rainer/ui/FormRainerFileUpdate";
-import {RiSparkling2Fill} from "react-icons/ri";
 import {RainerFileTree} from "@/apps/rainer/ui/RainerFileTree";
 import {useLocation, useNavigate} from "react-router-dom";
+import { ScrollbarCustom } from "@/components/ScrollbarCustom";
 
 export default function RainerDashboard() {
-    const {search} = useLocation();
-    const navigate = useNavigate();
-    const ts = new Date().getTime();
+    const {search} = useLocation(); // Get the current query parameters from the URL
+    const navigate = useNavigate(); // Hook to programmatically navigate
+    const ts = new Date().getTime(); // Timestamp for forced component refresh
 
+    // Extract query parameters for "branch" and "path"
     const queryParams = new URLSearchParams(search);
-    const initialBranch = (queryParams.get("b") as "backend" | "frontend") || "backend";
-    const initialPath = queryParams.get("p") || null;
+    const initialBranch = (queryParams.get("b") as "backend" | "frontend") || "backend"; // Default to "backend"
+    const initialPath = queryParams.get("p") || null; // Initial path can be null
 
+    // State for the selected branch and file path
     const [selectedBranch, setSelectedBranch] = useState<"backend" | "frontend">(initialBranch);
     const [selectedPath, setSelectedPath] = useState<string | null>(initialPath);
-    const {getTree} = useRainer();
+    const {getTree} = useRainer(); // Hook to interact with the Rainer API
 
-    const fileQuery = useFileHook({branch: selectedBranch, path: selectedPath});
+    const fileQuery = useFileHook({branch: selectedBranch, path: selectedPath}); // Hook to fetch file data
 
+    // Function to handle file selection
     const handleSelectFile = (path: string) => {
-        setSelectedPath(path);
-        navigate({search: `?b=${selectedBranch}&p=${path}`}, {replace: true});
+        setSelectedPath(path); // Update selected path
+        navigate({search: `?b=${selectedBranch}&p=${path}`}, {replace: true}); // Update URL query params
     };
 
+    // Update the URL when branch or path state changes
     useEffect(() => {
         if (selectedBranch !== initialBranch || selectedPath !== initialPath) {
             navigate({search: `?b=${selectedBranch}&p=${selectedPath}`}, {replace: true});
@@ -44,75 +45,79 @@ export default function RainerDashboard() {
         <div className="grid grid-cols-[300px_1fr] h-screen">
             <aside className="border-r border-muted p-4 overflow-y-auto">
                 <Tabs
-                    value={selectedBranch}
+                    value={selectedBranch} // Controlled component for branch manipulation
                     onValueChange={(v) => {
                         setSelectedBranch(v as "backend" | "frontend");
-                        setSelectedPath(null);
-                        navigate({search: `?b=${v}&p=`}, {replace: true});
+                        setSelectedPath(null); // Reset file path on branch change
+                        navigate({search: `?b=${v}&p=`}, {replace: true}); // Update URL query params
                     }}
                 >
                     <TabsList className="grid grid-cols-2 mb-4 w-full">
                         <TabsTrigger value="backend">Backend</TabsTrigger>
                         <TabsTrigger value="frontend">Frontend</TabsTrigger>
                     </TabsList>
+
+                    {/* Backend Content */}
                     <TabsContent value="backend">
                         <ScrollArea className="h-full pr-2 space-y-6">
                             <div className="flex flex-col gap-4">
                                 <RainerFilePicker
                                     branch="backend"
                                     value={selectedPath ? {branch: "backend", path: selectedPath} : undefined}
-                                    onChange={(val) => handleSelectFile(val.path)}
+                                    onChange={(val) => handleSelectFile(val.path)} // Handle file selection
                                 />
                                 <RainerFileTree
-                                    branch="backend"
-                                    tree={getTree?.backend || {}}
-                                    onSelect={handleSelectFile}
+                                    file={{branch: selectedBranch, path: selectedPath || ''}}
+                                    tree={getTree?.backend || {}} // Use the backend file tree
+                                    onSelect={handleSelectFile} // Pass file selection handler
                                 />
                             </div>
                         </ScrollArea>
                     </TabsContent>
+
+                    {/* Frontend Content */}
                     <TabsContent value="frontend">
                         <ScrollArea className="h-full pr-2 space-y-6">
                             <div className="flex flex-col gap-4">
                                 <RainerFilePicker
                                     branch="frontend"
                                     value={selectedPath ? {branch: "frontend", path: selectedPath} : undefined}
-                                    onChange={(val) => handleSelectFile(val.path)}
+                                    onChange={(val) => handleSelectFile(val.path)} // Handle file selection
                                 />
                                 <RainerFileTree
-                                    branch="frontend"
-                                    tree={getTree?.frontend || {}}
-                                    onSelect={handleSelectFile}
+                                    file={{branch: selectedBranch, path: selectedPath || ''}}
+                                    tree={getTree?.frontend || {}} // Use the frontend file tree
+                                    onSelect={handleSelectFile} // Pass file selection handler
                                 />
                             </div>
                         </ScrollArea>
                     </TabsContent>
                 </Tabs>
             </aside>
-            <main className="h-full">
+
+            {/* Main content area */}
+            <main className="h-full flex">
                 {selectedPath ? (
-                    <div className="h-full flex flex-col">
-                        <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4">
-                            <Badge className="text-xl">{selectedBranch}</Badge>
-                            {selectedPath}
-                        </h1>
-                        <textarea
-                            className="p-6 max-h-full h-full w-full resize-none rounded-none border-0 font-mono"
-                            value={fileQuery.data || ""}
-                            onChange={(e) => fileQuery.set(e.target.value)}
-                        />
-                        <div className="px-6 py-4 border-t flex justify-between gap-4">
-                            <div className="flex gap-4">
-                                <FormRainerFileUpdate key={ts} branch={selectedBranch} path={selectedPath}>
-                                    <Button variant="outline">
-                                        Refactor <RiSparkling2Fill/>
-                                    </Button>
-                                </FormRainerFileUpdate>
+                    <div className="h-full flex w-full">
+                        <div className="flex-1 flex flex-col">
+                            <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4">
+                                <Badge className="text-xl">{selectedBranch}</Badge>
+                                {selectedPath}
+                            </h1>
+                            <div className="h-full w-full p-2">
+                                <ScrollbarCustom>
+                                    <p className="p-4 w-full whitespace-pre font-geist-mono text-sm text-muted-foreground">
+                                        {fileQuery.data} {/* Display the content of the selected file */}
+                                    </p>
+                                </ScrollbarCustom>
                             </div>
+                        </div>
+                        <div className="w-1/4 border-l border-muted">
+                            <FormRainerFileUpdate key={ts} branch={selectedBranch} path={selectedPath}/> {/* File edit form */}
                         </div>
                     </div>
                 ) : (
-                    <div className="text-muted-foreground text-center mt-40 text-sm">
+                    <div className="text-muted-foreground text-sm flex-center w-full">
                         Select a file to view/edit
                     </div>
                 )}
@@ -121,17 +126,19 @@ export default function RainerDashboard() {
     );
 }
 
+// Custom hook to handle file fetching
 function useFileHook({branch, path}: { branch: string; path: string | null }) {
-    const {getFile} = useRainer();
-    const query = getFile({branch, path: path ?? ""});
-    const [localValue, setLocalValue] = useState("");
+    const {getFile} = useRainer(); // Hook to interact with the Rainer API
+    const query = getFile({branch, path: path ?? ""}); // Fetch the file data
+    const [localValue, setLocalValue] = useState(""); // Local state for file content
 
+    // Effect to update local value when the file data changes
     useEffect(() => {
         if (query.data !== undefined) setLocalValue(query.data);
     }, [query.data]);
 
     return {
-        data: localValue,
-        set: setLocalValue,
+        data: localValue, // Expose local file content
+        set: setLocalValue, // Function to update local file content
     };
 }

@@ -42,13 +42,13 @@ class RefactorFile(TypedDict):
 
 def get_file_ref_definitions(file_references: List[FileRef]) -> List[str]:
     return [
-        build_file_ref_def(*unpack_file_ref(reference))
+        build_file_ref_def(reference)
         for reference in file_references
     ]
 
 def get_file_ref_usage(file_references: List[FileRef]) -> List[str]:
     return [
-        build_use_file_ref(*unpack_file_ref(reference))
+        build_use_file_ref(reference)
         for reference in file_references
     ]
 

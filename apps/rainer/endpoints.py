@@ -35,7 +35,7 @@ def get_file_contents(request):
 def create_file(request):
     refactor = json.loads(request.body)
 
-    reference_definitions = get_file_ref_definitions(refactor)
+    reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
     instructions = build_refactor_instructions(refactor, "create")
 
     response = get_gpt().send_instructions(reference_definitions + instructions)
@@ -55,7 +55,7 @@ def create_file(request):
 def update_file(request):
     refactor = json.loads(request.body)
 
-    reference_definitions = get_file_ref_definitions(refactor)
+    reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
     instructions = build_refactor_instructions(refactor, "update")
 
     response = get_gpt().send_instructions(reference_definitions + instructions)

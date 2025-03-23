@@ -1,5 +1,3 @@
-// RainerContext.tsx
-
 import React, { createContext, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -11,15 +9,21 @@ import {
   endpoint_create_directory,
   endpoint_delete_directory,
 } from "./endpoints";
-import {RefactorRainerFile} from "@/apps/rainer/types";
+import { RefactorRainerFile } from "@/apps/rainer/types";
 
 type FileIdentifier = { branch: string; path: string };
 
 interface RainerContextType {
   getTree: ReturnType<typeof useTree>["data"];
   getFile: (key: FileIdentifier) => ReturnType<typeof useFile>;
-  createFile: (payload: RefactorRainerFile) => void;
-  updateFile: (payload: RefactorRainerFile) => void;
+  createFile: {
+    mutate: (payload: RefactorRainerFile) => void;
+    isPending: boolean;
+  };
+  updateFile: {
+    mutate: (payload: RefactorRainerFile) => void;
+    isPending: boolean;
+  };
   deleteFile: (key: FileIdentifier) => void;
   createDirectory: (key: FileIdentifier) => void;
   deleteDirectory: (key: FileIdentifier) => void;
@@ -57,7 +61,7 @@ export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const updateFileMutation = useMutation({
     mutationFn: endpoint_update_file,
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({queryKey: ["rainer", "file", vars.branch, vars.path]});
+      queryClient.invalidateQueries({ queryKey: ["rainer", "file", vars.branch, vars.path] });
     },
   });
 
@@ -88,8 +92,8 @@ export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const value: RainerContextType = {
     getTree: treeQuery.data,
     getFile: useFile,
-    createFile: createFileMutation.mutate,
-    updateFile: updateFileMutation.mutate,
+    createFile: { mutate: createFileMutation.mutate, isPending: createFileMutation.isPending },
+    updateFile: {mutate: updateFileMutation.mutate, isPending: updateFileMutation.isPending},
     deleteFile: deleteFileMutation.mutate,
     createDirectory: createDirMutation.mutate,
     deleteDirectory: deleteDirMutation.mutate,
