@@ -3,9 +3,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
 from apps import rainer
-from apps.rainer import get_file_path
 from apps.rainer.gpt import get_gpt
-from apps.rainer.instructions import build_file_ref, build_refactor_instructions, unpack_file_ref
+from apps.rainer.instructions import build_file_ref_def, build_refactor_instructions, unpack_file_ref, \
+    get_file_ref_definitions
 
 
 @quicke.endpoint("rainer/tree", {
@@ -29,47 +29,41 @@ def get_file_contents(request):
 @csrf_exempt
 @quicke.endpoint("rainer/file/new", {
     "method": "POST",
-    "body_type": "RainerFile & {content?: string}",
+    "body_type": "RefactorRainerFile",
     "response_type": "void",
-    "imports": [("./models", "RainerFile")]
+    "imports": [("./types", "RefactorRainerFile")]
 })
 def create_file(request):
-    data = json.loads(request.body)
-    branch = data["branch"]
-    path = data["path"]
-    content = data.get("content", "")
+    refactor = json.loads(request.body)
 
-    rainer.create_file(branch, path, content)
+    reference_definitions = get_file_ref_definitions(refactor)
+    instructions = build_refactor_instructions(refactor, "update")
+
+    response = get_gpt().send_instructions(reference_definitions + instructions)
+
+    branch, path = unpack_file_ref(refactor)
+    rainer.create_file(branch, path, f"{response}\n")
     return JsonResponse({}, status=201)
 
 
 @csrf_exempt
 @quicke.endpoint("rainer/file/update", {
     "method": "PUT",
-    "body_type": "UpdateRainerFile",
+    "body_type": "RefactorRainerFile",
     "response_type": "void",
-    "imports": [("./types", "UpdateRainerFile")]
+    "imports": [("./types", "RefactorRainerFile")]
 })
 def update_file(request):
     refactor = json.loads(request.body)
 
-    reference_definitions = [
-        build_file_ref(ref)
-        for ref in refactor["file_references"]
-    ]
-    instructions = build_refactor_instructions(refactor)
+    reference_definitions = get_file_ref_definitions(refactor)
+    instructions = build_refactor_instructions(refactor, "update")
 
-    print(reference_definitions + instructions)
-
-    output_instruction = """
->OUTPUT ONLY THE FULL, UPDATED FILE CODE
->OUTPUT AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"""
-
-    response = get_gpt().send_instructions(reference_definitions + instructions + [output_instruction])
+    response = get_gpt().send_instructions(reference_definitions + instructions)
 
     branch, path = unpack_file_ref(refactor)
-
     rainer.update_file(branch, path, f"{response}\n")
+
     return JsonResponse({}, status=200)
 
 

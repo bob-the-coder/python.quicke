@@ -16,7 +16,7 @@ def unpack_file_ref(file_ref: FileRef) -> Tuple[str, str]:
     return branch, path
 
 
-def build_file_ref(file_ref: FileRef) -> str:
+def build_file_ref_def(file_ref: FileRef) -> str:
     branch, path = unpack_file_ref(file_ref)
     abs_path = get_file_path(branch, path)
     contents = get_file_contents(branch, path)
@@ -40,28 +40,70 @@ class RefactorFile(TypedDict):
     content: str
     file_references: List[FileRef]
 
+def get_file_ref_definitions(file_references: List[FileRef]) -> List[str]:
+    return [
+        build_file_ref_def(*unpack_file_ref(reference))
+        for reference in file_references
+    ]
 
-def build_refactor_instructions(refactor: RefactorFile) -> List[str]:
-    branch, path = unpack_file_ref(refactor)
+def get_file_ref_usage(file_references: List[FileRef]) -> List[str]:
+    return [
+        build_use_file_ref(*unpack_file_ref(reference))
+        for reference in file_references
+    ]
+
+
+def build_refactor_instructions(refactor: RefactorFile, action: str = "update") -> List[str]:
     file_references = refactor.get("file_references", [])
+    refactor_instructions = make_create_target_instructions(refactor) if action == "create" else \
+                            make_update_target_instructions(refactor)
 
-    file_contents = rainer.get_file_contents(branch, path)
+    output_instruction = """
+    >OUTPUT ONLY THE FULL, UPDATED FILE CODE
+    >OUTPUT AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"""
+
+    return [
+        *get_file_ref_usage(file_references),
+        *refactor_instructions,
+        output_instruction,
+    ]
+
+def make_update_target_instructions(refactor: RefactorFile) -> List[str]:
+    branch, path = unpack_file_ref(refactor)
     abs_path = get_file_path(branch, path)
 
-    file_reference_instructions = []
-    for reference in file_references:
-        use_ref = build_use_file_ref(reference)
-        file_reference_instructions.append(use_ref)
+    refactor_target_contents = rainer.get_file_contents(branch, path)
+    refactor_target = f"""
+    REFACTOR FILE {branch} {path}
+    REFACTOR FILE PATH {abs_path}
+    REFACTOR FILE CONTENTS {branch} {path}
+    ```{refactor_target_contents}"""
 
     refactor_changes = refactor.get("content", "")
     refactor_instruction = f"""
-REFACTOR FILE {branch} {path}
-FILE PATH {abs_path}
-REFACTOR INSTRUCTIONS
-```{refactor_changes}```"""
+    REFACTOR INSTRUCTIONS
+    ```{refactor_changes}```"""
 
     return [
-        file_contents,
-        *file_reference_instructions,
-        refactor_instruction
+        refactor_target,
+        refactor_instruction,
     ]
+
+def make_create_target_instructions(refactor: RefactorFile) -> [str]:
+    branch, path = unpack_file_ref(refactor)
+    abs_path = get_file_path(branch, path)
+
+    refactor_target = f"""
+    CREATE FILE {branch} {path}
+    CREATE FILE PATH {abs_path}"""
+
+    refactor_changes = refactor.get("content", "")
+    refactor_instruction = f"""
+    CREATE FILE INSTRUCTIONS
+    ```{refactor_changes}```"""
+
+    return [
+        refactor_target,
+        refactor_instruction,
+    ]
+

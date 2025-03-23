@@ -5,4 +5,4 @@ export type RainerTree = {
     frontend: Record<string, string>;
 }
 
-export type UpdateRainerFile = RainerFile & {content: string; file_references: RainerFile[]}
+export type RefactorRainerFile = RainerFile & {content: string; file_references: RainerFile[]}
