@@ -10,7 +10,8 @@ import { RainerFileTree } from "@/apps/rainer/ui/RainerFileTree";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ScrollbarCustom } from "@/components/ScrollbarCustom";
 import { CopyToClipboard } from "@/components/CopyToClipboard";
-import { CreateFileModal } from "@/apps/rainer/ui/CreateFileModal"; // Import CreateFileModal
+import { CreateFileModal } from "@/apps/rainer/ui/CreateFileModal";
+import {BiSearch} from "react-icons/bi"; // Import CreateFileModal
 
 export default function RainerDashboard() {
     const { search } = useLocation(); // Get the current query parameters from the URL
@@ -25,6 +26,7 @@ export default function RainerDashboard() {
     // State for the selected branch and file path
     const [selectedBranch, setSelectedBranch] = useState<"backend" | "frontend">(initialBranch);
     const [selectedPath, setSelectedPath] = useState<string | null>(initialPath);
+    const [searchQuery, setSearchQuery] = useState<string>(''); // State for search input
     const { getTree } = useRainer(); // Hook to interact with the Rainer API
 
     const fileQuery = useFileHook({ branch: selectedBranch, path: selectedPath }); // Hook to fetch file data
@@ -44,34 +46,50 @@ export default function RainerDashboard() {
 
     return (
         <div className="grid grid-cols-[300px_1fr] h-screen">
-            <Tabs className="border-r border-muted p-4 h-full"
-                value={selectedBranch} // Controlled component for branch manipulation
-                onValueChange={(v) => {
-                    setSelectedBranch(v as "backend" | "frontend");
-                    setSelectedPath(null); // Reset file path on branch change
-                    navigate({ search: `?b=${v}&p=` }, { replace: true }); // Update URL query params
-                }}
+            <Tabs className="border-r border-muted h-full"
+                  value={selectedBranch} // Controlled component for branch manipulation
+                  onValueChange={(v) => {
+                      setSelectedBranch(v as "backend" | "frontend");
+                      setSelectedPath(null); // Reset file path on branch change
+                      setSearchQuery(''); // Reset search query
+                      navigate({search: `?b=${v}&p=`}, {replace: true}); // Update URL query params
+                  }}
             >
-                <TabsList className="grid grid-cols-2 w-full">
-                    <TabsTrigger value="backend">Backend</TabsTrigger>
-                    <TabsTrigger value="frontend">Frontend</TabsTrigger>
-                </TabsList>
+                <div className="w-full flex flex-col items-center gap-2 p-4 border-b">
+                    <TabsList className="grid grid-cols-2 w-full">
+                        <TabsTrigger value="backend">Backend</TabsTrigger>
+                        <TabsTrigger value="frontend">Frontend</TabsTrigger>
+                    </TabsList>
 
-                <div className="flex gap-2 items-center w-full ">
-                    <RainerFilePicker
-                        branch={selectedBranch}
-                        value={selectedPath ? { branch: selectedBranch, path: selectedPath } : undefined}
-                        onChange={(val) => handleSelectFile(val.path)} // Handle file selection
-                    />
-                    <CreateFileModal branch={selectedBranch} /> {/* Pass selected branch to CreateFileModal */}
+                    <div className="flex gap-2 items-center w-full ">
+                        <RainerFilePicker
+                            branch={selectedBranch}
+                            value={selectedPath ? {branch: selectedBranch, path: selectedPath} : undefined}
+                            onChange={(val) => handleSelectFile(val.path)} // Handle file selection
+                        />
+                        <CreateFileModal branch={selectedBranch}/> {/* Pass selected branch to CreateFileModal */}
+
+                    </div>
+                    <div className="flex w-full items-center gap-2 ">
+                        <BiSearch className={'flex-shrink-0 text-lg'}/>
+                        <input
+                            type="text"
+                            placeholder="Search files..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="border border-muted rounded px-2 py-1 w-full"
+                        />
+                    </div>
                 </div>
+
                     {/* Backend Content */}
                     <TabsContent value="backend" className="h-full w-full">
                         <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
-                                file={{ branch: selectedBranch, path: selectedPath || '' }}
+                                file={{branch: selectedBranch, path: selectedPath || ''}}
                                 tree={getTree?.backend || {}} // Use the backend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
+                                searchQuery={searchQuery} // Pass search query for filtering
                             />
                         </ScrollbarCustom>
                     </TabsContent>
@@ -80,9 +98,10 @@ export default function RainerDashboard() {
                     <TabsContent value="frontend" className="w-full h-full">
                         <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
-                                file={{ branch: selectedBranch, path: selectedPath || '' }}
+                                file={{branch: selectedBranch, path: selectedPath || ''}}
                                 tree={getTree?.frontend || {}} // Use the frontend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
+                                searchQuery={searchQuery} // Pass search query for filtering
                             />
                         </ScrollbarCustom>
                     </TabsContent>
@@ -94,7 +113,7 @@ export default function RainerDashboard() {
                     <div className="h-full flex w-full">
                         <div className="flex-1 flex flex-col">
                             <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4">
-                                <Badge className="text-xl">{selectedBranch}</Badge>
+                            <Badge className="text-xl">{selectedBranch}</Badge>
                                 {selectedPath}
                             </h1>
                             <div className="h-full w-full p-2">
