@@ -1,38 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { RainerFile } from "@/apps/rainer/models";
 import { cn } from "@/lib/utils";
+import {filteredFilesBySearch} from "@/apps/rainer/ui/RainerFileSearch";
 
 export function RainerFileTree({
-  file,
+  path = "",
   tree,
   onSelect,
   searchQuery,
 }: {
-  file: RainerFile;
+  path: string;
   tree: Record<string, string>;
   onSelect: (path: string) => void;
   searchQuery?: string; // Optional search query parameter
 }) {
   const groups = groupByDir(tree);
-  const { path = "" } = file || "";
-
-  // Create a regex from the searchQuery if provided, or use null
-  let regex: RegExp | null = null;
-  if (searchQuery) {
-    try {
-      regex = new RegExp(searchQuery, 'i'); // Validate and create regex
-    } catch {
-      regex = null; // If regex is invalid, fallback to substring search
-    }
-  }
 
   return (
-    <div className="space-y-4 pr-2 ml-4">
+    <div className="w-full space-y-4 pr-2 ml-4">
       {Object.entries(groups).map(([dir, files]) => {
-        // Filter files based on search regex if regex is defined
-        const filteredFiles = regex
-          ? files.filter(file => regex.test(file))
-          : files.filter(file => file.includes(searchQuery || "")); // Fallback to substring search
+        // Use filteredFilesBySearch to filter files
+        const filteredFiles = filteredFilesBySearch(files, searchQuery);
 
         return (
           filteredFiles.length > 0 && (

@@ -21,11 +21,11 @@ export default function RainerDashboard() {
     // Extract query parameters for "branch" and "path"
     const queryParams = new URLSearchParams(search);
     const initialBranch = (queryParams.get("b") as "backend" | "frontend") || "backend"; // Default to "backend"
-    const initialPath = queryParams.get("p") || null; // Initial path can be null
+    const initialPath = queryParams.get("p") || ""; // Initial path can be null
 
     // State for the selected branch and file path
     const [selectedBranch, setSelectedBranch] = useState<"backend" | "frontend">(initialBranch);
-    const [selectedPath, setSelectedPath] = useState<string | null>(initialPath);
+    const [selectedPath, setSelectedPath] = useState<string>(initialPath);
     const [searchQuery, setSearchQuery] = useState<string>(''); // State for search input
     const { getTree } = useRainer(); // Hook to interact with the Rainer API
 
@@ -50,7 +50,7 @@ export default function RainerDashboard() {
                   value={selectedBranch} // Controlled component for branch manipulation
                   onValueChange={(v) => {
                       setSelectedBranch(v as "backend" | "frontend");
-                      setSelectedPath(null); // Reset file path on branch change
+                      setSelectedPath(""); // Reset file path on branch change
                       setSearchQuery(''); // Reset search query
                       navigate({search: `?b=${v}&p=`}, {replace: true}); // Update URL query params
                   }}
@@ -64,7 +64,7 @@ export default function RainerDashboard() {
                     <div className="flex gap-2 items-center w-full ">
                         <RainerFilePicker
                             branch={selectedBranch}
-                            value={selectedPath ? {branch: selectedBranch, path: selectedPath} : undefined}
+                            value={selectedPath}
                             onChange={(val) => handleSelectFile(val.path)} // Handle file selection
                         />
                         <CreateFileModal branch={selectedBranch}/> {/* Pass selected branch to CreateFileModal */}
@@ -86,7 +86,7 @@ export default function RainerDashboard() {
                     <TabsContent value="backend" className="h-full w-full">
                         <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
-                                file={{branch: selectedBranch, path: selectedPath || ''}}
+                                path={selectedPath}
                                 tree={getTree?.backend || {}} // Use the backend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
                                 searchQuery={searchQuery} // Pass search query for filtering
@@ -98,7 +98,7 @@ export default function RainerDashboard() {
                     <TabsContent value="frontend" className="w-full h-full">
                         <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
-                                file={{branch: selectedBranch, path: selectedPath || ''}}
+                                path={selectedPath}
                                 tree={getTree?.frontend || {}} // Use the frontend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
                                 searchQuery={searchQuery} // Pass search query for filtering

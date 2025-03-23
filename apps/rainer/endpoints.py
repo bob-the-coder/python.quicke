@@ -56,7 +56,8 @@ def create_file(request):
         llm_model="YourLLMModel",  # replace with the actual model name
         instructions=instructions,
         response=response,
-        rainer_file={"branch": branch, "path": path}
+        rainer_branch=branch,
+        rainer_path=path,
     )
 
     # ✅ Return the branch and path of the newly created file
@@ -91,7 +92,8 @@ def update_file(request):
         llm_model="YourLLMModel",  # replace with the actual model name
         instructions=instructions,
         response=response,
-        rainer_file={"branch": branch, "path": path}
+        rainer_branch=branch,
+        rainer_path=path,
     )
 
     # ✅ Return the branch and path of the updated file
