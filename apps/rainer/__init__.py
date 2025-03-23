@@ -5,7 +5,7 @@ from typing import Dict
 
 RAINER_OPTIONS = {
     "backend": "apps",
-    "frontend": "frontend/src/apps",
+    "frontend": "frontend/src",
 }
 
 

@@ -17,5 +17,4 @@ export type CodeGenerationData = {
 export type RainerFile = {
   branch: string;
   path: string;
-  to_dict: unknown;
 }

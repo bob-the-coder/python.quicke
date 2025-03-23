@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRainer } from "@/apps/rainer/hooks";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { RainerFilePicker } from "@/apps/rainer/ui/RainerFilePicker";
@@ -45,52 +44,49 @@ export default function RainerDashboard() {
 
     return (
         <div className="grid grid-cols-[300px_1fr] h-screen">
-            <aside className="border-r border-muted p-4 overflow-y-auto">
-                <Tabs
-                    value={selectedBranch} // Controlled component for branch manipulation
-                    onValueChange={(v) => {
-                        setSelectedBranch(v as "backend" | "frontend");
-                        setSelectedPath(null); // Reset file path on branch change
-                        navigate({ search: `?b=${v}&p=` }, { replace: true }); // Update URL query params
-                    }}
-                >
-                    <TabsList className="grid grid-cols-2 w-full">
-                        <TabsTrigger value="backend">Backend</TabsTrigger>
-                        <TabsTrigger value="frontend">Frontend</TabsTrigger>
-                    </TabsList>
+            <Tabs className="border-r border-muted p-4 h-full"
+                value={selectedBranch} // Controlled component for branch manipulation
+                onValueChange={(v) => {
+                    setSelectedBranch(v as "backend" | "frontend");
+                    setSelectedPath(null); // Reset file path on branch change
+                    navigate({ search: `?b=${v}&p=` }, { replace: true }); // Update URL query params
+                }}
+            >
+                <TabsList className="grid grid-cols-2 w-full">
+                    <TabsTrigger value="backend">Backend</TabsTrigger>
+                    <TabsTrigger value="frontend">Frontend</TabsTrigger>
+                </TabsList>
 
-                    <div className="flex gap-2 items-center w-full ">
-                        <RainerFilePicker
-                            branch={selectedBranch}
-                            value={selectedPath ? { branch: selectedBranch, path: selectedPath } : undefined}
-                            onChange={(val) => handleSelectFile(val.path)} // Handle file selection
-                        />
-                        <CreateFileModal branch={selectedBranch} /> {/* Pass selected branch to CreateFileModal */}
-                    </div>
-
+                <div className="flex gap-2 items-center w-full ">
+                    <RainerFilePicker
+                        branch={selectedBranch}
+                        value={selectedPath ? { branch: selectedBranch, path: selectedPath } : undefined}
+                        onChange={(val) => handleSelectFile(val.path)} // Handle file selection
+                    />
+                    <CreateFileModal branch={selectedBranch} /> {/* Pass selected branch to CreateFileModal */}
+                </div>
                     {/* Backend Content */}
-                    <TabsContent value="backend">
-                        <ScrollArea className="h-full pr-2 space-y-6">
+                    <TabsContent value="backend" className="h-full w-full">
+                        <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
                                 file={{ branch: selectedBranch, path: selectedPath || '' }}
                                 tree={getTree?.backend || {}} // Use the backend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
                             />
-                        </ScrollArea>
+                        </ScrollbarCustom>
                     </TabsContent>
 
                     {/* Frontend Content */}
-                    <TabsContent value="frontend">
-                        <ScrollArea className="h-full pr-2 space-y-6">
+                    <TabsContent value="frontend" className="w-full h-full">
+                        <ScrollbarCustom noScrollX={true}>
                             <RainerFileTree
                                 file={{ branch: selectedBranch, path: selectedPath || '' }}
                                 tree={getTree?.frontend || {}} // Use the frontend file tree
                                 onSelect={handleSelectFile} // Pass file selection handler
                             />
-                        </ScrollArea>
+                        </ScrollbarCustom>
                     </TabsContent>
-                </Tabs>
-            </aside>
+            </Tabs>
 
             {/* Main content area */}
             <main className="h-full flex">

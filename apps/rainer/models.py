@@ -3,7 +3,9 @@ from quicke.lib import BaseModel
 from typing import List, Dict, Any
 from django.db import models
 
-@quicke.model()
+@quicke.model({
+    "exclude_fields": ["to_dict", "from_dict"],
+})
 class RainerFile:
     branch: str = ""
     path: str = ""

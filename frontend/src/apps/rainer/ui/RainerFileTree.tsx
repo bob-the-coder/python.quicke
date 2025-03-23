@@ -14,7 +14,7 @@ export function RainerFileTree({
   const { path = "" } = file || {};
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pr-2">
       {Object.entries(groups).map(([dir, files]) => (
         <div key={dir}>
           <div className="font-semibold text-sm mb-1">{dir || "./"}</div>
