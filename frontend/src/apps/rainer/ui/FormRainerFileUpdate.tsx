@@ -8,6 +8,7 @@ import { RiSparkling2Fill } from "react-icons/ri";
 import { RainerFilePicker } from "@/apps/rainer/ui/RainerFilePicker";
 import { Spinner } from "@/components/ui/spinner";
 import {MdAutoFixHigh} from "react-icons/md";
+import { ScrollbarCustom } from "@/components/ScrollbarCustom";
 
 type Props = {
     branch: "backend" | "frontend";
@@ -18,8 +19,10 @@ function FileReferenceList({ files, onRemove }: { files: { branch: string; path:
     return (
         <ul className="list-disc list-inside flex flex-col gap-1 my-4">
             {files.map((file, index) => (
-                <li key={`${file.branch}-${file.path}`} className="flex justify-between items-center">
-                    <span className="text-sm font-mono text-muted-foreground">{`${file.branch}/${file.path}`}</span>
+                <li key={`${file.branch}-${file.path}`} className="flex justify-between items-center gap-4">
+                    <span className="text-sm font-mono text-muted-foreground overflow-hidden text-ellipsis">
+                        {`${file.branch}/${file.path}`}
+                    </span>
                     <Button size="xs" variant="destructive" onClick={() => onRemove(index)}>Remove</Button>
                 </li>
             ))}
@@ -60,32 +63,36 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
     };
 
     return (
-        <form onSubmit={handleSave} className="flex flex-col gap-4 h-full w-full">
+        <form onSubmit={handleSave} className="flex flex-col h-full w-full">
             <b className="typo-h1 border-b p-4 flex items-center gap-4"><MdAutoFixHigh/>Refactor</b>
-            <div className="flex flex-col gap-2 px-4">
-                <div className="grid gap-1">
-                    <Label htmlFor="instructions-textarea" className="text-sm">Instructions</Label>
-                    <textarea
-                        id="instructions-textarea"
-                        className="h-64 p-4 font-mono text-sm border rounded-md"
-                        placeholder="Write your custom instruction here"
-                        value={instructions}
-                        onChange={(e) => setInstructions(e.target.value)}
-                    />
-                </div>
-                <div className="flex flex-col gap-4 mt-2">
-                    <div>
-                        <b className="font-semibold text-sm">Backend References</b>
-                        <FileReferenceList files={getFileReferencesByBranch("backend")} onRemove={handleRemoveFile}/>
-                        <RainerFilePicker branch="backend" onChange={handleFileChange}/>
+            <ScrollbarCustom noScrollX={true}>
+                <div className="flex flex-col gap-2 p-4">
+                    <div className="grid gap-1">
+                        <Label htmlFor="instructions-textarea" className="text-sm">Instructions</Label>
+                        <textarea
+                            id="instructions-textarea"
+                            className="h-64 p-4 font-mono text-sm border rounded-md"
+                            placeholder="Write your custom instruction here"
+                            value={instructions}
+                            onChange={(e) => setInstructions(e.target.value)}
+                        />
                     </div>
-                    <div>
-                        <b className="font-semibold text-sm">Frontend References</b>
-                        <FileReferenceList files={getFileReferencesByBranch("frontend")} onRemove={handleRemoveFile}/>
-                        <RainerFilePicker branch="frontend" onChange={handleFileChange}/>
+                    <div className="flex flex-col gap-4 mt-2">
+                        <div>
+                            <b className="font-semibold text-sm">Backend References</b>
+                            <FileReferenceList files={getFileReferencesByBranch("backend")}
+                                               onRemove={handleRemoveFile}/>
+                            <RainerFilePicker branch="backend" onChange={handleFileChange}/>
+                        </div>
+                        <div>
+                            <b className="font-semibold text-sm">Frontend References</b>
+                            <FileReferenceList files={getFileReferencesByBranch("frontend")}
+                                               onRemove={handleRemoveFile}/>
+                            <RainerFilePicker branch="frontend" onChange={handleFileChange}/>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </ScrollbarCustom>
             <div className="p-4 border-t">
                 <Button type="submit" disabled={!instructions || updateFile.isPending}>
                     Refactor {updateFile.isPending ? <Spinner/> : <RiSparkling2Fill/>}
