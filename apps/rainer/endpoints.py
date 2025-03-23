@@ -34,6 +34,8 @@ def get_file_contents(request):
 })
 def create_file(request):
     refactor = json.loads(request.body)
+    if not refactor.get("content", ""):
+        return JsonResponse({}, status=201)
 
     reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
     instructions = build_refactor_instructions(refactor, "create")
@@ -54,6 +56,8 @@ def create_file(request):
 })
 def update_file(request):
     refactor = json.loads(request.body)
+    if not refactor.get("content", ""):
+        return JsonResponse({}, status=201)
 
     reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
     instructions = build_refactor_instructions(refactor, "update")

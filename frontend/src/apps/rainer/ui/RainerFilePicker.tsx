@@ -30,15 +30,14 @@ interface FolderNode {
   children: Record<string, FolderNode>;
 }
 
-function buildTree(paths: string[], branch: "backend" | "frontend"): FolderNode {
+const buildTree = (paths: string[], branch: "backend" | "frontend"): FolderNode => {
   const root: FolderNode = { files: [], children: {} };
 
-  for (const path of paths) {
+  paths.forEach(path => {
     const parts = path.split("/");
     let current = root;
 
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
+    parts.forEach((part, i) => {
       const isFile = i === parts.length - 1;
 
       if (isFile) {
@@ -49,31 +48,24 @@ function buildTree(paths: string[], branch: "backend" | "frontend"): FolderNode 
         }
         current = current.children[part];
       }
-    }
-  }
+    });
+  });
 
   return root;
-}
+};
 
-function renderTree(
-  node: FolderNode,
-  prefix: string = ""
-): React.ReactNode[] {
+const renderTree = (node: FolderNode, prefix: string = ""): React.ReactNode[] => {
   const entries: React.ReactNode[] = [];
 
-  for (const file of node.files) {
+  node.files.forEach(file => {
     entries.push(
-      <SelectItem
-        key={file.path}
-        value={file.path}
-        className="pl-6 font-mono text-xs"
-      >
+      <SelectItem key={file.path} value={file.path} className="pl-6 font-mono text-xs">
         {file.path.split("/").pop()}
       </SelectItem>
     );
-  }
+  });
 
-  for (const [dirName, subNode] of Object.entries(node.children)) {
+  Object.entries(node.children).forEach(([dirName, subNode]) => {
     const fullPath = prefix ? `${prefix}/${dirName}` : dirName;
 
     entries.push(
@@ -82,12 +74,12 @@ function renderTree(
         {renderTree(subNode, fullPath)}
       </SelectGroup>
     );
-  }
+  });
 
   return entries;
-}
+};
 
-export function RainerFilePicker({ branch, value, onChange, label = "" }: Props) {
+export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props) => {
   const { getTree } = useRainer();
 
   const filePaths = React.useMemo(() => {
@@ -114,4 +106,4 @@ export function RainerFilePicker({ branch, value, onChange, label = "" }: Props)
       </Select>
     </div>
   );
-}
+};

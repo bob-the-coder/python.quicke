@@ -6,11 +6,3 @@ export type RainerTree = {
 }
 
 export type RefactorRainerFile = RainerFile & {content: string; file_references: RainerFile[]};
-
-export type Vehicle = {
-    make: string;
-    model: string;
-    year: number;
-    mileage?: number;
-    vin?: string;
-};

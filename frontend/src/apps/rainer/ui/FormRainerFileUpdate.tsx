@@ -35,10 +35,9 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
 
     const handleSave = async (e: FormEvent) => {
         e.preventDefault();
-        const localText = `${instructions}\n\nFile References:\n${fileReferences.map(file => `${file.branch}/${file.path}`).join("\n")}`;
 
         updateFile.mutate(
-            { branch, path, content: localText, file_references: fileReferences },
+            { branch, path, content: instructions, file_references: fileReferences },
         );
     };
 
@@ -61,19 +60,19 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
     };
 
     return (
-        <form onSubmit={handleSave} className="flex flex-col gap-4">
-            <b className="typo-h1 border-b p-4 flex items-center gap-4"><MdAutoFixHigh />Refactor</b>
+        <form onSubmit={handleSave} className="flex flex-col gap-4 h-full w-full">
+            <b className="typo-h1 border-b p-4 flex items-center gap-4"><MdAutoFixHigh/>Refactor</b>
             <div className="flex flex-col gap-2 px-4">
-            <div className="grid gap-1">
-                <Label htmlFor="instructions-textarea" className="text-sm">Instructions</Label>
-                <textarea
-                    id="instructions-textarea"
-                    className="h-64 p-4 font-mono text-sm border rounded-md"
-                    placeholder="Write your custom instruction here"
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                />
-            </div>
+                <div className="grid gap-1">
+                    <Label htmlFor="instructions-textarea" className="text-sm">Instructions</Label>
+                    <textarea
+                        id="instructions-textarea"
+                        className="h-64 p-4 font-mono text-sm border rounded-md"
+                        placeholder="Write your custom instruction here"
+                        value={instructions}
+                        onChange={(e) => setInstructions(e.target.value)}
+                    />
+                </div>
                 <div className="flex flex-col gap-4 mt-2">
                     <div>
                         <b className="font-semibold text-sm">Backend References</b>
@@ -86,11 +85,11 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
                         <RainerFilePicker branch="frontend" onChange={handleFileChange}/>
                     </div>
                 </div>
-                <div className="flex justify-end">
-                <Button type="submit" disabled={updateFile.isPending}>
+            </div>
+            <div className="p-4 border-t">
+                <Button type="submit" disabled={!instructions || updateFile.isPending}>
                     Refactor {updateFile.isPending ? <Spinner/> : <RiSparkling2Fill/>}
                 </Button>
-            </div>
             </div>
         </form>
     );
