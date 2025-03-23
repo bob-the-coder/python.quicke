@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { RainerFile } from "@/apps/rainer/models";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export function RainerFileTree({
   file,
@@ -16,15 +16,23 @@ export function RainerFileTree({
   const groups = groupByDir(tree);
   const { path = "" } = file || "";
 
-  const regex = searchQuery ? new RegExp(searchQuery, 'i') : null;
+  // Create a regex from the searchQuery if provided, or use null
+  let regex: RegExp | null = null;
+  if (searchQuery) {
+    try {
+      regex = new RegExp(searchQuery, 'i'); // Validate and create regex
+    } catch {
+      regex = null; // If regex is invalid, fallback to substring search
+    }
+  }
 
   return (
     <div className="space-y-4 pr-2 ml-4">
       {Object.entries(groups).map(([dir, files]) => {
-        // Filter files based on search regex
-        const filteredFiles = regex 
-          ? files.filter(file => regex.test(file)) 
-          : files;
+        // Filter files based on search regex if regex is defined
+        const filteredFiles = regex
+          ? files.filter(file => regex.test(file))
+          : files.filter(file => file.includes(searchQuery || "")); // Fallback to substring search
 
         return (
           filteredFiles.length > 0 && (
@@ -40,8 +48,8 @@ export function RainerFileTree({
                       key={file}
                       variant="ghost"
                       className={cn(
-                          "w-full pr-12 justify-start font-geist-mono overflow-hidden text-ellipsis",
-                          isActive ? 'border text-foreground font-bold' : 'text-xs',
+                        "w-full pr-12 justify-start font-geist-mono overflow-hidden text-ellipsis",
+                        isActive ? 'border text-foreground font-bold' : 'text-xs',
                       )}
                       onClick={() => onSelect(itemPath)}
                     >
