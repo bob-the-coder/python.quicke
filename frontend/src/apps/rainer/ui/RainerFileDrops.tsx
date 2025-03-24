@@ -31,7 +31,7 @@ const RainerFileDrops: React.FC<RainerFileDropsProps> = ({ file }) => {
                     className="flex-center relative h-12 w-12"
                 >
                     <img
-                        src={`/img/${group}.png`}
+                        src={`/img/thnt/${group}.webp`}
                         alt={`${group} icon`}
                         className="h-10 w-10 object-contain"
                     />

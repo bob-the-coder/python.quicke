@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class OpenAIProvider:
     def __init__(self, model):
         """Initialize OpenAI API client."""
-        self.model = model or "gpt-4o-mini"
+        self.model = model or "gpt-4o"
         self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
 
     def send_instructions(self, instructions: List[str]):

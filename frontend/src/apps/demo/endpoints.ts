@@ -1,6 +1,6 @@
 // Auto-generated TypeScript API functions
 
-import { fetchJSON } from '../../fetchJSON';
+import { fetchJSON } from '../../fetchJSON.ts';
 
 import { Demo, DemoBasic } from './models';
 
@@ -16,7 +16,7 @@ export async function endpoint_create_demo(
 export async function endpoint_delete_demo(
 	params: { id: string }
 ): Promise<void> {
-	return fetchJSON(`demo/${params.id} ` , {
+	return fetchJSON(`demo/${params.id}` , {
 		method: "DELETE"
 	});
 }
@@ -37,7 +37,7 @@ export async function endpoint_retrieve_demo(
 	params: { id: string },
 	query?: { name?: string, sort?: string }
 ): Promise<Demo> {
-	return fetchJSON(`demo/${params.id} `  + (query ? '?' + new URLSearchParams(query).toString() : ''), {
+	return fetchJSON(`demo/${params.id}`  + (query ? '?' + new URLSearchParams(query).toString() : ''), {
 		method: "GET"
 	});
 }
@@ -46,7 +46,7 @@ export async function endpoint_update_demo(
 	params: { id: string },
 	body: Demo
 ): Promise<Demo> {
-	return fetchJSON(`demo/${params.id} ` , {
+	return fetchJSON(`demo/${params.id}` , {
 		method: "PUT",
 		body: JSON.stringify(body)
 	});

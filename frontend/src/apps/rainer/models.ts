@@ -1,7 +1,7 @@
 // Auto-generated TypeScript models
 
 
-export type CodeGenerationData = {
+export interface CodeGenerationData {
   id: string;
   name: string;
   created_at: Date;
@@ -15,7 +15,7 @@ export type CodeGenerationData = {
   drop_number: number;
 }
 
-export type RainerFile = {
+export interface RainerFile {
   branch: string;
   path: string;
 }

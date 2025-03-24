@@ -1,7 +1,7 @@
 // Auto-generated TypeScript models
 
 
-export type Demo = {
+export interface Demo {
   id: string;
   name: string;
   created_at: Date;
@@ -9,5 +9,5 @@ export type Demo = {
   deleted_at: Date;
 }
 
-export type DemoBasic = {
+export interface DemoBasic {
 }

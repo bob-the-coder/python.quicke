@@ -1,7 +1,7 @@
 // Auto-generated TypeScript models
 
 import { CommandArgument } from './types';
-export type CommandTemplate = {
+export interface CommandTemplate {
   items: CommandTemplateItem[];
   id: string;
   created_at: Date;
@@ -11,7 +11,7 @@ export type CommandTemplate = {
   arguments: CommandArgument[];
 }
 
-export type CommandTemplateItem = {
+export interface CommandTemplateItem {
   id: string;
   name: string;
   created_at: Date;
@@ -23,7 +23,7 @@ export type CommandTemplateItem = {
   order: number;
 }
 
-export type Instruction = {
+export interface Instruction {
   commandtemplateitem: CommandTemplateItem[];
   id: string;
   name: string;
