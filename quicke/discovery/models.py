@@ -118,19 +118,18 @@ def map_python_class(map_params) -> Dict[str, str]:
     type_hints = get_type_hints(model_cls)
 
     # Extract class attributes (including those without type hints)
-    for field_name, field_value in inspect.getmembers(model_cls):
+    for field_name, field_type in type_hints.items():
         if field_name == "__quicke_model_metadata__":
             continue  # Skip metadata field added by decorator
 
-        if field_name.startswith("__") or inspect.ismethod(field_value):
+        if field_name.startswith("__"):
             continue  # Skip dunder methods and class methods
 
         if field_name in exclude_fields:
             continue  # Skip excluded fields
 
         field_mappings[field_name] = field_type_from_metadata(metadata, field_name) or \
-                                     map_python_type(type_hints[field_name]) if field_name in type_hints else \
-            infer_type_from_value(field_value)
+                                     map_python_type(type_hints[field_name])
 
     return field_mappings
 

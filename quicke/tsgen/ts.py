@@ -6,7 +6,7 @@ import os
 
 TS_MODELS_FILENAME = "models.ts"
 TS_ENDPOINTS_FILENAME = "endpoints.ts"
-TS_FETCH_JSON_FILENAME = "fetchJSON"
+TS_FETCH_JSON_FILENAME = "fetchJSON.ts"
 TS_OUTPUT_DIR = getattr(settings, "QUICKE_TS_OUTPUT_DIR", "")
 
 
@@ -40,7 +40,7 @@ def generate_typescript():
 
 def generate_fetch_json(output_dir: str):
     """Generate the fetchJSON utility file in the base output directory."""
-    ts_path = os.path.join(output_dir, f"{TS_FETCH_JSON_FILENAME}.ts")
+    ts_path = os.path.join(output_dir, TS_FETCH_JSON_FILENAME)
     write_ts_file(ts_path, FETCH_JSON)
 
 
@@ -55,7 +55,7 @@ def generate_typescript_models(models: dict, model_imports: list, output_dir: st
     ts_code.append(generate_ts_imports(model_imports))
 
     for model_name, fields in models.items():
-        ts_code.append(f"export type {model_name} = {{")
+        ts_code.append(f"export interface {model_name} {{")
         for field_name, field_type in fields.items():
             ts_code.append(f"  {field_name}: {field_type};")  # No default values
         ts_code.append("}\n")
@@ -100,7 +100,7 @@ def generate_typescript_endpoints(endpoints: dict, endpoint_imports: list, outpu
         query_str = " + (query ? '?' + new URLSearchParams(query).toString() : '')" if query_params else ""
 
         # Construct URL with path params
-        formatted_ts_url = f"`{ts_url.replace('{', '${params.')} ` " if route_params else f"'{ts_url}'"
+        formatted_ts_url = f"`{ts_url.replace('{', '${params.')}` " if route_params else f"'{ts_url}'"
 
         # Generate function
         ts_code.append(f"export async function endpoint_{endpoint_name}({param_str}): Promise<{response_type}> {{")
