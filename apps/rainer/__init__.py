@@ -8,18 +8,49 @@ RAINER_OPTIONS = {
     "frontend": "frontend/src",
 }
 
+EXCLUDED_DIRS = {
+    "__pycache__",
+    ".idea",
+    ".vscode",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".git",
+    ".venv",
+    "env",
+    "venv",
+    "node_modules",
+    "migrations",
+}
 
-# 1. Backend-specific tree builder
+EXCLUDED_FILE_EXTENSIONS = {
+    ".pyc",
+    ".pyo",
+}
+
+EXCLUDED_FILE_NAMES = {
+    ".DS_Store",
+    "Thumbs.db",
+}
+
 def build_backend_tree(base_dir: str) -> Dict[str, str]:
     tree = {}
     abs_base = os.path.abspath(base_dir)
-    for entry in os.scandir(abs_base):
-        if entry.is_dir() and entry.name != "__pycache__":
-            for target_file in ("endpoints.py", "models.py", "instructions.py", "admin.py"):
-                target_path = os.path.join(entry.path, target_file)
-                if os.path.isfile(target_path):
-                    rel_path = os.path.relpath(target_path, abs_base).replace("\\", "/")
-                    tree[rel_path] = target_path
+
+    for root, dirs, files in os.walk(abs_base):
+        # Skip excluded directories
+        dirs[:] = [d for d in dirs if d not in EXCLUDED_DIRS]
+
+        for file in files:
+            if (
+                file in EXCLUDED_FILE_NAMES
+                or os.path.splitext(file)[1] in EXCLUDED_FILE_EXTENSIONS
+            ):
+                continue
+
+            full_path = os.path.join(root, file)
+            rel_path = os.path.relpath(full_path, abs_base).replace("\\", "/")
+            tree[rel_path] = full_path
+
     return tree
 
 

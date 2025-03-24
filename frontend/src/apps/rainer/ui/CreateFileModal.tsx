@@ -13,9 +13,10 @@ export function CreateFileModal({ branch = "backend" as "backend" | "frontend" }
 
     return (
         <>
-            {/* Magic Button */}
-            <Button onClick={handleOpen} size={'icon'}>
-                <RiAddFill className="" />
+            {/* Simplified Button */}
+            <Button onClick={handleOpen}>
+                Add File
+                <RiAddFill />
             </Button>
 
             {/* Modal */}

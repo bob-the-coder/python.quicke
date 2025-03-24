@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {filteredFilesBySearch} from "@/apps/rainer/ui/RainerFileSearch";
+import { filteredFilesBySearch } from "@/apps/rainer/ui/RainerFileSearch";
 
 export function RainerFileTree({
   path = "",
@@ -18,7 +18,6 @@ export function RainerFileTree({
   return (
     <div className="w-full space-y-4 pr-2 ml-4">
       {Object.entries(groups).map(([dir, files]) => {
-        // Use filteredFilesBySearch to filter files
         const filteredFiles = filteredFilesBySearch(files, searchQuery);
 
         return (
@@ -33,10 +32,10 @@ export function RainerFileTree({
                   return (
                     <Button
                       key={file}
-                      variant="ghost"
+                      variant={isActive ? "default" : "ghost"}
                       className={cn(
                         "w-full pr-12 justify-start font-geist-mono overflow-hidden text-ellipsis",
-                        isActive ? 'border text-foreground font-bold' : 'text-xs',
+                        isActive ? 'font-bold' : 'text-xs',
                       )}
                       onClick={() => onSelect(itemPath)}
                     >

@@ -1,7 +1,5 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { endpoint_get_file_drops } from '../endpoints';
-import { FileDrops } from '../types';
 import { RainerFile } from '../models';
 import { Button } from '@/components/ui/button';
 
@@ -10,18 +8,18 @@ interface RainerFileDropsProps {
 }
 
 const RainerFileDrops: React.FC<RainerFileDropsProps> = ({ file }) => {
-    const { data: fileDrops, isLoading, error } = useQuery<FileDrops, Error>({
+    const { data: fileDrops, isLoading, error } = useQuery({
         queryKey: ['fileDrops', file],
         queryFn: () => endpoint_get_file_drops(file)
     });
 
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (isLoading || !fileDrops) {
+        return null;
     }
 
     if (error) {
         console.error('Error fetching file drops:', error);
-        return <div>Error loading file drops</div>;
+        return "error";
     }
 
     return (
@@ -30,14 +28,14 @@ const RainerFileDrops: React.FC<RainerFileDropsProps> = ({ file }) => {
                 <Button key={group}
                     variant="outline" 
                     size="icon" 
-                    className="flex-center relative font-geist-mono"
+                    className="flex-center relative h-12 w-12"
                 >
                     <img
                         src={`/img/${group}.png`}
                         alt={`${group} icon`}
-                        className="h-8 w-8 object-contain"
+                        className="h-10 w-10 object-contain"
                     />
-                    <div className="absolute right-0 bottom-0 px-1 z-2" title={`${group}.png`}>{count}</div>
+                    <div className="absolute right-0 bottom-0 px-1 z-2 font-geist-mono" title={`${group}.png`}>{count}</div>
                 </Button>
             ))}
         </div>

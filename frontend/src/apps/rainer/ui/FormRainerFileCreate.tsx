@@ -99,6 +99,21 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
         return fileReferences.filter(file => file.branch === branch); // Return filtered references for the specified branch
     };
 
+    // Keyboard shortcut handler for submitting the form
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault(); // Prevent default save action
+            handleSave(e as unknown as FormEvent); // Invoke the save handler
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown); // Add event listener for keydown
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown); // Cleanup event listener on unmount
+        };
+    }, []);
+
     // Main render function for the component
     return (
         <form onSubmit={handleSave} className="flex flex-col h-full w-full"> {/* Form submission handler */}
