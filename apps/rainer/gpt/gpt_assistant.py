@@ -1,13 +1,14 @@
 import json
 from typing import List, Optional
 
+from ..settings import DEFAULT_GPT_MODEL
 from ..gpt.gpt_assistant_base import OpenAIAssistantProvider
 from ..models import CodeGenerationData
 from .. import *
 
 
 class GPTAssistantAPI:
-    def __init__(self, model: str = None):
+    def __init__(self, model: str = DEFAULT_GPT_MODEL):
         self.assistant_provider = OpenAIAssistantProvider(model=model)
 
     def _send_request(self, content: str) -> Optional[str]:
@@ -16,7 +17,13 @@ class GPTAssistantAPI:
             role="user",
             content=content
         )
-        return response.get("content", "")
+
+        if hasattr(response, "content"):
+            return response.content
+        elif isinstance(response, Dict):
+            return response.get("content", "")
+        else:
+            return ""
 
     def handle_file(self, rainer_file: RainerFile, instruction: str) -> Optional[CodeGenerationData]:
         branch, path = unpack_file_ref(rainer_file)
@@ -60,14 +67,12 @@ class GPTAssistantAPI:
         if not file_contents:
             return
 
-        content = f"Update the following file definition:\n\n{file_contents}\n\nInstruction:\n{instruction}"
+        raw_response = self._send_request(instruction)
+        return raw_response or ""
 
-        # Send the message without expecting a response
-        self.assistant_provider.client.beta.threads.messages.create(
-            thread_id=self.assistant_provider.config["thread_id"],
-            role="user",
-            content=content
-        )
+
+def get_gpt_assistant(model: Optional[str] = DEFAULT_GPT_MODEL):
+    return GPTAssistantAPI(model=model)
 
 
 # Example Usage

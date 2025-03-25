@@ -9,9 +9,16 @@ from django.conf import settings
 from ..assistant_prompts import COMPREHENSIVE_ASSISTANT_PROMPT
 from ..settings import DEFAULT_GPT_MODEL
 
+# Get the absolute path to the project root directory
+project_root = settings.BASE_DIR if hasattr(settings, 'BASE_DIR') else ""
+if not project_root:
+    raise ValueError("You need to set BASE_DIR environment variable in django settings")
+
+# Join the project root directory with the JSON file path
+CONFIG_FILE = os.path.join(project_root, "openai_config.json")
 logger = logging.getLogger(__name__)
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "openai_config.json")
+
 
 class OpenAIAssistantProvider:
     def __init__(self, model: Optional[str] = None):
@@ -21,8 +28,12 @@ class OpenAIAssistantProvider:
 
     def _load_or_create_config(self):
         if os.path.exists(CONFIG_FILE):
-            with open(CONFIG_FILE, "r") as f:
-                config = json.load(f)
+            try:
+                with open(CONFIG_FILE, "r") as f:
+                    config = json.load(f)
+            except Exception as e:
+                logger.error(f"Failed to load config: {e}")
+                config = {}
         else:
             config = {}
 
@@ -59,5 +70,3 @@ class OpenAIAssistantProvider:
         with open(CONFIG_FILE, "w") as f:
             json.dump(config, f, indent=4)
 
-def get_gpt_assistant(model: Optional[str] = None):
-    return OpenAIAssistantProvider(model=model)
