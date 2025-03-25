@@ -18,20 +18,22 @@ class GPTAssistantAPI:
         self.threads.messages.create(
             thread_id=self.thread_id,
             role="user",
-            content=content
+            content=content,
         )
 
     def run(self):
         self.threads.runs.create_and_poll(
             assistant_id=self.assistant_id,
             thread_id=self.thread_id,
+            max_prompt_tokens=30_000,
+            max_completion_tokens=30_000,
         )
 
     def get_last_message(self) -> str:
         messages = self.threads.messages.list(
             thread_id=self.thread_id,
             order="desc",
-            limit=1
+            limit=1,
         )
         for message in messages.data:
             if hasattr(message, "role") and message.role == "assistant":
