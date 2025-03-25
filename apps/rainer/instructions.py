@@ -1,22 +1,10 @@
-from typing import TypedDict, Tuple, List
+from typing import List
 
 from apps import rainer
-from apps.rainer import get_file_path, get_file_contents
+from apps.rainer import get_file_path, get_file_contents, unpack_file_ref, RainerFile
 
 
-class FileRef(TypedDict):
-    branch: str
-    path: str
-
-
-def unpack_file_ref(file_ref: FileRef) -> Tuple[str, str]:
-    branch = file_ref.get("branch", "")
-    path = file_ref.get("path", "")
-
-    return branch, path
-
-
-def build_file_ref_def(file_ref: FileRef) -> str:
+def build_file_ref_def(file_ref: RainerFile) -> str:
     branch, path = unpack_file_ref(file_ref)
     abs_path = get_file_path(branch, path)
     contents = get_file_contents(branch, path)
@@ -29,24 +17,24 @@ FILE REFERENCE CONTENT: ```
 ```
 """
 
-def build_use_file_ref(file_ref: FileRef) -> str:
+def build_use_file_ref(file_ref: RainerFile) -> str:
     branch, path = unpack_file_ref(file_ref)
     return f"USE FILE REFERENCE - BRANCH: {branch} | PATH: {path}"
 
 
-class RefactorFile(TypedDict):
+class RefactorFile(RainerFile):
     branch: str
     path: str
     content: str
-    file_references: List[FileRef]
+    file_references: List[RainerFile]
 
-def get_file_ref_definitions(file_references: List[FileRef]) -> List[str]:
+def get_file_ref_definitions(file_references: List[RainerFile]) -> List[str]:
     return [
         build_file_ref_def(reference)
         for reference in file_references
     ]
 
-def get_file_ref_usage(file_references: List[FileRef]) -> List[str]:
+def get_file_ref_usage(file_references: List[RainerFile]) -> List[str]:
     return [
         build_use_file_ref(reference)
         for reference in file_references
@@ -54,7 +42,7 @@ def get_file_ref_usage(file_references: List[FileRef]) -> List[str]:
 
 
 def build_refactor_instructions(refactor: RefactorFile, action: str = "update") -> List[str]:
-    file_references = refactor.get("file_references", [])
+    file_references = refactor.file_references or []
     refactor_instructions = make_create_target_instructions(refactor) if action == "create" else \
                             make_update_target_instructions(refactor)
 
@@ -79,7 +67,7 @@ def make_update_target_instructions(refactor: RefactorFile) -> List[str]:
     REFACTOR FILE CONTENTS {branch} {path}
     ```{refactor_target_contents}"""
 
-    refactor_changes = refactor.get("content", "")
+    refactor_changes = refactor.content or ""
     refactor_instruction = f"""
     REFACTOR INSTRUCTIONS
     ```{refactor_changes}```"""
@@ -97,7 +85,7 @@ def make_create_target_instructions(refactor: RefactorFile) -> [str]:
     CREATE FILE {branch} {path}
     CREATE FILE PATH {abs_path}"""
 
-    refactor_changes = refactor.get("content", "")
+    refactor_changes = refactor.content or ""
     refactor_instruction = f"""
     CREATE FILE INSTRUCTIONS
     ```{refactor_changes}```"""

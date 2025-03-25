@@ -1,36 +1,16 @@
-# rainer_utils.py
-
 import os
-from typing import Dict
+from typing import Dict, Tuple
 
-RAINER_OPTIONS = {
-    "backend": "apps",
-    "frontend": "frontend/src",
-}
+from apps.rainer.models import RainerFile
+from apps.rainer.settings import RAINER_OPTIONS, EXCLUDED_FILE_EXTENSIONS, EXCLUDED_FILE_NAMES, EXCLUDED_DIRS
 
-EXCLUDED_DIRS = {
-    "__pycache__",
-    ".idea",
-    ".vscode",
-    ".pytest_cache",
-    ".mypy_cache",
-    ".git",
-    ".venv",
-    "env",
-    "venv",
-    "node_modules",
-    "migrations",
-}
 
-EXCLUDED_FILE_EXTENSIONS = {
-    ".pyc",
-    ".pyo",
-}
 
-EXCLUDED_FILE_NAMES = {
-    ".DS_Store",
-    "Thumbs.db",
-}
+def unpack_file_ref(file_ref: RainerFile) -> Tuple[str, str]:
+    branch = file_ref.branch or ""
+    path = file_ref.path or ""
+
+    return branch, path
 
 def build_backend_tree(base_dir: str) -> Dict[str, str]:
     tree = {}
@@ -87,7 +67,6 @@ def ensure_migrations(app_name = "rainer") -> None:
     from django.db import connections
     from django.core.management import call_command
     from django.db.migrations.executor import MigrationExecutor
-    from django.db.migrations.loader import MigrationLoader
 
 
     """Ensure that migrations are created and applied for the given Django app."""
@@ -130,8 +109,6 @@ def refresh_trees() -> None:
     global trees
     ensure_migrations()
     trees = build_rainer_trees()
-
-
 
 
 # 4. File content reader

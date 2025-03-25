@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
 from apps import rainer
-from .gpt import get_gpt
+from apps.rainer.gpt.gpt import get_gpt
 from .instructions import build_refactor_instructions, unpack_file_ref, get_file_ref_definitions
 from .models import CodeGenerationData, RainerFile
 from django.db import models
