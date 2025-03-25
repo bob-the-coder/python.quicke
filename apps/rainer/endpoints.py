@@ -2,8 +2,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
-from apps import rainer
-from apps.rainer.gpt.gpt import get_gpt
+from . import *
+from .gpt.gpt import get_gpt
 from .instructions import build_refactor_instructions, unpack_file_ref, get_file_ref_definitions
 from .models import CodeGenerationData, RainerFile
 from django.db import models
@@ -14,7 +14,7 @@ from django.db import models
     "imports": [("./types", "RainerTree")]
 })
 def get_rainer_tree(request):
-    return JsonResponse(rainer.trees, safe=False)
+    return JsonResponse(trees, safe=False)
 
 # 📁 Endpoint to get the contents of a specific file
 @quicke.endpoint("rainer/file", {
@@ -24,7 +24,7 @@ def get_rainer_tree(request):
 def get_file_contents(request):
     branch = request.GET.get("branch", "")
     path = request.GET.get("path", "")
-    return JsonResponse(rainer.get_file_contents(branch, path), safe=False)
+    return JsonResponse(get_file_contents(branch, path), safe=False)
 
 # ✍️ Endpoint to create a new file
 @csrf_exempt
@@ -44,7 +44,7 @@ def create_file(request):
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
     branch, path = unpack_file_ref(refactor)
-    rainer.create_file(branch, path, f"{response}\n")
+    create_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
@@ -75,7 +75,7 @@ def update_file(request):
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
     branch, path = unpack_file_ref(refactor)
-    rainer.update_file(branch, path, f"{response}\n")
+    update_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
@@ -98,7 +98,7 @@ def update_file(request):
 def delete_file(request):
     branch = request.GET.get("branch", "")
     path = request.GET.get("path", "")
-    rainer.delete_file(branch, path)
+    delete_file(branch, path)
     return JsonResponse({}, status=204)
 
 # 📁 Endpoint to create a new directory
@@ -112,7 +112,7 @@ def create_directory(request):
     data = json.loads(request.body)
     branch = data["branch"]
     path = data["path"]
-    rainer.create_directory(branch, path)
+    create_directory(branch, path)
     return JsonResponse({}, status=201)
 
 # 🗑️ Endpoint to delete a directory
@@ -125,7 +125,7 @@ def create_directory(request):
 def delete_directory(request):
     branch = request.GET.get("branch", "")
     path = request.GET.get("path", "")
-    rainer.delete_directory(branch, path)
+    delete_directory(branch, path)
     return JsonResponse({}, status=204)
 
 

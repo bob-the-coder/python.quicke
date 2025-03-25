@@ -1,9 +1,8 @@
 import os
 from typing import Dict, Tuple
 
-from apps.rainer.models import RainerFile
-from apps.rainer.settings import RAINER_OPTIONS, EXCLUDED_FILE_EXTENSIONS, EXCLUDED_FILE_NAMES, EXCLUDED_DIRS
-
+from .types import RainerFile
+from .settings import RAINER_OPTIONS, EXCLUDED_FILE_EXTENSIONS, EXCLUDED_FILE_NAMES, EXCLUDED_DIRS
 
 
 def unpack_file_ref(file_ref: RainerFile) -> Tuple[str, str]:

@@ -1,9 +1,9 @@
 import json
 from typing import List, Optional
 
-from apps.rainer.gpt.gpt_assistant_base import OpenAIAssistantProvider
-from apps.rainer.models import CodeGenerationData, RainerFile
-import apps.rainer as rainer
+from ..gpt.gpt_assistant_base import OpenAIAssistantProvider
+from ..models import CodeGenerationData
+from .. import *
 
 
 class GPTAssistantAPI:
@@ -19,8 +19,8 @@ class GPTAssistantAPI:
         return response.get("content", "")
 
     def handle_file(self, rainer_file: RainerFile, instruction: str) -> Optional[CodeGenerationData]:
-        branch, path = rainer.unpack_file_ref(rainer_file)
-        file_contents = rainer.get_file_contents(branch, path)
+        branch, path = unpack_file_ref(rainer_file)
+        file_contents = get_file_contents(branch, path)
         if not file_contents:
             return None
 
@@ -38,8 +38,8 @@ class GPTAssistantAPI:
         return None
 
     def find_references(self, rainer_file: RainerFile, instruction: str) -> List[RainerFile]:
-        branch, path = rainer.unpack_file_ref(rainer_file)
-        file_contents = rainer.get_file_contents(branch, path)
+        branch, path = unpack_file_ref(rainer_file)
+        file_contents = get_file_contents(branch, path)
         if not file_contents:
             return []
 
@@ -55,8 +55,8 @@ class GPTAssistantAPI:
 
     def update_file_definition(self, rainer_file: RainerFile, instruction: str) -> None:
         """Add a message to the thread without running it."""
-        branch, path = rainer.unpack_file_ref(rainer_file)
-        file_contents = rainer.get_file_contents(branch, path)
+        branch, path = unpack_file_ref(rainer_file)
+        file_contents = get_file_contents(branch, path)
         if not file_contents:
             return
 

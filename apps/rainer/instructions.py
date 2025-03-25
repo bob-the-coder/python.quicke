@@ -1,8 +1,6 @@
 from typing import List
 
-from apps import rainer
-from apps.rainer import get_file_path, get_file_contents, unpack_file_ref, RainerFile
-
+from . import *
 
 def build_file_ref_def(file_ref: RainerFile) -> str:
     branch, path = unpack_file_ref(file_ref)
@@ -60,7 +58,7 @@ def make_update_target_instructions(refactor: RefactorFile) -> List[str]:
     branch, path = unpack_file_ref(refactor)
     abs_path = get_file_path(branch, path)
 
-    refactor_target_contents = rainer.get_file_contents(branch, path)
+    refactor_target_contents = get_file_contents(branch, path)
     refactor_target = f"""
     REFACTOR FILE {branch} {path}
     REFACTOR FILE PATH {abs_path}

@@ -6,8 +6,8 @@ from typing import Optional
 import openai
 from django.conf import settings
 
-from apps.rainer.assistant_prompts import COMPREHENSIVE_ASSISTANT_PROMPT
-from apps.rainer.settings import DEFAULT_GPT_MODEL
+from ..assistant_prompts import COMPREHENSIVE_ASSISTANT_PROMPT
+from ..settings import DEFAULT_GPT_MODEL
 
 logger = logging.getLogger(__name__)
 
