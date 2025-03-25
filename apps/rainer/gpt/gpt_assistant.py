@@ -10,20 +10,36 @@ from .. import *
 class GPTAssistantAPI:
     def __init__(self, model: str = DEFAULT_GPT_MODEL):
         self.assistant_provider = OpenAIAssistantProvider(model=model)
+        self.thread_id = self.assistant_provider.config["thread_id"]
+        self.assistant_id = self.assistant_provider.config["assistant_id"]
+        self.threads = self.assistant_provider.client.beta.threads
 
-    def _send_request(self, content: str) -> Optional[str]:
-        response = self.assistant_provider.client.beta.threads.messages.create(
-            thread_id=self.assistant_provider.config["thread_id"],
+    def add_message(self, content: str):
+        self.threads.messages.create(
+            thread_id=self.thread_id,
             role="user",
             content=content
         )
 
-        if hasattr(response, "content"):
-            return response.content
-        elif isinstance(response, Dict):
-            return response.get("content", "")
-        else:
-            return ""
+    def run(self):
+        self.threads.runs.create_and_poll(
+            assistant_id=self.assistant_id,
+            thread_id=self.thread_id,
+        )
+
+    def get_last_message(self) -> str:
+        messages = self.threads.messages.list(
+            thread_id=self.thread_id,
+            order="desc",
+            limit=1
+        )
+        for message in messages.data:
+            if hasattr(message, "role") and message.role == "assistant":
+                return message.content
+            elif isinstance(message, Dict) and message["role"] == "assistant":
+                return message["content"]
+
+        return ""
 
     def handle_file(self, rainer_file: RainerFile, instruction: str) -> Optional[CodeGenerationData]:
         branch, path = unpack_file_ref(rainer_file)
@@ -31,7 +47,10 @@ class GPTAssistantAPI:
         if not file_contents:
             return None
 
-        generated_code = self._send_request(instruction)
+        self.add_message(instruction)
+        self.run()
+
+        generated_code = self.get_last_message()
 
         if generated_code:
             return CodeGenerationData.objects.create(
@@ -50,7 +69,11 @@ class GPTAssistantAPI:
         if not file_contents:
             return []
 
-        raw_response = self._send_request(instruction)
+        self.add_message(instruction)
+        self.run()
+
+        raw_response = self.get_last_message()
+
         if not raw_response:
             return []
 
@@ -60,14 +83,18 @@ class GPTAssistantAPI:
         except json.JSONDecodeError:
             return []
 
-    def update_file_definition(self, rainer_file: RainerFile, instruction: str) -> None:
+    def update_file_definition(self, rainer_file: RainerFile, instruction: str) -> str:
         """Add a message to the thread without running it."""
         branch, path = unpack_file_ref(rainer_file)
         file_contents = get_file_contents(branch, path)
         if not file_contents:
-            return
+            return ""
 
-        raw_response = self._send_request(instruction)
+        self.add_message(instruction)
+        self.run()
+
+        raw_response = self.get_last_message()
+
         return raw_response or ""
 
 

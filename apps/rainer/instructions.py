@@ -8,9 +8,11 @@ def build_file_ref_def(file_ref: RainerFile) -> str:
     contents = get_file_contents(branch, path)
 
     return f"""
+UPDATE FILE DEFINITION
 FILE REFERENCE - BRANCH: {branch} | PATH: {path}
 FILE REFERENCE LOCATION: {abs_path}
-FILE REFERENCE CONTENT: ```
+FILE REFERENCE CONTENT: 
+```
 {contents}
 ```
 """

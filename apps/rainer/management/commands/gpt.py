@@ -17,13 +17,16 @@ class Command(BaseCommand):
             print("Message cannot be empty")
             return
 
-        get_gpt_assistant()
-        return
+        assistant = get_gpt_assistant()
+
         from ... import instructions
 
         rainer_init = RainerFile("backend", "rainer/__init__.py")
-        instruction = instructions.build_file_ref_def(rainer_init)
+        assistant.add_message(instructions.build_file_ref_def(rainer_init))
+        assistant.add_message("What can you tell me about the rainer __init__ file?")
 
-        response = get_gpt_assistant().update_file_definition(rainer_init, instruction)
+        assistant.run()
+
+        response = assistant.get_last_message()
 
         print(response)
