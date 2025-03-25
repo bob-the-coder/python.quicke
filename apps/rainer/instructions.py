@@ -40,20 +40,21 @@ def get_file_ref_usage(file_references: List[RainerFile]) -> List[str]:
         for reference in file_references
     ]
 
+OUTPUT_AS_PLAINTEXT = """
+    >OUTPUT ONLY THE FULL, UPDATED FILE CODE
+    >OUTPUT AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"""
 
 def build_refactor_instructions(refactor: RefactorFile, action: str = "update") -> List[str]:
     file_references = refactor.file_references or []
     refactor_instructions = make_create_target_instructions(refactor) if action == "create" else \
                             make_update_target_instructions(refactor)
 
-    output_instruction = """
-    >OUTPUT ONLY THE FULL, UPDATED FILE CODE
-    >OUTPUT AS PLAINTEXT WITHOUT MARKDOWN ANNOTATIONS"""
+
 
     return [
         *get_file_ref_usage(file_references),
         *refactor_instructions,
-        output_instruction,
+        OUTPUT_AS_PLAINTEXT,
     ]
 
 def make_update_target_instructions(refactor: RefactorFile) -> List[str]:

@@ -14,6 +14,9 @@ class RainerFile:
         self.branch: str = branch
         self.path: str = path
 
+    def __str__(self) -> str:
+        return f"RainerFile({self.branch}, {self.path})"
+
     def to_dict(self) -> Dict[str, Any]:
         return {"branch": self.branch, "path": self.path}
 
