@@ -7,6 +7,8 @@ interface RainerFileDropsProps {
     file: RainerFile;
 }
 
+const pattern = "/img/thnt/<ID>.webp"
+
 const RainerFileDrops: React.FC<RainerFileDropsProps> = ({ file }) => {
     const { data: fileDrops, isLoading, error } = useQuery({
         queryKey: ['fileDrops', file],
@@ -31,7 +33,7 @@ const RainerFileDrops: React.FC<RainerFileDropsProps> = ({ file }) => {
                     className="flex-center relative h-12 w-12"
                 >
                     <img
-                        src={`/img/thnt/${group}.webp`}
+                        src={pattern.replace("<ID>", group)}
                         alt={`${group} icon`}
                         className="h-10 w-10 object-contain"
                     />

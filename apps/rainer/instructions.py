@@ -4,8 +4,8 @@ from . import *
 
 def build_file_ref_def(file_ref: RainerFile) -> str:
     branch, path = unpack_file_ref(file_ref)
-    abs_path = get_file_path(branch, path)
-    contents = get_file_contents(branch, path)
+    abs_path = get_rainer_file_path(branch, path)
+    contents = get_rainer_file_contents(branch, path)
 
     return f"""
 UPDATE FILE DEFINITION
@@ -59,9 +59,9 @@ def build_refactor_instructions(refactor: RefactorFile, action: str = "update") 
 
 def make_update_target_instructions(refactor: RefactorFile) -> List[str]:
     branch, path = unpack_file_ref(refactor)
-    abs_path = get_file_path(branch, path)
+    abs_path = get_rainer_file_path(branch, path)
 
-    refactor_target_contents = get_file_contents(branch, path)
+    refactor_target_contents = get_rainer_file_contents(branch, path)
     refactor_target = f"""
     REFACTOR FILE {branch} {path}
     REFACTOR FILE PATH {abs_path}
@@ -80,7 +80,7 @@ def make_update_target_instructions(refactor: RefactorFile) -> List[str]:
 
 def make_create_target_instructions(refactor: RefactorFile) -> [str]:
     branch, path = unpack_file_ref(refactor)
-    abs_path = get_file_path(branch, path)
+    abs_path = get_rainer_file_path(branch, path)
 
     refactor_target = f"""
     CREATE FILE {branch} {path}

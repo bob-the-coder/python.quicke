@@ -45,7 +45,7 @@ class GPTAssistantAPI:
 
     def handle_file(self, rainer_file: RainerFile, instruction: str) -> Optional[CodeGenerationData]:
         branch, path = unpack_file_ref(rainer_file)
-        file_contents = get_file_contents(branch, path)
+        file_contents = get_rainer_file_contents(branch, path)
         if not file_contents:
             return None
 
@@ -67,7 +67,7 @@ class GPTAssistantAPI:
 
     def find_references(self, rainer_file: RainerFile, instruction: str) -> List[RainerFile]:
         branch, path = unpack_file_ref(rainer_file)
-        file_contents = get_file_contents(branch, path)
+        file_contents = get_rainer_file_contents(branch, path)
         if not file_contents:
             return []
 
@@ -88,7 +88,7 @@ class GPTAssistantAPI:
     def update_file_definition(self, rainer_file: RainerFile, instruction: str) -> str:
         """Add a message to the thread without running it."""
         branch, path = unpack_file_ref(rainer_file)
-        file_contents = get_file_contents(branch, path)
+        file_contents = get_rainer_file_contents(branch, path)
         if not file_contents:
             return ""
 

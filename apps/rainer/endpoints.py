@@ -2,11 +2,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
-from . import *
+from . import (get_rainer_file_contents, trees, update_rainer_file,
+               create_rainer_directory, create_rainer_file)
 from .gpt.gpt import get_gpt
 from .instructions import build_refactor_instructions, unpack_file_ref, get_file_ref_definitions
 from .models import CodeGenerationData, RainerFile
 from django.db import models
+
 
 # 🌳 Endpoint to get the Rainer tree structure
 @quicke.endpoint("rainer/tree", {
@@ -16,6 +18,7 @@ from django.db import models
 def get_rainer_tree(request):
     return JsonResponse(trees, safe=False)
 
+
 # 📁 Endpoint to get the contents of a specific file
 @quicke.endpoint("rainer/file", {
     "response_type": "string",
@@ -24,7 +27,8 @@ def get_rainer_tree(request):
 def get_file_contents(request):
     branch = request.GET.get("branch", "")
     path = request.GET.get("path", "")
-    return JsonResponse(get_file_contents(branch, path), safe=False)
+    return JsonResponse(get_rainer_file_contents(branch, path), safe=False)
+
 
 # ✍️ Endpoint to create a new file
 @csrf_exempt
@@ -44,7 +48,7 @@ def create_file(request):
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
     branch, path = unpack_file_ref(refactor)
-    create_file(branch, path, f"{response}\n")
+    create_rainer_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
@@ -56,6 +60,7 @@ def create_file(request):
     )
 
     return JsonResponse({"branch": branch, "path": path}, status=201)
+
 
 # 🔄 Endpoint to update an existing file
 @csrf_exempt
@@ -75,7 +80,7 @@ def update_file(request):
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
     branch, path = unpack_file_ref(refactor)
-    update_file(branch, path, f"{response}\n")
+    update_rainer_file(branch, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
@@ -87,6 +92,7 @@ def update_file(request):
     )
 
     return JsonResponse({"branch": branch, "path": path}, status=200)
+
 
 # 🗑️ Endpoint to delete a file
 @csrf_exempt
@@ -101,6 +107,7 @@ def delete_file(request):
     delete_file(branch, path)
     return JsonResponse({}, status=204)
 
+
 # 📁 Endpoint to create a new directory
 @csrf_exempt
 @quicke.endpoint("rainer/directory/new", {
@@ -114,6 +121,7 @@ def create_directory(request):
     path = data["path"]
     create_directory(branch, path)
     return JsonResponse({}, status=201)
+
 
 # 🗑️ Endpoint to delete a directory
 @csrf_exempt
@@ -139,6 +147,7 @@ def delete_directory(request):
 })
 def get_file_drops(request):
     rainer_file = RainerFile.from_dict(json.loads(request.body))
-    drops = CodeGenerationData.objects.filter(rainer_branch=rainer_file.branch, rainer_path=rainer_file.path).values('drop_number').annotate(count=models.Count('id'))
+    drops = CodeGenerationData.objects.filter(rainer_branch=rainer_file.branch, rainer_path=rainer_file.path).values(
+        'drop_number').annotate(count=models.Count('id'))
     drop_dict = {str(drop['drop_number']): drop['count'] for drop in drops}
     return JsonResponse(drop_dict, safe=False)

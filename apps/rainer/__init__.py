@@ -111,7 +111,7 @@ def refresh_trees() -> None:
 
 
 # 4. File content reader
-def get_file_contents(branch: str, relative_path: str) -> str:
+def get_rainer_file_contents(branch: str, relative_path: str) -> str:
     branch = trees[branch]
     path = branch.get(relative_path)
     if path and os.path.isfile(path):
@@ -121,14 +121,14 @@ def get_file_contents(branch: str, relative_path: str) -> str:
     return ""
 
 
-def get_file_path(branch: str, relative_path: str):
+def get_rainer_file_path(branch: str, relative_path: str):
     base_path = paths[branch]
     return os.path.join(base_path, relative_path)
 
 
 # 5. Create file in branch
-def create_file(branch: str, relative_path: str, text_content: str = "") -> None:
-    abs_path = get_file_path(branch, relative_path)
+def create_rainer_file(branch: str, relative_path: str, text_content: str = "") -> None:
+    abs_path = get_rainer_file_path(branch, relative_path)
     os.makedirs(os.path.dirname(abs_path), exist_ok=True)
     with open(abs_path, "w", encoding="utf-8") as f:
         f.write(text_content)
@@ -137,8 +137,8 @@ def create_file(branch: str, relative_path: str, text_content: str = "") -> None
 
 
 # 6. Update file contents in branch
-def update_file(branch: str, relative_path: str, new_content: str) -> None:
-    abs_path = get_file_path(branch, relative_path)
+def update_rainer_file(branch: str, relative_path: str, new_content: str) -> None:
+    abs_path = get_rainer_file_path(branch, relative_path)
     if os.path.isfile(abs_path):
         with open(abs_path, "w", encoding="utf-8") as f:
             f.write(new_content)
@@ -148,7 +148,7 @@ import shutil
 
 
 # 7. Delete a file in branch
-def delete_file(branch: str, relative_path: str) -> None:
+def delete_rainer_file(branch: str, relative_path: str) -> None:
     base_path = paths[branch]
     abs_path = os.path.join(base_path, relative_path)
     if os.path.isfile(abs_path):
@@ -158,7 +158,7 @@ def delete_file(branch: str, relative_path: str) -> None:
 
 
 # 8. Delete a directory (and its contents) in branch
-def delete_directory(branch: str, relative_path: str) -> None:
+def delete_rainer_directory(branch: str, relative_path: str) -> None:
     base_path = paths[branch]
     abs_path = os.path.join(base_path, relative_path)
     if os.path.isdir(abs_path):
@@ -168,7 +168,7 @@ def delete_directory(branch: str, relative_path: str) -> None:
 
 
 # 9. Create a directory in branch
-def create_directory(branch: str, relative_path: str) -> None:
+def create_rainer_directory(branch: str, relative_path: str) -> None:
     base_path = paths[branch]
     abs_path = os.path.join(base_path, relative_path)
     os.makedirs(abs_path, exist_ok=True)
