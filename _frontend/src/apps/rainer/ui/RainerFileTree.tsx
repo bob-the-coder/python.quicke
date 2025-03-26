@@ -53,17 +53,16 @@ export function RainerFileTree({
                     return aIsDir ? -1 : 1; // Directories first, then files
                 })
                 .map(([name, value]) => {
-                    const itemPath = (basePath || tree.__path__) ? `${basePath}/${name}` : name;
+                    const itemPath = basePath ? `${basePath}/${name}` : name;
                     const isDirectory = typeof value === "object";
                     const isOpen = openDirectories.has(itemPath);
                     const Icon = isDirectory ? (isOpen ? FaFolderOpen : FaFolder) : FaFile;
 
                     return (
-                        <div key={name} className="select-none">
+                        <div key={name} className={cn("select-none", !isDirectory && "first:border-t")}>
                             <div
                                 className={cn(
-                                    "flex items-center space-x-2 py-1 text-sm cursor-pointer select-none hover:bg-foreground/5 rounded-sm",
-                                    isDirectory ? " pl-2" : " pl-2"
+                                    "flex items-center pl-2 space-x-2 py-1 text-sm cursor-pointer select-none hover:bg-foreground/5 rounded-sm",
                                 )}
                                 onClick={() => (isDirectory ? toggleDirectory(itemPath) : onSelect(itemPath))}
                             >

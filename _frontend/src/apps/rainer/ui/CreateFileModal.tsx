@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FormRainerFileCreate } from "./FormRainerFileCreate";
-import { RiAddFill } from "react-icons/ri";
+import {MdOutlineAdd} from "react-icons/md";
 
 export function CreateFileModal() {
     const [open, setOpen] = useState(false);
@@ -14,9 +14,8 @@ export function CreateFileModal() {
     return (
         <>
             {/* Simplified Button */}
-            <Button onClick={handleOpen}>
-                Add File
-                <RiAddFill />
+            <Button onClick={handleOpen} size={'icon'} className={'flex text-lg'}>
+                <MdOutlineAdd />
             </Button>
 
             {/* Modal */}

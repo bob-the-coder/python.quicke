@@ -72,12 +72,13 @@ export default function RainerDashboard() {
                     ))}
                 </div>
 
-                    <div className="flex w-full items-center gap-2 p-4">
+                    <div className="flex w-full items-center gap-3 p-2 border-b">
                         <TextInput
                             value={searchQuery}
                             onChange={setSearchQuery}
                             placeholder="Search files..."
-                            className="w-full"
+                            className="w-full ml-0.5 -ml2"
+                            inputProps={{className: "border-none"}}
                             icon={<BiSearch className={'flex-shrink-0 text-lg'}/>}
                         />
                         <CreateFileModal/> {/* Modal for creating new files ✨ */}
