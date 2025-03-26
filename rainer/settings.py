@@ -29,4 +29,5 @@ EXCLUDED_FILE_EXTENSIONS = {
 EXCLUDED_FILE_NAMES = {
     ".DS_Store",
     "Thumbs.db",
+    ".env"
 }

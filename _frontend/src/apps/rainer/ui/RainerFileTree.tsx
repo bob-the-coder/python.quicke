@@ -59,7 +59,7 @@ export function RainerFileTree({
                     const Icon = isDirectory ? (isOpen ? FaFolderOpen : FaFolder) : FaFile;
 
                     return (
-                        <div key={name} className={cn("select-none", !isDirectory && "first:border-t")}>
+                        <div key={name} className={cn("select-none")}>
                             <div
                                 className={cn(
                                     "flex items-center pl-2 space-x-2 py-1 text-sm cursor-pointer select-none hover:bg-foreground/5 rounded-sm",
