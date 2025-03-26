@@ -8,6 +8,7 @@ from apps.rainer.settings import DEFAULT_GPT_MODEL
 
 logger = logging.getLogger(__name__)
 
+
 class OpenAIProvider:
     def __init__(self, model):
         """Initialize OpenAI API client."""
@@ -37,6 +38,7 @@ class OpenAIProvider:
         except Exception as e:
             logger.error(f"GPT ERROR: {e or 'Unknown error'}")
             return None
+
 
 def get_gpt(model: str | None = None):
     return OpenAIProvider(model=model)

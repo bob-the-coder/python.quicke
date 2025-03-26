@@ -19,7 +19,6 @@ CONFIG_FILE = os.path.join(project_root, "openai_config.json")
 logger = logging.getLogger(__name__)
 
 
-
 class OpenAIAssistantProvider:
     def __init__(self, model: Optional[str] = None):
         self.model = model or DEFAULT_GPT_MODEL
@@ -69,4 +68,3 @@ class OpenAIAssistantProvider:
     def _save_config(self, config):
         with open(CONFIG_FILE, "w") as f:
             json.dump(config, f, indent=4)
-
