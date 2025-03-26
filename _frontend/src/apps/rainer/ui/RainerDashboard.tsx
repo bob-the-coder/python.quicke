@@ -14,7 +14,6 @@ import TextInput from "@/components/TextInput/TextInput";
 import {FaFile, FaMinus, FaPlus} from "react-icons/fa6"; // Import TextInput component 📝
 import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
-import {ProjectTree, RainerTree} from "@/apps/rainer/types";
 
 export default function RainerDashboard() {
 
@@ -55,7 +54,7 @@ export default function RainerDashboard() {
         if (selectedProject) return;
 
         setSelectedProject(projects[0])
-    }, [getTree, selectedProject]);
+    }, [getTree, selectedProject, projects]);
 
     const changeProject = (project: string) => {
         setSelectedProject(project);
@@ -140,14 +139,10 @@ export default function RainerDashboard() {
 }
 
 
-
 function isPublicImage(file: string) {
     return (file.match(/\.(jpe?g|png|webp|tiff?|gif)$/g)?.length || 0) > 0;
 }
 
-function publicUrl(project: ProjectTree, file: string) {
-    return `file:///${(project.__path__ + "/" + file).replace(/\\/g, "/")}`
-}
 
 const zoomLevels = [
     50,
