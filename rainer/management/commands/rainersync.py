@@ -20,11 +20,11 @@ class Command(BaseCommand):
 
         assistant = get_gpt_assistant()
 
-        from ... import instructions, trees
+        from ... import instructions, project_trees
 
         for branch in branches.split(","):
             branch = branch.strip()
-            backend = trees.get(branch, [])
+            backend = project_trees.get(branch, [])
             if len(backend) == 0:
                 self.stdout.write(f"No files found in branch {branch}")
                 return

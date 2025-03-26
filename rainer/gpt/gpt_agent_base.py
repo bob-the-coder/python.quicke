@@ -7,7 +7,7 @@ from django.conf import settings
 
 from ..assistant_prompts import COMPREHENSIVE_ASSISTANT_PROMPT
 from ..settings import DEFAULT_GPT_MODEL
-from .. import get_rainer_file_contents, trees
+from .. import get_rainer_file_contents, project_trees
 
 # Get the absolute path to the project root directory
 project_root = settings.BASE_DIR if hasattr(settings, 'BASE_DIR') else ""
@@ -36,7 +36,7 @@ async def rainer_file_lookup(branch: str, path: str) -> Optional[str]:
     name_override="rainer_tree", description_override="Provides the tree structure of the rainer project"
 )
 async def rainer_tree() -> str:
-    return json.dumps(trees)
+    return json.dumps(project_trees)
 
 rainer_agent = Agent(
     name="COMPREHENSIVE_ASSISTANT_PROMPT",
