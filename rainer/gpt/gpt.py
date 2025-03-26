@@ -4,7 +4,7 @@ from typing import List
 import openai
 from django.conf import settings
 
-from apps.rainer.settings import DEFAULT_GPT_MODEL
+from rainer.settings import DEFAULT_GPT_MODEL
 
 logger = logging.getLogger(__name__)
 

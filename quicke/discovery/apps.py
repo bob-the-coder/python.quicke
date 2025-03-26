@@ -30,7 +30,7 @@ APP_REGISTRY: Dict[str, AppMetadata] = {}
 
 
 def discover_apps():
-    """Centralized discovery function for models and endpoints across all QUICKE_APPS."""
+    """Centralized discovery function for models and endpoints across all QUICKE_"""
 
     quicke_apps: List[str] = getattr(settings, "QUICKE_APPS", [])
 

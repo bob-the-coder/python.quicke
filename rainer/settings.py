@@ -4,7 +4,7 @@ DEFAULT_GPT_MODEL = "gpt-4o-mini"
 
 RAINER_OPTIONS = {
     "backend": "apps",
-    "frontend": "frontend/src",
+    "frontend": "_frontend/src",
 }
 
 EXCLUDED_DIRS = {

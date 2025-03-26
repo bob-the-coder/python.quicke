@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
-from apps.rainer import ensure_migrations
+from rainer import ensure_migrations
 
 router = routers.DefaultRouter()
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 from .settings import QUICKE_APPS
 
 for app in QUICKE_APPS:
-    ensure_migrations(app.replace("apps.", ""))
+    ensure_migrations(app)
 
 
 urlpatterns = [

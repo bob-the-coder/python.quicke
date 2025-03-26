@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from apps.rainer import RainerFile
-from apps.rainer.gpt.gpt_assistant import get_gpt_assistant
-from apps.rainer.instructions import OUTPUT_AS_PLAINTEXT
+from rainer import RainerFile
+from rainer.gpt.gpt_assistant import get_gpt_assistant
+from rainer.instructions import OUTPUT_AS_PLAINTEXT
 
 
 class Command(BaseCommand):

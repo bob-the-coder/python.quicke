@@ -31,20 +31,16 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'quicke',
-    'apps.rainer',
-    "apps.demo",
-    "apps.cnc",
+    'rainer',
     'api',
 ]
 
 QUICKE_APPS = [
-    "apps.demo",
-    "apps.cnc",
-    "apps.rainer"
+    "rainer"
 ]
 
 # TypeScript generation settings
-QUICKE_TS_OUTPUT_DIR = "frontend/src/"
+QUICKE_TS_OUTPUT_DIR = "_frontend/src/apps/"
 QUICKE_TS_AUTO_GENERATE = True  # Auto-run on startup
 
 

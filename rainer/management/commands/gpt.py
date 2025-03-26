@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from apps.rainer import RainerFile
-from apps.rainer.gpt.gpt_assistant import get_gpt_assistant
+from rainer import RainerFile
+from rainer.gpt.gpt_assistant import get_gpt_assistant
 
 
 class Command(BaseCommand):

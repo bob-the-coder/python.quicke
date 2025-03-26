@@ -14,6 +14,6 @@ class Command(BaseCommand):
             print("File name cannot be empty")
             return
 
-        from apps.rainer import get_rainer_file_contents
+        from rainer import get_rainer_file_contents
 
         print(get_rainer_file_contents(branch, file_name))

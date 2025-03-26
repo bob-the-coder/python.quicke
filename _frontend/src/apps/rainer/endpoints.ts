@@ -1,6 +1,6 @@
 // Auto-generated TypeScript API functions
 
-import { fetchJSON } from '../../fetchJSON.ts';
+import { fetchJSON } from '../fetchJSON.ts';
 
 import { FileDrops, RainerTree, RefactorRainerFile } from './types';
 import { RainerFile } from './models';
