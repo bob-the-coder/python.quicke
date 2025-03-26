@@ -12,7 +12,7 @@
 
 
     .typo-h1 {
-        @apply text-4xl font-extrabold tracking-tight
+        @apply text-3xl font-extrabold tracking-tight
     }
 
     .typo-h2 {

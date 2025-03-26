@@ -14,3 +14,8 @@ export interface CodeGenerationData {
   rainer_path: string;
   drop_number: number;
 }
+
+export interface RainerFile {
+  project: string;
+  path: string;
+}

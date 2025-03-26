@@ -12,9 +12,9 @@ import { ScrollbarCustom } from "@/components/ScrollbarCustom"; // Custom scroll
 import { RainerFile } from "@/apps/rainer/models"; // Model representing a file structure
 import FileExtensionPicker from "@/apps/rainer/ui/FileExtensionPicker"; // File extension picker component
 
-// Props type to define the branch, defaulting to "backend"
+// Props type to define the project, defaulting to "backend"
 type FormRainerFileCreateProps = {
-    branch?: "backend" | "frontend";
+    project?: "backend" | "frontend";
 };
 
 // Component for displaying a list of file references with an option to remove them
@@ -31,9 +31,9 @@ function FileReferenceList({
     return (
         <ul className="list-disc list-inside flex flex-col gap-1 my-4">
             {files.map((file, index) => (
-                <li key={`${file.branch}-${file.path}`} className="flex justify-between items-center gap-4">
+                <li key={`${file.project}-${file.path}`} className="flex justify-between items-center gap-4">
                     <span className="text-sm font-mono text-muted-foreground overflow-hidden text-ellipsis">
-                        {`${file.branch}/${file.path}`} {/* Display the file path for reference */}
+                        {`${file.project}/${file.path}`} {/* Display the file path for reference */}
                     </span>
                     <Button size="xs" variant="destructive" onClick={() => onRemove(index)}> {/* Button to remove the file reference */}
                         Remove 🗑️
@@ -44,26 +44,26 @@ function FileReferenceList({
     );
 }
 
-// Main component for creating a file in the selected branch
-export function FormRainerFileCreate({ branch: initialBranch = "backend" }: FormRainerFileCreateProps) {
+// Main component for creating a file in the selected project
+export function FormRainerFileCreate({ project: initialProject = "backend" }: FormRainerFileCreateProps) {
     const { createFile, getTree } = useRainer(); // Destructure createFile mutation and getTree function from useRainer hook
-    const [branch, setBranch] = useState<"backend" | "frontend">(initialBranch); // State for determining the current branch
+    const [project, setProject] = useState<"backend" | "frontend">(initialProject); // State for determining the current project
     const [path, setPath] = useState(""); // State for storing the file path input
     const [instructions, setInstructions] = useState(""); // State for storing instruction input
     const [fileReferences, setFileReferences] = useState<RainerFile[]>([]); // State for storing selected file references
     const [pathInputPadding, setPathInputPadding] = useState(10); // State for input left padding
     const [extension, setExtension] = useState('.js'); // State for storing the selected file extension
 
-    // Construct the branch path using getTree information, ensuring it uses the current branch and has a trailing "/"
-    const branchPath = `~/${((getTree || {})[branch] || {})["__path__"] || ""}/`;
+    // Construct the project path using getTree information, ensuring it uses the current project and has a trailing "/"
+    const projectPath = `~/${((getTree || {})[project] || {})["__path__"] || ""}/`;
 
     useEffect(() => {
-        const pathElement = document.getElementById("branch-path");
+        const pathElement = document.getElementById("project-path");
         if (pathElement) {
-            const padding = pathElement.offsetWidth + 17; // Calculate padding based on branch path width
+            const padding = pathElement.offsetWidth + 17; // Calculate padding based on project path width
             setPathInputPadding(padding);
         }
-    }, [branchPath]);
+    }, [projectPath]);
 
     // Handler for saving the form data when the form is submitted
     const handleSave = async (e: FormEvent) => {
@@ -71,7 +71,7 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
         // Merge path and extension if necessary
         const fullPath = path.endsWith(extension) ? path : path + extension;
         createFile.mutate(
-            { branch, path: fullPath, content: instructions, file_references: fileReferences }, // Prepare the file creation payload
+            { project, path: fullPath, content: instructions, file_references: fileReferences }, // Prepare the file creation payload
         );
     };
 
@@ -80,7 +80,7 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
         setFileReferences(prev => {
             // Check for duplicates to avoid adding the same file reference
             const isDuplicate = prev.some(
-                existingFile => existingFile.branch === file.branch && existingFile.path === file.path
+                existingFile => existingFile.project === file.project && existingFile.path === file.path
             );
             if (!isDuplicate) {
                 return [...prev, file]; // Add new file if not a duplicate
@@ -94,9 +94,9 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
         setFileReferences(prev => prev.filter((_, i) => i !== index)); // Filter out the file to be removed by index
     };
 
-    // Function to get file references filtered by branch type
-    const getFileReferencesByBranch = (branch: "backend" | "frontend") => {
-        return fileReferences.filter(file => file.branch === branch); // Return filtered references for the specified branch
+    // Function to get file references filtered by project type
+    const getFileReferencesByProject = (project: string) => {
+        return fileReferences.filter(file => file.project === project); // Return filtered references for the specified project
     };
 
     // Keyboard shortcut handler for submitting the form
@@ -124,14 +124,14 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
                 <div className="flex flex-col gap-2 p-4">
                     <div className="flex gap-2">
                         <div className="w-fit">
-                            <Label className="text-sm">Branch</Label> {/* Label for selecting the branch to work on */}
+                            <Label className="text-sm">Project</Label> {/* Label for selecting the project to work on */}
                             <div className="flex gap-2">
-                                {/* Button to switch to "Backend" branch */}
-                                <Button variant={branch === "backend" ? "default" : "outline"} onClick={() => setBranch("backend")}>
+                                {/* Button to switch to "Backend" project */}
+                                <Button variant={project === "backend" ? "default" : "outline"} onClick={() => setProject("backend")}>
                                     Backend 🖥️
                                 </Button>
-                                {/* Button to switch to "Frontend" branch */}
-                                <Button variant={branch === "frontend" ? "default" : "outline"} onClick={() => setBranch("frontend")}>
+                                {/* Button to switch to "Frontend" project */}
+                                <Button variant={project === "frontend" ? "default" : "outline"} onClick={() => setProject("frontend")}>
                                     Frontend 🌐
                                 </Button>
                             </div>
@@ -139,10 +139,10 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
                     </div>
 
                     <div className="w-full relative flex flex-col gap-1 pt-2">
-                        <Label>Output path</Label> {/* Immutable label for current branch path */}
+                        <Label>Output path</Label> {/* Immutable label for current project path */}
                         <div className="w-full relative flex items-center gap-2">
-                            <Label id="branch-path"
-                                   className="text-sm absolute left-2 text-muted-foreground">{branchPath}</Label> {/* Immutable label for current branch path */}
+                            <Label id="project-path"
+                                   className="text-sm absolute left-2 text-muted-foreground">{projectPath}</Label> {/* Immutable label for current project path */}
                             <input
                                 type="text"
                                 placeholder="Enter file path" // Placeholder for input field
@@ -151,7 +151,7 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
                                 className={`p-2 border rounded-md text-sm w-full`} // Adjusted input styling for path entry with dynamic padding
                                 style={{paddingLeft: pathInputPadding}}
                             />
-                            <FileExtensionPicker branch={branch} value={extension}
+                            <FileExtensionPicker value={extension}
                                                  onChange={setExtension}/> {/* File extension picker component */}
                         </div>
                     </div>
@@ -171,22 +171,22 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
                         <div>
                             <b className="font-semibold text-sm">Backend References</b> {/* Section title for backend references */}
                             <FileReferenceList
-                                files={getFileReferencesByBranch("backend")} // Get files specific to the backend branch
+                                files={getFileReferencesByProject("backend")} // Get files specific to the backend project
                                 onRemove={handleRemoveFile} // Callback to remove a file reference by index
                             />
                             <RainerFilePicker
-                                branch="backend" // Specify branch for the file picker
+                                project="backend" // Specify project for the file picker
                                 onChange={handleFileChange} // Callback for file selection
                             />
                         </div>
                         <div>
                             <b className="font-semibold text-sm">Frontend References</b> {/* Section title for frontend references */}
                             <FileReferenceList
-                                files={getFileReferencesByBranch("frontend")} // Get files specific to the frontend branch
+                                files={getFileReferencesByProject("frontend")} // Get files specific to the frontend project
                                 onRemove={handleRemoveFile} // Callback to remove a file reference by index
                             />
                             <RainerFilePicker
-                                branch="frontend" // Specify branch for the file picker
+                                project="frontend" // Specify project for the file picker
                                 onChange={handleFileChange} // Callback for file selection
                             />
                         </div>
@@ -197,7 +197,7 @@ export function FormRainerFileCreate({ branch: initialBranch = "backend" }: Form
             <div className="p-4 border-t">
                 <Button
                     type="submit" // Trigger the save handler on form submission
-                    disabled={!branch || !path || !instructions || createFile.isPending} // Disable button if form is incomplete or createFile mutation is pending
+                    disabled={!project || !path || !instructions || createFile.isPending} // Disable button if form is incomplete or createFile mutation is pending
                 >
                     Create {createFile.isPending ? <Spinner /> : <RiSparkling2Fill />} {/* Show spinner if loading, otherwise show sparkles icon */}
                 </Button>

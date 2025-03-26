@@ -6,7 +6,7 @@ import { FileDrops, RainerTree, RefactorRainerFile } from './types';
 import { RainerFile } from './models';
 
 export async function endpoint_create_directory(
-	body: {branch: string, path: string}
+	body: {project: string, path: string}
 ): Promise<void> {
 	return fetchJSON('rainer/directory/new', {
 		method: "POST",
@@ -24,7 +24,7 @@ export async function endpoint_create_file(
 }
 
 export async function endpoint_delete_directory(
-	query?: { branch?: string, path?: string }
+	query?: { project?: string, path?: string }
 ): Promise<void> {
 	return fetchJSON('rainer/directory/del' + (query ? '?' + new URLSearchParams(query).toString() : ''), {
 		method: "DELETE"
@@ -32,7 +32,7 @@ export async function endpoint_delete_directory(
 }
 
 export async function endpoint_delete_file(
-	query?: { branch?: string, path?: string }
+	query?: { project?: string, path?: string }
 ): Promise<void> {
 	return fetchJSON('rainer/file/del' + (query ? '?' + new URLSearchParams(query).toString() : ''), {
 		method: "DELETE"
@@ -40,7 +40,7 @@ export async function endpoint_delete_file(
 }
 
 export async function endpoint_get_file_contents(
-	query?: { branch?: string, path?: string }
+	query?: { project?: string, path?: string }
 ): Promise<string> {
 	return fetchJSON('rainer/file' + (query ? '?' + new URLSearchParams(query).toString() : ''), {
 		method: "GET"

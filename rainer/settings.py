@@ -2,9 +2,8 @@
 DEFAULT_GPT_MODEL = "gpt-4o-mini"
 
 
-RAINER_OPTIONS = {
-    "backend": "apps",
-    "frontend": "_frontend/src",
+RAINER_PROJECTS = {
+    "Quickr": "H:\projects\python\python.quickr",
 }
 
 EXCLUDED_DIRS = {
@@ -24,6 +23,7 @@ EXCLUDED_DIRS = {
 EXCLUDED_FILE_EXTENSIONS = {
     ".pyc",
     ".pyo",
+    ".env"
 }
 
 EXCLUDED_FILE_NAMES = {

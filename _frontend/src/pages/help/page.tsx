@@ -12,7 +12,7 @@ export default function HelpPage() {
             </p>
             <ul className="list-disc ml-5 mt-2">
                 <li>
-                    <strong>RainerFile:</strong> Represents a specific file within a branch and path. It helps in managing file references within the application.
+                    <strong>RainerFile:</strong> Represents a specific file within a project and path. It helps in managing file references within the application.
                 </li>
                 <li>
                     <strong>CodeGenerationData:</strong> Stores generated code data related to the Rainer files. It captures details such as the model used for generation, instructions, and response.

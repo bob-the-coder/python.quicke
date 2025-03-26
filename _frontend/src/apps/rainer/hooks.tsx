@@ -11,7 +11,7 @@ import {
 } from "./endpoints";
 import { RefactorRainerFile } from "@/apps/rainer/types";
 
-type FileIdentifier = { branch: string; path: string };
+type FileIdentifier = { project: string; path: string };
 
 interface RainerContextType {
   getTree: ReturnType<typeof useTree>["data"];
@@ -38,11 +38,11 @@ function useTree() {
   });
 }
 
-function useFile({ branch, path }: FileIdentifier) {
+function useFile({ project, path }: FileIdentifier) {
   return useQuery({
-    queryKey: ["rainer", "file", branch, path],
-    queryFn: () => endpoint_get_file_contents({ branch, path }),
-    enabled: !!branch && !!path,
+    queryKey: ["rainer", "file", project, path],
+    queryFn: () => endpoint_get_file_contents({ project, path }),
+    enabled: !!project && !!path,
   });
 }
 
@@ -61,16 +61,16 @@ export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const updateFileMutation = useMutation({
     mutationFn: endpoint_update_file,
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({ queryKey: ["rainer", "file", vars.branch, vars.path] });
+      queryClient.invalidateQueries({ queryKey: ["rainer", "file", vars.project, vars.path] });
     },
   });
 
   const deleteFileMutation = useMutation({
-    mutationFn: ({ branch, path }: FileIdentifier) =>
-      endpoint_delete_file({ branch, path }),
+    mutationFn: ({ project, path }: FileIdentifier) =>
+      endpoint_delete_file({ project, path }),
     onSuccess: (_data, vars) => {
       queryClient.invalidateQueries({ queryKey: ["rainer", "tree"] });
-      queryClient.removeQueries({ queryKey: ["rainer", "file", vars.branch, vars.path] });
+      queryClient.removeQueries({ queryKey: ["rainer", "file", vars.project, vars.path] });
     },
   });
 
@@ -82,8 +82,8 @@ export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   });
 
   const deleteDirMutation = useMutation({
-    mutationFn: ({ branch, path }: FileIdentifier) =>
-      endpoint_delete_directory({ branch, path }),
+    mutationFn: ({ project, path }: FileIdentifier) =>
+      endpoint_delete_directory({ project, path }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["rainer", "tree"] });
     },

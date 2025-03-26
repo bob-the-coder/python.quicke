@@ -11,19 +11,19 @@ import { MdAutoFixHigh } from "react-icons/md";
 import { ScrollbarCustom } from "@/components/ScrollbarCustom";
 
 type Props = {
-    branch: "backend" | "frontend";
+    project: string;
     path: string;
 };
 
 // Component for displaying a list of file references 🔄
-function FileReferenceList({ files, onRemove }: { files: { branch: string; path: string }[], onRemove: (index: number) => void }) {
+function FileReferenceList({ files, onRemove }: { files: { project: string; path: string }[], onRemove: (index: number) => void }) {
     if (!files.length) return null; // No files to display ❌
     return (
         <ul className="list-disc list-inside flex flex-col gap-1 my-4">
             {files.map((file, index) => (
-                <li key={`${file.branch}-${file.path}`} className="flex justify-between items-center gap-4">
+                <li key={`${file.project}-${file.path}`} className="flex justify-between items-center gap-4">
                     <span className="text-sm font-mono text-muted-foreground overflow-hidden text-ellipsis">
-                        {`${file.branch}/${file.path}`} {/* Display the file path 👁️ */}
+                        {`${file.project}/${file.path}`} {/* Display the file path 👁️ */}
                     </span>
                     <Button size="xs" variant="destructive" onClick={() => onRemove(index)}>Remove</Button> {/* Remove button 🗑️ */}
                 </li>
@@ -32,23 +32,23 @@ function FileReferenceList({ files, onRemove }: { files: { branch: string; path:
     );
 }
 
-export function FormRainerFileUpdate({ branch, path }: Props) {
+export function FormRainerFileUpdate({ project, path }: Props) {
     const { updateFile } = useRainer(); // Hook to manage file updates 📡
 
-    const [fileReferences, setFileReferences] = useState<{ branch: string; path: string }[]>([]); // State to hold file references 📂
+    const [fileReferences, setFileReferences] = useState<{ project: string; path: string }[]>([]); // State to hold file references 📂
     const [instructions, setInstructions] = useState(""); // State to hold instructions ✍️
 
     const handleSave = async (e: FormEvent) => {
         e.preventDefault(); // Prevent default form submission 🚫
 
         updateFile.mutate(
-            { branch, path, content: instructions, file_references: fileReferences }, // Update file request 🔄
+            { project, path, content: instructions, file_references: fileReferences }, // Update file request 🔄
         );
     };
 
-    const handleFileChange = (file: { branch: string; path: string }) => {
+    const handleFileChange = (file: { project: string; path: string }) => {
         setFileReferences(prev => {
-            const isDuplicate = prev.some(existingFile => existingFile.branch === file.branch && existingFile.path === file.path); // Check for duplicates ⚠️
+            const isDuplicate = prev.some(existingFile => existingFile.project === file.project && existingFile.path === file.path); // Check for duplicates ⚠️
             if (!isDuplicate) {
                 return [...prev, file]; // Add new file reference ➕
             }
@@ -60,8 +60,8 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
         setFileReferences(prev => prev.filter((_, i) => i !== index)); // Remove file reference by index ❌
     };
 
-    const getFileReferencesByBranch = (branch: string) => {
-        return fileReferences.filter(file => file.branch === branch); // Filter file references by branch 🔍
+    const getFileReferencesByProject = (project: string) => {
+        return fileReferences.filter(file => file.project === project); // Filter file references by project 🔍
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -88,15 +88,15 @@ export function FormRainerFileUpdate({ branch, path }: Props) {
                     <div className="flex flex-col gap-4 mt-2">
                         <div>
                             <b className="font-semibold text-sm">Backend References</b> {/* Backend references header 🔧 */}
-                            <FileReferenceList files={getFileReferencesByBranch("backend")}
+                            <FileReferenceList files={getFileReferencesByProject("backend")}
                                                onRemove={handleRemoveFile} /> {/* Display list of backend files 📂 */}
-                            <RainerFilePicker branch="backend" onChange={handleFileChange} /> {/* File picker for backend files 📥 */}
+                            <RainerFilePicker project="backend" onChange={handleFileChange} /> {/* File picker for backend files 📥 */}
                         </div>
                         <div>
                             <b className="font-semibold text-sm">Frontend References</b> {/* Frontend references header 🖥️ */}
-                            <FileReferenceList files={getFileReferencesByBranch("frontend")}
+                            <FileReferenceList files={getFileReferencesByProject("frontend")}
                                                onRemove={handleRemoveFile} /> {/* Display list of frontend files 📂 */}
-                            <RainerFilePicker branch="frontend" onChange={handleFileChange} /> {/* File picker for frontend files 📥 */}
+                            <RainerFilePicker project="frontend" onChange={handleFileChange} /> {/* File picker for frontend files 📥 */}
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 
-from rainer import RainerFile
 from rainer.gpt.gpt_assistant import get_gpt_assistant
 from rainer.instructions import OUTPUT_AS_PLAINTEXT
 

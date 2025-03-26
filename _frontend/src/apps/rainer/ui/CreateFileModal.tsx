@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FormRainerFileCreate } from "./FormRainerFileCreate";
 import { RiAddFill } from "react-icons/ri";
 
-export function CreateFileModal({ branch = "backend" as "backend" | "frontend" }) {
+export function CreateFileModal() {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -23,7 +23,7 @@ export function CreateFileModal({ branch = "backend" as "backend" | "frontend" }
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-2xl p-0">
                     <div className="h-[70dvh]">
-                        <FormRainerFileCreate branch={branch} />
+                        <FormRainerFileCreate />
                     </div>
                 </DialogContent>
             </Dialog>

@@ -15,18 +15,18 @@ import {ScrollbarCustom} from "@/components/ScrollbarCustom";
 
 
 type Props = {
-  branch: "backend" | "frontend";
+  project: "backend" | "frontend";
   value?: string;
   onChange: (value: RainerFile) => void;
   label?: string;
 };
 
-export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props) => {
+export const RainerFilePicker = ({ project, value, onChange, label = "" }: Props) => {
   const { getTree } = useRainer();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selected: string) => {
-    onChange({ branch, path: selected });
+    onChange({ project, path: selected });
   };
 
   return (
@@ -34,7 +34,7 @@ export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props)
       {label && <Label>{label}</Label>}
       <Select value={value || ""} onValueChange={handleChange}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={`Select a ${branch} file`} />
+          <SelectValue placeholder={`Select a ${project} file`} />
         </SelectTrigger>
         <SelectContent className={'w-full h-100 min-w-64'} >
           <div className="w-full pb-2 border-b">
@@ -47,7 +47,7 @@ export const RainerFilePicker = ({ branch, value, onChange, label = "" }: Props)
             />
           </div>
           <ScrollbarCustom noScrollX={true} className={'w-full'}>
-            <RainerFileTree path={value || ""} tree={(getTree || {})[branch] || {}} onSelect={handleChange}
+            <RainerFileTree path={value || ""} tree={(getTree || {})[project] || {}} onSelect={handleChange}
                             searchQuery={searchQuery}/>
           </ScrollbarCustom>
         </SelectContent>

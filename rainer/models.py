@@ -1,13 +1,17 @@
-from quicke.lib import BaseModel
-from typing import List, Dict, Any
 import random
+from typing import List, Dict, Any
+
 from django.db import models
-from .types import *
+
+import quicke
+from quicke.lib import BaseModel
+from rainer import RainerFile
+
 
 @quicke.model()
 class CodeGenerationData(BaseModel):
     llm_model: str = models.CharField(max_length=255)
-    instructions: List[Dict[str, Any]] = models.JSONField(default=list)
+    instructions: List[Dict[str, str]] = models.JSONField(default=list)
     response: str = models.TextField(default="")
     rainer_branch: str = models.CharField(max_length=255, default="")
     rainer_path: str = models.CharField(max_length=255, default="")
@@ -22,10 +26,8 @@ class CodeGenerationData(BaseModel):
 
     @rainer_file_instance.setter
     def rainer_file_instance(self, value: RainerFile) -> None:
-        self.rainer_branch = value.branch
+        self.rainer_branch = value.project
         self.rainer_path = value.path
-
-    import random
 
     @classmethod
     def create_drop_number(cls) -> int:
@@ -53,3 +55,12 @@ class CodeGenerationData(BaseModel):
                 return number
 
         return 0  # Fallback, should not be reached
+
+
+
+@quicke.model({
+    "exclude_fields": ["to_dict", "from_dict"],
+})
+class RainerFile:
+    project: str = ""
+    path: str = ""

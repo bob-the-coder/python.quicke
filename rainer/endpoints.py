@@ -3,10 +3,11 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
 from . import (get_rainer_file_contents, trees, update_rainer_file,
-               create_rainer_directory, create_rainer_file)
+               create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory)
 from .gpt.gpt import get_gpt
 from .instructions import build_refactor_instructions, unpack_file_ref, get_file_ref_definitions
-from .models import CodeGenerationData, RainerFile
+from .models import CodeGenerationData
+from .types import RainerFile
 from django.db import models
 
 
@@ -22,12 +23,12 @@ def get_rainer_tree(request):
 # 📁 Endpoint to get the contents of a specific file
 @quicke.endpoint("rainer/file", {
     "response_type": "string",
-    "query_params": ["branch", "path"]
+    "query_params": ["project", "path"]
 })
 def get_file_contents(request):
-    branch = request.GET.get("branch", "")
+    project = request.GET.get("project", "")
     path = request.GET.get("path", "")
-    return JsonResponse(get_rainer_file_contents(branch, path), safe=False)
+    return JsonResponse(get_rainer_file_contents(project, path), safe=False)
 
 
 # ✍️ Endpoint to create a new file
@@ -47,19 +48,19 @@ def create_file(request):
     instructions = build_refactor_instructions(refactor, "create")
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
-    branch, path = unpack_file_ref(refactor)
-    create_rainer_file(branch, path, f"{response}\n")
+    project, path = unpack_file_ref(refactor)
+    create_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
         instructions=instructions,
         response=response,
-        rainer_branch=branch,
+        rainer_project=project,
         rainer_path=path,
         drop_number=CodeGenerationData.create_drop_number()
     )
 
-    return JsonResponse({"branch": branch, "path": path}, status=201)
+    return JsonResponse({"project": project, "path": path}, status=201)
 
 
 # 🔄 Endpoint to update an existing file
@@ -79,32 +80,32 @@ def update_file(request):
     instructions = build_refactor_instructions(refactor, "update")
     response = get_gpt().send_instructions(reference_definitions + instructions)
 
-    branch, path = unpack_file_ref(refactor)
-    update_rainer_file(branch, path, f"{response}\n")
+    project, path = unpack_file_ref(refactor)
+    update_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model="gpt-4o-mini",
         instructions=instructions,
         response=response,
-        rainer_branch=branch,
+        rainer_project=project,
         rainer_path=path,
         drop_number=CodeGenerationData.create_drop_number()
     )
 
-    return JsonResponse({"branch": branch, "path": path}, status=200)
+    return JsonResponse({"project": project, "path": path}, status=200)
 
 
 # 🗑️ Endpoint to delete a file
 @csrf_exempt
 @quicke.endpoint("rainer/file/del", {
     "method": "DELETE",
-    "query_params": ["branch", "path"],
+    "query_params": ["project", "path"],
     "response_type": "void"
 })
 def delete_file(request):
-    branch = request.GET.get("branch", "")
+    project = request.GET.get("project", "")
     path = request.GET.get("path", "")
-    delete_file(branch, path)
+    delete_rainer_file(project, path)
     return JsonResponse({}, status=204)
 
 
@@ -112,14 +113,14 @@ def delete_file(request):
 @csrf_exempt
 @quicke.endpoint("rainer/directory/new", {
     "method": "POST",
-    "body_type": "{branch: string, path: string}",
+    "body_type": "{project: string, path: string}",
     "response_type": "void"
 })
 def create_directory(request):
     data = json.loads(request.body)
-    branch = data["branch"]
+    project = data["project"]
     path = data["path"]
-    create_directory(branch, path)
+    create_rainer_directory(project, path)
     return JsonResponse({}, status=201)
 
 
@@ -127,13 +128,13 @@ def create_directory(request):
 @csrf_exempt
 @quicke.endpoint("rainer/directory/del", {
     "method": "DELETE",
-    "query_params": ["branch", "path"],
+    "query_params": ["project", "path"],
     "response_type": "void"
 })
 def delete_directory(request):
-    branch = request.GET.get("branch", "")
+    project = request.GET.get("project", "")
     path = request.GET.get("path", "")
-    delete_directory(branch, path)
+    delete_rainer_directory(project, path)
     return JsonResponse({}, status=204)
 
 
@@ -147,7 +148,7 @@ def delete_directory(request):
 })
 def get_file_drops(request):
     rainer_file = RainerFile.from_dict(json.loads(request.body))
-    drops = CodeGenerationData.objects.filter(rainer_branch=rainer_file.branch, rainer_path=rainer_file.path).values(
+    drops = CodeGenerationData.objects.filter(rainer_branch=rainer_file.project, rainer_path=rainer_file.path).values(
         'drop_number').annotate(count=models.Count('id'))
     drop_dict = {str(drop['drop_number']): drop['count'] for drop in drops}
     return JsonResponse(drop_dict, safe=False)

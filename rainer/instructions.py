@@ -23,7 +23,7 @@ def build_use_file_ref(file_ref: RainerFile) -> str:
 
 
 class RefactorFile(RainerFile):
-    branch: str
+    project: str
     path: str
     content: str
     file_references: List[RainerFile]
