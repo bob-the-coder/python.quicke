@@ -1,6 +1,7 @@
 import json
-from typing import List, Optional
+from typing import List, Optional, Dict
 
+from rainer.fileapi import get_rainer_file_contents, unpack_file_ref
 from ..settings import DEFAULT_GPT_MODEL
 from ..gpt.gpt_assistant_base import OpenAIAssistantProvider
 from ..models import CodeGenerationData
@@ -59,7 +60,7 @@ class GPTAssistantAPI:
                 llm_model=self.assistant_provider.model,
                 instructions=[instruction],
                 response=generated_code,
-                rainer_branch=branch,
+                rainer_project=branch,
                 rainer_path=path
             )
 

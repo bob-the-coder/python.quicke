@@ -7,9 +7,14 @@ from .settings import RAINER_PROJECTS, EXCLUDED_FILE_EXTENSIONS, EXCLUDED_FILE_N
 
 
 def unpack_file_ref(file_ref: RainerFile) -> Tuple[str, str]:
-    branch = file_ref.project or ""
+    if isinstance(file_ref, Dict):
+        project = file_ref.get("project", "")
+        path = file_ref.get("path", "")
+        return project, path
+    
+    project = file_ref.project or ""
     path = file_ref.path or ""
-    return branch, path
+    return project, path
 
 
 def build_nested_tree(base_dir: str) -> Dict[str, Union[str, Dict]]:
@@ -51,6 +56,7 @@ def build_rainer_trees() -> Dict[str, Dict[str, Union[str, Dict]]]:
 def refresh_trees() -> None:
     global project_trees
     project_trees = build_rainer_trees()
+
 
 def get_file_path(project: str, relative_path: str) -> str:
     base_path = paths.get(project, "")

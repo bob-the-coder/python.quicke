@@ -13,20 +13,20 @@ class CodeGenerationData(BaseModel):
     llm_model: str = models.CharField(max_length=255)
     instructions: List[Dict[str, str]] = models.JSONField(default=list)
     response: str = models.TextField(default="")
-    rainer_branch: str = models.CharField(max_length=255, default="")
+    rainer_project: str = models.CharField(max_length=255, default="")
     rainer_path: str = models.CharField(max_length=255, default="")
     drop_number: int = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ("-created_at", "rainer_branch", "rainer_path", "llm_model")
+        ordering = ("-created_at", "rainer_project", "rainer_path", "llm_model")
 
     @property
     def rainer_file_instance(self) -> RainerFile:
-        return RainerFile(branch=self.rainer_branch, path=self.rainer_path)
+        return RainerFile(project=self.rainer_project, path=self.rainer_path)
 
     @rainer_file_instance.setter
     def rainer_file_instance(self, value: RainerFile) -> None:
-        self.rainer_branch = value.project
+        self.rainer_project = value.project
         self.rainer_path = value.path
 
     @classmethod

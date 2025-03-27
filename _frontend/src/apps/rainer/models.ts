@@ -10,7 +10,7 @@ export interface CodeGenerationData {
   llm_model: string;
   instructions: unknown;
   response: string;
-  rainer_branch: string;
+  rainer_project: string;
   rainer_path: string;
   drop_number: number;
 }

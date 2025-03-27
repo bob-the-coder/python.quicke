@@ -172,7 +172,7 @@ def delete_directory(request):
 })
 def get_file_drops(request):
     rainer_file = RainerFile.from_dict(json.loads(request.body))
-    drops = CodeGenerationData.objects.filter(rainer_branch=rainer_file.project, rainer_path=rainer_file.path).values(
+    drops = CodeGenerationData.objects.filter(rainer_project=rainer_file.project, rainer_path=rainer_file.path).values(
         'drop_number').annotate(count=models.Count('id'))
     drop_dict = {str(drop['drop_number']): drop['count'] for drop in drops}
     return JsonResponse(drop_dict, safe=False)
