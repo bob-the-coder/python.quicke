@@ -1,7 +1,6 @@
-import uuid
 from django.core.management.base import BaseCommand
 
-from rainer import RainerFile
+from rainer.instructions import RefactorFile
 from rainer.operations import refactor_op
 
 
@@ -13,5 +12,10 @@ class Command(BaseCommand):
         path = input("Specify file: ")
         instruction = input("What changes?: ")
 
-        result = refactor_op(RainerFile(project, path), instruction)
+        refactor_file = RefactorFile(
+            project=project,
+            path=path,
+            content=instruction
+        )
+        result = refactor_op(refactor_file)
         print(result)

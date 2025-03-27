@@ -101,10 +101,13 @@ def create_file(request):
 })
 def update_file(request):
     refactor_file = json.loads(request.body)
+    project, path = unpack_file_ref(refactor_file)
 
     response = refactor_op(refactor_file)
+    if not response.strip() or response.strip().startswith("FAILED"):
+        print("failed")
+        return JsonResponse({"project": project, "path": path}, status=200)
 
-    project, path = unpack_file_ref(refactor_file)
     update_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(

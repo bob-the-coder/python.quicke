@@ -61,10 +61,15 @@ MIDDLEWARE = [
 ]
 
 load_dotenv()
+
+cors_origins = os.getenv("API_CLIENTS", "")
+
 CORS_ALLOWED_ORIGINS = [
-    origin.strip() for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+    origin.strip() for origin in cors_origins.split(",")
     if origin.strip()
 ]
+CSRF_TRUSTED_ORIGINS = [*CORS_ALLOWED_ORIGINS]
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 ROOT_URLCONF = 'api.urls'

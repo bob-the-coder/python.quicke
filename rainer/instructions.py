@@ -29,7 +29,10 @@ class RefactorFile(RainerFile):
     project: str
     path: str
     content: str
-    file_references: List[RainerFile]
+
+    def __init__(self, project: str, path: str, content: str):
+        super().__init__(project, path)
+        self.content = content
 
 
 def get_file_ref_definitions(file_references: List[RainerFile]) -> List[str]:
@@ -52,7 +55,7 @@ OUTPUT_AS_PLAINTEXT = """
 
 
 def build_refactor_instructions(refactor: RefactorFile, action: str = "update") -> List[str]:
-    file_references = refactor.file_references or []
+    file_references = []
     refactor_instructions = make_create_target_instructions(refactor) if action == "create" else \
         make_update_target_instructions(refactor)
 

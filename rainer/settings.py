@@ -1,9 +1,13 @@
+import os
 
 DEFAULT_GPT_MODEL = "gpt-4o-mini"
 
 
+rainer_projects = os.getenv("RAINER_PROJECTS", "")
+
 RAINER_PROJECTS = {
-    "Quicke": r"C:\Users\Assistech2\Desktop\calin\projects\python.quicke",
+    p.split(",")[0]: p.split(",")[1]
+    for p in rainer_projects.split(";")
 }
 
 EXCLUDED_DIRS = {
