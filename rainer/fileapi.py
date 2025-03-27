@@ -34,11 +34,15 @@ def build_nested_tree(base_dir: str) -> Dict[str, Union[str, Dict]]:
     return tree
 
 
+def replace_slashes(path: str) -> str:
+    return path.replace("\\", "/")
+
+
 def build_rainer_trees() -> Dict[str, Dict[str, Union[str, Dict]]]:
     return {
         project: {
-            "__path__": path,
-            **build_nested_tree(path),
+            "__path__": replace_slashes(path),
+            **build_nested_tree(replace_slashes(path)),
         }
         for project, path in RAINER_PROJECTS.items()
     }

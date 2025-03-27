@@ -3,7 +3,7 @@ DEFAULT_GPT_MODEL = "gpt-4o-mini"
 
 
 RAINER_PROJECTS = {
-    "Quickr": "H:\projects\python\python.quickr",
+    "Quicke": r"C:\Users\Assistech2\Desktop\calin\projects\python.quicke",
 }
 
 EXCLUDED_DIRS = {
