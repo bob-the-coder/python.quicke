@@ -12,7 +12,7 @@ from agents import (
     ToolCallItem,  # 🛠️ Represents a call to a tool
     ToolCallOutputItem,  # 🔧 Output of a tool call
 )
-from rainer.agents import refactor_agent  # ⚙️ Agent specialized for refactoring
+from rainer.agents.refactor_agent import refactor_agent  # ⚙️ Agent specialized for refactoring
 from rainer.fileapi import unpack_file_ref  # 📦 Unpack file references
 from rainer.instructions import RefactorFile  # 📜 Definition for refactoring files
 
@@ -68,7 +68,7 @@ def run_refactor_loop(conversation_id: str, input_items: list):
                                 draft = result
                                 text_output = "DOUBLE-CHECKING"
                                 did_double_check = True
-                                input_items.append(as_user("DOUBLE-CHECK the generated code"))
+                                input_items.append(as_user("DOUBLECHECK"))
                                 print(f"STEP {step} | DOUBLE-CHECKING")
                             else:
                                 print(f"STEP {step} | HAS OUTPUT")

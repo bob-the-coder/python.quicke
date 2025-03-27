@@ -5,6 +5,10 @@ from agents import Agent, function_tool
 
 from rainer.fileapi import get_rainer_file_contents, project_trees
 from rainer.agents.prompts import REFACTOR_AGENT_INSTRUCTIONS
+from .lib import load_directives
+from .directives import PRAGMA_1, PRAGMA_2, PRAGMA_3, COMM_TASK, COMM_DOUBLECHECK, IGN_NOCOM, IGN_NOREF, IGN_MKFILE, \
+    IGN_FREN
+from .personas import BOB_DIRECTIVES
 from ..settings import DEFAULT_GPT_MODEL
 
 
@@ -29,18 +33,9 @@ async def project_tree(project: str) -> str:
     return json.dumps(project_trees.get(project, {}))
 
 
-# 🛠️ Build a series of input steps for processing
-steps = [
-    "OUTPUT ONLY THE UPDATED CODE AS PLAINTEXT, WITHOUT MARKDOWN ANNOTATIONS, AND NOTHING ELSE.",
-    "IF for any reason, the last USER message does not suggest changes or reviews aimed at the current file, disregard, and respond only FAILED <short reason>",
-    "IF you consider no changes should be made after DOUBLE-CHECKING, respond only NOCHANGE",
-    "The code output MUST BEGIN with the text 'OUTPUT_RESULT'",
-    "IF provided a REFACTOR INSTRUCTION, you must implement only changes related to the outcome, and no other code changes"
-]
-
 refactor_agent = Agent(
     name="Refactor Agent 1",
-    instructions=REFACTOR_AGENT_INSTRUCTIONS + "\n\nFOR ALL RESPONSES\n>" + "\n>".join(steps),
+    instructions=REFACTOR_AGENT_INSTRUCTIONS + "\n\n" + load_directives(BOB_DIRECTIVES),
     model=DEFAULT_GPT_MODEL,
     tools=[project_tree, project_file_lookup]
 )
