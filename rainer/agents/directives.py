@@ -9,7 +9,9 @@ PRAGMA_8 = "DO NOT INVENT functionality not implied by the INSTRUCTION or CONTEX
 
 
 COMM_TASK = "COMMAND: TASK - Provided REFACTOR FILE and REFACTOR INSTRUCTION, modify the original code to meet requirements."
-COMM_DOUBLECHECK = "COMMAND: DOUBLECHECK - Ensure CHANGES meet REFACTOR INSTRUCTION requirements without creating new issues."
+COMM_DOUBLECHECK = ("COMMAND: DOUBLECHECK - Ensure CHANGES meet REFACTOR INSTRUCTION requirements without creating new issues. "
+                    "If any changes are required, IMPLEMENT the required changes following the same guidelines. "
+                    "If no changes are required, respond with NOCHANGE {explicit and demonstrable reason}")
 COMM_CREATEFILE = "COMMAND: CREATEFILE - Generate a NEW file with provided name and content structure."
 COMM_REVIEW = "COMMAND: REVIEW - Perform a semantic code review, focused on correctness, security, and clarity."
 COMM_CLEANUP = "COMMAND: CLEANUP - Remove dead code, unused imports, and apply formatting standards."

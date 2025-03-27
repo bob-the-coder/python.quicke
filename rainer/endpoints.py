@@ -5,7 +5,7 @@ from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
-from .agents import refactor_agent
+from .agents.refactor_agent import refactor_agent
 from .fileapi import (
     get_rainer_file_contents, project_trees, update_rainer_file, unpack_file_ref,
     create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory,
