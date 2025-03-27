@@ -4,7 +4,7 @@ from typing import Optional
 from agents import Agent, function_tool
 
 from rainer.fileapi import get_rainer_file_contents, project_trees
-from rainer.agents.prompts import REFACTOR_PROMPT
+from rainer.agents.prompts import REFACTOR_AGENT_INSTRUCTIONS
 from ..settings import DEFAULT_GPT_MODEL
 
 
@@ -31,7 +31,7 @@ async def project_tree(project: str) -> str:
 
 refactor_agent = Agent(
     name="Refactor Agent 1",
-    instructions=REFACTOR_PROMPT,
+    instructions=REFACTOR_AGENT_INSTRUCTIONS,
     model=DEFAULT_GPT_MODEL,
     tools=[project_tree, project_file_lookup]
 )

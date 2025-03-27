@@ -5,6 +5,7 @@ from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
+from .agents import refactor_agent
 from .fileapi import (
     get_rainer_file_contents, project_trees, update_rainer_file, unpack_file_ref,
     create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory,
@@ -15,6 +16,8 @@ from rainer.instructions import build_refactor_instructions, get_file_ref_defini
 from rainer.models import CodeGenerationData
 from rainer.types import RainerFile
 from django.db import models
+
+from .operations import refactor_op
 
 
 # 🌳 Endpoint to get the Rainer tree structure
@@ -97,20 +100,16 @@ def create_file(request):
     "imports": [("./types", "RefactorRainerFile"), ("./models", "RainerFile")]
 })
 def update_file(request):
-    refactor = json.loads(request.body)
-    if not refactor.get("content", ""):
-        return JsonResponse({}, status=201)
+    refactor_file = json.loads(request.body)
 
-    reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
-    instructions = build_refactor_instructions(refactor, "update")
-    response = get_gpt().send_instructions(reference_definitions + instructions)
+    response = refactor_op(refactor_file)
 
-    project, path = unpack_file_ref(refactor)
+    project, path = unpack_file_ref(refactor_file)
     update_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
-        llm_model="gpt-4o-mini",
-        instructions=instructions,
+        llm_model=refactor_agent.model,
+        instructions=[],
         response=response,
         rainer_project=project,
         rainer_path=path,
