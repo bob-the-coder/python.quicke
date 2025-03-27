@@ -6,7 +6,7 @@ from typing import Optional
 import openai
 from django.conf import settings
 
-from ..assistant_prompts import COMPREHENSIVE_ASSISTANT_PROMPT
+from rainer.agents.prompts import COMPREHENSIVE_ASSISTANT_PROMPT
 from ..settings import DEFAULT_GPT_MODEL
 
 # Get the absolute path to the project root directory

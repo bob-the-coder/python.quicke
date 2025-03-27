@@ -5,13 +5,15 @@ from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import quicke
-from .fileapi import (get_rainer_file_contents, project_trees, update_rainer_file, unpack_file_ref,
-                      create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory,
-                      get_file_path)
-from .gpt.gpt import get_gpt
-from .instructions import build_refactor_instructions, get_file_ref_definitions
-from .models import CodeGenerationData
-from .types import RainerFile
+from .fileapi import (
+    get_rainer_file_contents, project_trees, update_rainer_file, unpack_file_ref,
+    create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory,
+    get_file_path
+)
+from rainer.gpt.gpt import get_gpt
+from rainer.instructions import build_refactor_instructions, get_file_ref_definitions
+from rainer.models import CodeGenerationData
+from rainer.types import RainerFile
 from django.db import models
 
 
@@ -23,12 +25,14 @@ from django.db import models
 def get_rainer_tree(_):
     return JsonResponse(project_trees, safe=False)
 
+
 # Ensure `.webp` and other formats are recognized
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/png", ".png")
 mimetypes.add_type("image/jpeg", ".jpg")
 mimetypes.add_type("image/jpeg", ".jpeg")
 mimetypes.add_type("image/gif", ".gif")
+
 
 # 📁 Endpoint to get the contents of a specific file
 @quicke.endpoint("rainer/file", {
@@ -45,7 +49,6 @@ def get_file_contents(request):
 
     if not os.path.isfile(file_path):
         return JsonResponse({"error": "File not found"}, status=404)
-
 
     if mime_type and mime_type.startswith("image/"):
         return FileResponse(open(file_path, "rb"), content_type=mime_type)

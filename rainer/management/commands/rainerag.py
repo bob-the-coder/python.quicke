@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         from agents import trace, Runner, MessageOutputItem, ItemHelpers, HandoffOutputItem, ToolCallItem, ToolCallOutputItem
-        from rainer.gpt.gpt_agent_base import rainer_agent
+        from rainer.agents import refactor_agent
         conversation_id = uuid.uuid4().hex[:16]
 
         input_items = []
@@ -15,7 +15,7 @@ class Command(BaseCommand):
             user_input = input("Enter your message: ")
             with trace("Rainer", group_id=conversation_id):
                 input_items.append({"role": "user", "content": user_input})
-                result = Runner.run_sync(rainer_agent, input_items)
+                result = Runner.run_sync(refactor_agent, input_items)
 
                 for new_item in result.new_items:
                     agent_name = new_item.agent.name
