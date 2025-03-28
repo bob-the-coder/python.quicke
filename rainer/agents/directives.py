@@ -1,72 +1,139 @@
-﻿PRAGMA_1 = "IF you consider no changes should be made after DOUBLE-CHECKING, respond only NOCHANGE!"
-PRAGMA_2 = "The code output MUST BEGIN with the text 'OUTPUT_RESULT'!"
-PRAGMA_3 = "OUTPUT ONLY THE UPDATED CODE AS PLAINTEXT, WITHOUT MARKDOWN ANNOTATIONS, AND NOTHING ELSE!"
-PRAGMA_4 = "ALWAYS SANITIZE inputs and validate OUTPUT format before responding!"
-PRAGMA_5 = "STRUCTURE ALL JSON responses using compact formatting unless specified otherwise."
-PRAGMA_6 = "WHEN a file change is applied, include ONLY the changed file contents in the output!"
-PRAGMA_7 = "IF a task is INCOMPLETE or AMBIGUOUS, respond with REQUEST_CLARIFICATION!"
-PRAGMA_8 = "DO NOT INVENT functionality not implied by the INSTRUCTION or CONTEXT!"
+﻿# ──────────────────────────────────────────────────────────────
+# OVERDRIVE — Squad Commander Directives
+from rainer.agents.all_directives import *
 
+OVERDRIVE_PRAGMA = [
+    PRAGMA_2, PRAGMA_3, PRAGMA_4, PRAGMA_6, PRAGMA_7, PRAGMA_8
+]
+OVERDRIVE_COMM = [
+    COMM_TASK, COMM_DOUBLECHECK, COMM_REVIEW
+]
+OVERDRIVE_IGN = [
+    IGN_NOCOM, IGN_NOREF, IGN_CHATTER, IGN_REPHRASE, IGN_EXCESS
+]
+OVERDRIVE_CLEANCODE = [
+    CLEANCODE_NAMEINTENT, CLEANCODE_COHESION, CLEANCODE_NO_DUPL
+]
+OVERDRIVE_ZEN = [
+    ZEN_STARTWITHWHY, ZEN_CONTEXTUALIZE, ZEN_SUCCESS,
+    ZEN_FAILMODE, ZEN_NOASSUME, ZEN_BREAKDOWN, ZEN_TODOFLAG,
+    ZEN_NAMETHETHING, ZEN_WHATNOT
+]
+OVERDRIVE_DIRECTIVES = (
+    OVERDRIVE_PRAGMA +
+    OVERDRIVE_COMM +
+    OVERDRIVE_IGN +
+    OVERDRIVE_CLEANCODE +
+    OVERDRIVE_ZEN
+)
 
-COMM_TASK = "COMMAND: TASK - Provided REFACTOR FILE and REFACTOR INSTRUCTION, modify the original code to meet requirements."
-COMM_DOUBLECHECK = ("COMMAND: DOUBLECHECK - Ensure CHANGES meet REFACTOR INSTRUCTION requirements without creating new issues. "
-                    "If any changes are required, IMPLEMENT the required changes following the same guidelines. "
-                    "If no changes are required, respond with NOCHANGE {explicit and demonstrable reason}")
-COMM_CREATEFILE = "COMMAND: CREATEFILE - Generate a NEW file with provided name and content structure."
-COMM_REVIEW = "COMMAND: REVIEW - Perform a semantic code review, focused on correctness, security, and clarity."
-COMM_CLEANUP = "COMMAND: CLEANUP - Remove dead code, unused imports, and apply formatting standards."
-COMM_VALIDATE = "COMMAND: VALIDATE - Ensure schema, route, and logic align with backend and frontend expectations."
-COMM_MODERATE = "COMMAND: MODERATE - Inspect the reasoning, tone, and adherence to established rules of a given message or task."
+# ──────────────────────────────────────────────────────────────
+# NEONRAIL — Fullstack Orchestrator
+NEONRAIL_CLEANCODE = [
+    CLEANCODE_COHESION, CLEANCODE_FN_SHORT, CLEANCODE_NO_DUPL
+]
+NEONRAIL_ZEN = [
+    ZEN_SIMPLE, ZEN_NAMESPACE, ZEN_NAMETHETHING, ZEN_CONTEXTUALIZE
+]
+NEONRAIL_DIRECTIVES = (
+    NEONRAIL_CLEANCODE +
+    NEONRAIL_ZEN
+)
 
+# ──────────────────────────────────────────────────────────────
+# SUGARBYTE — Frontend Vigilante
+SUGARBYTE_CLEANCODE = [
+    CLEANCODE_FN_SHORT, CLEANCODE_NAMEINTENT, CLEANCODE_EXPRESSIVE
+]
+SUGARBYTE_ZEN = [
+    ZEN_SIMPLE, ZEN_EXPLICIT, ZEN_READFIRST, ZEN_ERRORS
+]
+SUGARBYTE_DIRECTIVES = (
+    SUGARBYTE_CLEANCODE +
+    SUGARBYTE_ZEN
+)
 
-IGN_NOCOM ="IGNORE messages that are not COMMANDS!"
-IGN_NOREF = "IGNORE messages that do not suggest CHANGES or REVIEWS AIMED at the REFACTOR FILE!"
-IGN_MKFILE = "IGNORE messages that do suggest CREATION of a new file!"
-IGN_FREN = "WHEN IGNORING messages, respond only with FAILED {short reason}"
-IGN_NOFILE = "IGNORE requests that reference files not in the project manifest!"
-IGN_CHATTER = "IGNORE informal or small-talk messages unrelated to the REFACTOR or REVIEW task!"
-IGN_REPHRASE = "IGNORE requests that merely rephrase prior instructions without adding new information!"
-IGN_EXCESS = "IGNORE instructions that exceed the scope of the current COMMAND unless explicitly extended!"
+# ──────────────────────────────────────────────────────────────
+# BLACKSOCKET — Backend Infiltrator
+BLACKSOCKET_CLEANCODE = [
+    CLEANCODE_COHESION, CLEANCODE_NAMEINTENT, CLEANCODE_NO_DUPL
+]
+BLACKSOCKET_ZEN = [
+    ZEN_STARTWITHWHY, ZEN_EXAMPLEFIRST, ZEN_FAILMODE, ZEN_NOASSUME
+]
+BLACKSOCKET_DIRECTIVES = (
+    BLACKSOCKET_CLEANCODE +
+    BLACKSOCKET_ZEN
+)
 
+# ──────────────────────────────────────────────────────────────
+# CHROMEDUMP — Database Whisperer
+CHROMEDUMP_ZEN = [
+    ZEN_NOASSUME, ZEN_SUCCESS, ZEN_NAMETHETHING, ZEN_CONTEXTUALIZE
+]
+CHROMEDUMP_DIRECTIVES = (
+    CHROMEDUMP_ZEN
+)
 
-CLEANCODE_FN_SHORT = "FUNCTIONS must be SMALL, do ONE thing, and have DESCRIPTIVE names!"
-CLEANCODE_CLASS_RESP = "CLASSES must have ONE RESPONSIBILITY. Do not mix data logic with orchestration or UI concerns!"
-CLEANCODE_DEP_DIR = "DEPENDENCIES must flow inward. High-level policies MUST NOT depend on low-level implementation details!"
-CLEANCODE_EXPRESSIVE = "CODE should be EXPRESSIVE over being CLEVER. READABILITY trumps brevity!"
-CLEANCODE_NO_DUPL = "DUPLICATION IS EVIL. Abstract repeated logic into meaningful, reusable functions or modules!"
-CLEANCODE_BOUNDARY = "SEPARATE concerns CLEANLY — UI, Business Rules, and Infrastructure should not bleed into each other!"
-CLEANCODE_FAILFAST = "VALIDATE early. FAIL FAST when inputs are invalid or assumptions break!"
-CLEANCODE_PURE = "PREFER PURE FUNCTIONS where possible — no side effects unless explicitly needed!"
-CLEANCODE_NAMEINTENT = "NAMES must REVEAL INTENT. Avoid cryptic variables or abbreviations!"
-CLEANCODE_COHESION = "KEEP modules and components TIGHTLY COHESIVE. Related logic should live together."
+# ──────────────────────────────────────────────────────────────
+# ZENPROXY — DevOps Liaison
+ZENPROXY_ZEN = [
+    ZEN_STARTWITHWHY, ZEN_CONTEXTUALIZE, ZEN_FAILMODE,
+    ZEN_NAMESPACE, ZEN_NOASSUME
+]
+ZENPROXY_DIRECTIVES = (
+    ZENPROXY_ZEN
+)
 
-ZEN_SIMPLE = "SIMPLE is better than complex. Choose the simplest implementation that works reliably."
-ZEN_EXPLICIT = "EXPLICIT is better than implicit. Avoid magic. State assumptions clearly in code."
-ZEN_NOW = "NOW is better than never, but NEVER is often better than *right now* — do not rush poor architecture."
-ZEN_READFIRST = "CODE is read FAR MORE often than written. Optimize for the reader."
-ZEN_ERRORS = "ERRORS should NEVER pass silently... unless explicitly silenced with purpose!"
-ZEN_NAMESPACE = "FLAT is better than nested. Avoid unnecessary layers of indirection."
+# ──────────────────────────────────────────────────────────────
+# HEXLACE — Form Validator
+HEXLACE_ZEN = [
+    ZEN_EXPLICIT, ZEN_SIMPLE, ZEN_FAILMODE, ZEN_BREAKDOWN
+]
+HEXLACE_CLEANCODE = [
+    CLEANCODE_NAMEINTENT, CLEANCODE_EXPRESSIVE
+]
+HEXLACE_DIRECTIVES = (
+    HEXLACE_CLEANCODE +
+    HEXLACE_ZEN
+)
 
+# ──────────────────────────────────────────────────────────────
+# QUANTFLASH — Hot Reloader
+QUANTFLASH_ZEN = [
+    ZEN_SIMPLE, ZEN_EXPLICIT, ZEN_READFIRST
+]
+QUANTFLASH_DIRECTIVES = (
+    QUANTFLASH_ZEN
+)
 
-ZEN_STARTWITHWHY = "ALWAYS begin by identifying the PURPOSE and VALUE of the task before analyzing implementation details."
-ZEN_CONTEXTUALIZE = "ANCHOR the task within its CONTEXT — project stage, user journey, domain, and constraints must be explicitly understood."
-ZEN_ROLEALIGN = "ENSURE all ROLES involved in the task understand their OWNERSHIP, boundaries, and communication touchpoints."
-ZEN_DEPTRACE = "TRACE all DEPENDENCIES and related modules — upstream and downstream — that may be affected by the task."
-ZEN_INTERROGATE = "ASK QUESTIONS until there are NO UNKNOWN VARIABLES. Ambiguity must be exposed and resolved collaboratively."
-ZEN_SUCCESS = "DEFINE what SUCCESS looks like — outputs, side-effects, and edge conditions must be made explicit and testable."
-ZEN_FAILMODE = "IDENTIFY possible FAILURE MODES early. The path to resilience starts with awareness."
-ZEN_DOCALWAYS = "DOCUMENT assumptions, gaps, constraints, and unresolved issues as FIRST-CLASS citizens of the task itself."
-ZEN_SYNCHRONIZE = "SYNC early, SYNC often — team members must continuously align their evolving understanding of the task."
-ZEN_NOASSUME = "NEVER ASSUME requirements — if it’s not documented or confirmed, it’s UNKNOWN."
-ZEN_ADAPT = "BE READY to REFRAME the task if requirements uncover deeper flaws in upstream definitions or objectives."
-ZEN_SCOPELOCK = "ONCE requirements are finalized, LOCK SCOPE until implementation begins — discourage scope drift mid-build."
-ZEN_EXAMPLEFIRST = "USE examples or concrete scenarios to clarify vague requirements and anchor abstract logic."
-ZEN_BREAKDOWN = "DECOMPOSE the task into independent, traceable subtasks before implementation."
-ZEN_OWNWORDS = "REPHRASE the instruction in your OWN WORDS to confirm understanding with the team."
-ZEN_NOTHINGIMPLICIT = "TREAT all implicit rules or patterns as unknown until they are verbalized and recorded."
-ZEN_TODOFLAG = "IF any portion is unclear, FLAG it with a TODO + rationale before proceeding."
-ZEN_BASELINE = "ESTABLISH a BASELINE of current functionality to compare against any proposed change."
-ZEN_NAMETHETHING = "NAME the key elements of the task — inputs, flows, outputs — before any coding begins."
-ZEN_WHATNOT = "CLARIFY what the task explicitly does NOT cover to avoid assumption creep."
-ZEN_DESIGNSPACE = "IDENTIFY all viable SOLUTIONS before committing to one — don't converge too early."
-ZEN_TEAMMEMO = "LOG key team decisions and pivots in a single running memo or changelog tied to the task."
+# ──────────────────────────────────────────────────────────────
+# GUTTERZEN — Testing Oracle
+GUTTERZEN_ZEN = [
+    ZEN_FAILMODE, ZEN_SUCCESS, ZEN_CONTEXTUALIZE, ZEN_WHATNOT
+]
+GUTTERZEN_CLEANCODE = [
+    CLEANCODE_FN_SHORT, CLEANCODE_NAMEINTENT
+]
+GUTTERZEN_DIRECTIVES = (
+    GUTTERZEN_CLEANCODE +
+    GUTTERZEN_ZEN
+)
+
+# ──────────────────────────────────────────────────────────────
+# NULLDIVE — Security Consultant
+NULLDIVE_ZEN = [
+    ZEN_ERRORS, ZEN_NOASSUME, ZEN_CONTEXTUALIZE, ZEN_FAILMODE
+]
+NULLDIVE_DIRECTIVES = (
+    NULLDIVE_ZEN
+)
+
+# ──────────────────────────────────────────────────────────────
+# CASSETTEECHO — Documentation Bard
+CASSETTEECHO_ZEN = [
+    ZEN_READFIRST, ZEN_NOASSUME, ZEN_TODOFLAG, ZEN_EXAMPLEFIRST
+]
+CASSETTEECHO_DIRECTIVES = (
+    CASSETTEECHO_ZEN
+)
