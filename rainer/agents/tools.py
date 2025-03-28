@@ -7,7 +7,7 @@ from rainer.fileapi import get_rainer_file_contents, project_trees
 
 
 @function_tool(
-    name_override="rainer_file_lookup",
+    name_override="project_file_lookup",
     description_override="Lookup files in the project directory by providing a relative file path"
 )
 async def project_file_lookup(project: str, path: str) -> Optional[str]:

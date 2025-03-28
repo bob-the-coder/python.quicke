@@ -1,0 +1,11 @@
+# NEONRAIL_MODEL = "gpt-4-turbo"       # Needs context window for fullstack architecture, but optimized cost
+# SUGARBYTE_MODEL = "gpt-3.5-turbo"    # Fast, cheap — perfect for iterative UI/component shaping
+# BLACKSOCKET_MODEL = "gpt-4-turbo"    # Requires backend reasoning, secure flow logic, and Django intricacies
+# CHROMEDUMP_MODEL = "gpt-3.5-turbo"   # Good enough for SQL schema and migration planning at low cost
+# ZENPROXY_MODEL = "gpt-3.5-turbo"     # Infra ops fit well with fast, structured responses, low hallucination risk
+# HEXLACE_MODEL = "gpt-3.5-turbo"      # Validation logic + client/server sync don’t require expensive context depth
+# QUANTFLASH_MODEL = "gpt-3.5-turbo"   # Build config and toolchain tweaks benefit from speed over depth
+# GUTTERZEN_MODEL = "gpt-4-turbo"      # Testing logic with edge cases benefits from deeper pattern recognition
+# NULLDIVE_MODEL = "gpt-4-turbo"       # Security analysis, token flow audits need higher reliability and rigor
+# CASSETTEECHO_MODEL = "gpt-3.5-turbo" # Docs, changelogs, and context annotation work fine with cheaper model
+# OVERDRIVE_MODEL = "gpt-4-turbo"      # Central coordinator must manage high-context flow and cross-agent logic

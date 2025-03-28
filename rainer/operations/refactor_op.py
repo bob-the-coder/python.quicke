@@ -12,7 +12,7 @@ from agents import (
     ToolCallItem,  # 🛠️ Represents a call to a tool
     ToolCallOutputItem,  # 🔧 Output of a tool call
 )
-from rainer.agents.the_a_team import refactor_agent  # ⚙️ Agent specialized for refactoring
+from rainer.agents.the_a_team import AGENT_BLACKSOCKET  # ⚙️ Agent specialized for refactoring
 from rainer.fileapi import unpack_file_ref  # 📦 Unpack file references
 from rainer.instructions import RefactorFile  # 📜 Definition for refactoring files
 
@@ -48,7 +48,7 @@ def run_refactor_loop(conversation_id: str, input_items: list):
     try:
         while not text_output.startswith("OUTPUT_RESULT"):  # 🔄 Continue until output condition
             with trace("file refactoring", group_id=conversation_id):  # 📊 Trace the operation
-                result = Runner.run_sync(refactor_agent, input_items)  # 🏃‍♂️ Run the agent synchronously
+                result = Runner.run_sync(AGENT_BLACKSOCKET, input_items)  # 🏃‍♂️ Run the agent synchronously
                 input_items = result.to_input_list()  # 🔄 Prepare for next iteration
 
                 for new_item in result.new_items:  # 📦 Process each new output item

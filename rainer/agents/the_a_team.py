@@ -2,7 +2,7 @@ from agents import Agent
 from .tools import project_tree, project_file_lookup
 from .lib import load_directives, load_persona
 from ..settings import DEFAULT_GPT_MODEL
-from . import personas, directives, intros  # New module: `intros.py` stores *_INTRO constants
+from . import personas, directives, intros, models  # New module: `intros.py` stores *_INTRO constants
 
 
 def load_constant(module, const_name, default):
@@ -10,19 +10,20 @@ def load_constant(module, const_name, default):
 
 
 def build_agent(name: str):
-    persona = load_constant(personas, f"{name}_PERSONA", default="NO_PERSONA")
-    directives = load_constant(agent_directives, f"{name}_DIRECTIVES", default=[])
-    intro = load_constant(agent_intros, f"{name}_INTRO", default="NO_INTRO")
+    agent_persona = load_constant(personas, f"{name}_PERSONA", default="NO_PERSONA")
+    agent_directives = load_constant(directives, f"{name}_DIRECTIVES", default=[])
+    agent_intro = load_constant(intros, f"{name}_INTRO", default="NO_INTRO")
+    agent_model = load_constant(models, f"{name}_MODEL", default=DEFAULT_GPT_MODEL)
 
     agent = Agent(
         name=name,
-        instructions=load_persona(persona) + "\n\n" + load_directives(directives),
-        model=DEFAULT_GPT_MODEL,
+        instructions=load_persona(agent_persona) + "\n\n" + load_directives(agent_directives),
+        model=agent_model,
         tools=[project_tree, project_file_lookup],
     )
 
     # Attach extra agent metadata
-    setattr(agent, "intro", intro)
+    setattr(agent, "intro", agent_intro)
     return agent
 
 
