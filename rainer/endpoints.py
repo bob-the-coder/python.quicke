@@ -68,20 +68,20 @@ def get_file_contents(request):
     "imports": [("./types", "RefactorRainerFile"), ("./models", "RainerFile")]
 })
 def create_file(request):
-    refactor = json.loads(request.body)
-    if not refactor.get("content", ""):
-        return JsonResponse({}, status=201)
+    refactor_file = json.loads(request.body)
+    project, path = unpack_file_ref(refactor_file)
 
-    reference_definitions = get_file_ref_definitions(refactor.get("file_references", []))
-    instructions = build_refactor_instructions(refactor, "create")
-    response = get_gpt().send_instructions(reference_definitions + instructions)
+    from rainer.operations import makefile_op
+    response = makefile_op.execute(refactor_file)
+    if not response.strip() or response.strip().startswith("FAILED"):
+        print("failed")
+        return JsonResponse({"project": project, "path": path}, status=200)
 
-    project, path = unpack_file_ref(refactor)
     create_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
         llm_model=DEFAULT_GPT_MODEL,
-        instructions=instructions,
+        instructions=[],
         response=response,
         rainer_project=project,
         rainer_path=path,

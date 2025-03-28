@@ -1,4 +1,5 @@
-import React, { createContext, useContext } from "react";
+
+import React, { createContext, useContext, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   endpoint_get_rainer_tree,
@@ -31,6 +32,11 @@ interface RainerContextType {
 
 const RainerContext = createContext<RainerContextType | null>(null);
 
+const RainerProjectContext = createContext<{
+  project: string;
+  setProject: React.Dispatch<React.SetStateAction<string>>;
+} | null>(null);
+
 function useTree() {
   return useQuery({
     queryKey: ["rainer", "tree"],
@@ -48,7 +54,6 @@ function useFile({ project, path }: FileIdentifier) {
 
 export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
-
   const treeQuery = useTree();
 
   const createFileMutation = useMutation({
@@ -89,21 +94,43 @@ export const RainerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     },
   });
 
+  const [project, setProject] = useState<string>("");
+
+  const handleSetProject = (newProject: string) => {
+    if (typeof newProject !== 'string' || newProject.trim() === "") {
+      console.error("Invalid project name");
+      return; // Prevent setting invalid states
+    }
+    setProject(newProject);
+  };
+
   const value: RainerContextType = {
     getTree: treeQuery.data,
     getFile: useFile,
     createFile: { mutate: createFileMutation.mutate, isPending: createFileMutation.isPending },
-    updateFile: {mutate: updateFileMutation.mutate, isPending: updateFileMutation.isPending},
+    updateFile: { mutate: updateFileMutation.mutate, isPending: updateFileMutation.isPending },
     deleteFile: deleteFileMutation.mutate,
     createDirectory: createDirMutation.mutate,
     deleteDirectory: deleteDirMutation.mutate,
   };
 
-  return <RainerContext.Provider value={value}>{children}</RainerContext.Provider>;
+  return (
+    <RainerContext.Provider value={value}>
+      <RainerProjectContext.Provider value={{ project, setProject: handleSetProject }}>
+        {children}
+      </RainerProjectContext.Provider>
+    </RainerContext.Provider>
+  );
 };
 
 export function useRainer(): RainerContextType {
   const context = useContext(RainerContext);
   if (!context) throw new Error("useRainer must be used within a RainerProvider");
+  return context;
+}
+
+export function useRainerProject() {
+  const context = useContext(RainerProjectContext);
+  if (!context) throw new Error("useRainerProject must be used within a RainerProjectProvider");
   return context;
 }

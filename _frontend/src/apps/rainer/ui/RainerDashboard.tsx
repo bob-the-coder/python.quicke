@@ -1,7 +1,8 @@
+
 "use client";
 
 import {useState, useEffect} from "react";
-import {useRainer} from "@/apps/rainer/hooks";
+import {useRainer, useRainerProject} from "@/apps/rainer/hooks";
 import {FormRainerFileUpdate} from "@/apps/rainer/ui/FormRainerFileUpdate";
 import {RainerFileTree} from "@/apps/rainer/ui/RainerFileTree";
 import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
@@ -9,58 +10,53 @@ import {ScrollbarCustom} from "@/components/ScrollbarCustom";
 import {CopyToClipboard} from "@/components/CopyToClipboard";
 import {CreateFileModal} from "@/apps/rainer/ui/CreateFileModal";
 import {BiSearch} from "react-icons/bi";
-import RainerFileDrops from "@/apps/rainer/ui/RainerFileDrops"; // Import CreateFileModal 📂
+import RainerFileDrops from "@/apps/rainer/ui/RainerFileDrops"; 
 import TextInput from "@/components/TextInput/TextInput";
-import {FaFile, FaMinus, FaPlus} from "react-icons/fa6"; // Import TextInput component 📝
+import {FaFile, FaMinus, FaPlus} from "react-icons/fa6"; 
 import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 
 export default function RainerDashboard() {
 
-    const {getTree} = useRainer(); // Hook to interact with the Rainer API ☁️
-    const projects = Object.keys(getTree || {})
+    const {project, setProject} = useRainerProject(); 
+    const {getTree} = useRainer(); 
+    const projects = Object.keys(getTree || {});
 
-    const {search} = useLocation(); // Get the current query parameters from the URL 🔍
-    const navigate = useNavigate(); // Hook to programmatically navigate 🧭
-    const ts = new Date().getTime(); // Timestamp for forced component refresh 🕒
+    const {search} = useLocation();
+    const navigate = useNavigate(); 
+    const ts = new Date().getTime(); 
 
-    // Extract query parameters for "project" and "path" 📜
     const queryParams = new URLSearchParams(search);
-    const initialProject = (queryParams.get("b")) || projects[0]; // Default to "backend"
-    const initialPath = queryParams.get("p") || ""; // Initial path can be null
+    const initialProject = (queryParams.get("b")) || projects[0];
+    const initialPath = queryParams.get("p") || ""; 
 
-    // State for the selected project and file path 📁
-    const [selectedProject, setSelectedProject] = useState<string>(initialProject);
     const [selectedPath, setSelectedPath] = useState<string>(initialPath);
-    const [searchQuery, setSearchQuery] = useState<string>(''); // State for search input 🔍
+    const [searchQuery, setSearchQuery] = useState<string>(''); 
 
-    const fileQuery = useFileHook({project: selectedProject, path: selectedPath}); // Hook to fetch file data 📄
+    const fileQuery = useFileHook({project: project, path: selectedPath}); 
 
-    // Function to handle file selection 👈
     const handleSelectFile = (path: string) => {
-        setSelectedPath(path); // Update selected path 📍
-        navigate({search: `?b=${selectedProject}&p=${path}`}, {replace: true}); // Update URL query params 🔗
+        setSelectedPath(path); 
+        navigate({search: `?b=${project}&p=${path}`}, {replace: true}); 
     };
 
-    // Update the URL when project or path state changes 🔄
     useEffect(() => {
-        if (selectedProject !== initialProject || selectedPath !== initialPath) {
-            navigate({search: `?b=${selectedProject}&p=${selectedPath}`}, {replace: true});
+        if (project !== initialProject || selectedPath !== initialPath) {
+            navigate({search: `?b=${project}&p=${selectedPath}`}, {replace: true});
         }
-    }, [selectedProject, selectedPath, navigate, initialProject, initialPath]);
+    }, [project, selectedPath, navigate, initialProject, initialPath]);
 
     useEffect(() => {
         if (!getTree) return;
-        if (selectedProject) return;
-
-        setSelectedProject(projects[0])
-    }, [getTree, selectedProject, projects]);
+        if (project) return;
+        setProject(projects[0]);
+    }, [getTree, project, projects]);
 
     const changeProject = (project: string) => {
-        setSelectedProject(project);
-        setSelectedPath(""); // Reset file path on project change 🔄
-        setSearchQuery(''); // Reset search query 🔄
-        navigate({search: `?b=${project}&p=`}, {replace: true}); // Update URL query params 🔗
+        setProject(project);
+        setSelectedPath(""); 
+        setSearchQuery(''); 
+        navigate({search: `?b=${project}&p=`}, {replace: true});
     }
 
     if (!getTree) return "No projects"
@@ -83,24 +79,22 @@ export default function RainerDashboard() {
                         inputProps={{className: "border-none"}}
                         icon={<BiSearch className={'flex-shrink-0 text-lg'}/>}
                     />
-                    <CreateFileModal/> {/* Modal for creating new files ✨ */}
+                    <CreateFileModal/> 
                 </div>
 
                 <div className="w-full h-full p-2">
-                    {/* Project Tree 🌍 */}
                     <ScrollbarCustom noScrollX={true}>
                         <div className="flex-1 pt-2"/>
                         <RainerFileTree
-                            tree={getTree[selectedProject] || {}} // Use the backend file tree 📂
-                            onSelect={handleSelectFile} // Pass file selection handler 🖱️
-                            searchQuery={searchQuery} // Pass search query for filtering 🔍
+                            tree={getTree[project] || {}} 
+                            onSelect={handleSelectFile} 
+                            searchQuery={searchQuery} 
                         />
                         <div className="flex-1 pt-80"/>
                     </ScrollbarCustom>
                 </div>
             </div>
 
-            {/* Main content area 📖 */}
             <main className="h-full flex">
                 {selectedPath ? (
                     <div className="h-full flex w-full">
@@ -108,24 +102,23 @@ export default function RainerDashboard() {
                             <h1 className="typo-h1 p-4 px-6 border-b flex items-center gap-4 relative font-geist-mono">
                                 <FaFile/>
                                 {selectedPath}
-
                                 <div className="absolute right-0">
                                     <RainerFileDrops file={{
-                                        project: selectedProject,
+                                        project: project,
                                         path: selectedPath
-                                    }}/> {/* Drop functionalities for files 🪂 */}
+                                    }}/> 
                                 </div>
                             </h1>
                             <div className="h-full w-full p-2">
                                 <ScrollbarCustom>
-                                    {isPublicImage(selectedPath) ? <ImageView project={selectedProject} path={selectedPath}/> :
+                                    {isPublicImage(selectedPath) ? <ImageView project={project} path={selectedPath}/> :
                                         <TextView text={fileQuery.data}/>}
                                 </ScrollbarCustom>
                             </div>
                         </div>
                         <div className="w-1/4 border-l border-muted">
-                            <FormRainerFileUpdate key={ts} project={selectedProject}
-                                                  path={selectedPath}/> {/* File edit form ✏️ */}
+                            <FormRainerFileUpdate key={ts} project={project}
+                                                  path={selectedPath}/> 
                         </div>
                     </div>
                 ) : (
@@ -138,11 +131,9 @@ export default function RainerDashboard() {
     );
 }
 
-
 function isPublicImage(file: string) {
     return (file.match(/\.(jpe?g|png|webp|tiff?|gif)$/g)?.length || 0) > 0;
 }
-
 
 const zoomLevels = [
     50,
@@ -203,30 +194,28 @@ function TextView({text}: { text: string }) {
             )
             }
             <p className="p-4 w-full whitespace-pre font-geist-mono text-sm text-muted-foreground">
-                {text} {/* Display the content of the selected file 📜 */}
+                {text} 
             </p>
         </div>
     )
 }
 
-// Custom hook to handle file fetching 📥
 function useFileHook({
                          project, path
                      }: {
     project: string;
     path: string | null
 }) {
-    const {getFile} = useRainer(); // Hook to interact with the Rainer API ☁️
-    const query = getFile({project, path: path ?? ""}); // Fetch the file data 📄
-    const [localValue, setLocalValue] = useState(""); // Local state for file content 📋
+    const {getFile} = useRainer(); 
+    const query = getFile({project, path: path ?? ""}); 
+    const [localValue, setLocalValue] = useState(""); 
 
-    // Effect to update local value when the file data changes 🔄
     useEffect(() => {
         if (query.data !== undefined) setLocalValue(query.data);
     }, [query.data]);
 
     return {
-        data: localValue, // Expose local file content 📄
-        set: setLocalValue, // Function to update local file content ✏️
+        data: localValue, 
+        set: setLocalValue, 
     };
 }
