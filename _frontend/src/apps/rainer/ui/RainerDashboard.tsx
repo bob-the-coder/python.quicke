@@ -14,6 +14,7 @@ import RainerFileDrops from "@/apps/rainer/ui/RainerFileDrops";
 import TextInput from "@/components/TextInput/TextInput";
 import {FaFile, FaMinus, FaPlus} from "react-icons/fa6"; 
 import {Button} from "@/components/ui/button";
+import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import {cn} from "@/lib/utils";
 
 export default function RainerDashboard() {
@@ -64,10 +65,21 @@ export default function RainerDashboard() {
     return (
         <div className="grid grid-cols-[300px_1fr] h-screen">
             <div className="border-r border-muted h-full flex flex-col">
-                <div className="w-full flex flex-col igap-2 p-4 border-b">
-                    {projects.map((project) => (
-                        <h1 className={'typo-h1'} onClick={() => changeProject(project)}>{project}</h1>
-                    ))}
+                <div className="w-full flex items-center justify-between p-4 border-b">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="border rounded px-4">{project}</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {projects.map((proj) => (
+                                <DropdownMenuItem key={proj} onClick={() => changeProject(proj)}>
+                                    {proj}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="flex gap-2">
+                        <Button>Tasks</Button>
+                        <Button>Settings</Button>
+                    </div>
                 </div>
 
                 <div className="flex w-full items-center gap-3 p-2 border-b">

@@ -12,11 +12,11 @@ COMM_TASK = "COMMAND: TASK - Provided REFACTOR FILE and REFACTOR INSTRUCTION, mo
 COMM_DOUBLECHECK = ("COMMAND: DOUBLECHECK - Ensure CHANGES meet REFACTOR INSTRUCTION requirements without creating new issues. "
                     "If any changes are required, IMPLEMENT the required changes following the same guidelines. "
                     "If no changes are required, respond with NOCHANGE {explicit and demonstrable reason}")
-COMM_CREATEFILE = "COMMAND: CREATEFILE - Generate a NEW file with provided name and content structure."
-COMM_REVIEW = "COMMAND: REVIEW - Perform a semantic code review, focused on correctness, security, and clarity."
-COMM_CLEANUP = "COMMAND: CLEANUP - Remove dead code, unused imports, and apply formatting standards."
-COMM_VALIDATE = "COMMAND: VALIDATE - Ensure schema, route, and logic align with backend and frontend expectations."
-COMM_MODERATE = "COMMAND: MODERATE - Inspect the reasoning, tone, and adherence to established rules of a given message or task."
+COMM_CREATEFILE = ""# "COMMAND: CREATEFILE - Generate a NEW file with provided name and content structure."
+COMM_REVIEW = ""#"COMMAND: REVIEW - Perform a semantic code review, focused on correctness, security, and clarity."
+COMM_CLEANUP = ""#"COMMAND: CLEANUP - Remove dead code, unused imports, and apply formatting standards."
+COMM_VALIDATE = ""#"COMMAND: VALIDATE - Ensure schema, route, and logic align with backend and frontend expectations."
+COMM_MODERATE = ""#"COMMAND: MODERATE - Inspect the reasoning, tone, and adherence to established rules of a given message or task."
 
 
 IGN_NOCOM ="IGNORE messages that are not COMMANDS!"
