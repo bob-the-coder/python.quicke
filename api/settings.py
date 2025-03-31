@@ -32,11 +32,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'quicke',
     'rainer',
+    'task_manager',
     'api',
 ]
 
 QUICKE_APPS = [
-    "rainer"
+    "rainer",
+    "task_manager",
 ]
 
 # TypeScript generation settings

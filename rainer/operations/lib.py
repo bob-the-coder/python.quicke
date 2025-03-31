@@ -11,7 +11,7 @@ from agents import trace, Runner, MessageOutputItem, ItemHelpers
 
 # --- Base OperationSpec ---
 
-class OperationSpec(ABC):
+class AgentOperationSpec(ABC):
     conversation_id: str
     project: str
     path: str
@@ -90,7 +90,7 @@ class OperationSpec(ABC):
                 print("Refactoring failed")
                 return "FAILED"
 
-def __run_loop__(spec: OperationSpec):
+def __run_loop__(spec: AgentOperationSpec):
     try:
         asyncio.get_running_loop()
     except RuntimeError:

@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_SUGARBYTE, AGENT_HEXLACE, AGENT_OVERDRIVE
 from rainer.fileapi import unpack_file_ref, project_trees
 from rainer.instructions import RefactorFile
-from rainer.operations.lib import OperationSpec
+from rainer.operations.lib import AgentOperationSpec
 
 
 # --- MakeFileSpec Implementation ---
@@ -22,7 +22,7 @@ class MakeFileSpec(RefactorSpec):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        logging.info("Initialized MakeFileSpec(RefactorSpec) with parameters: %s", kwargs)
+        logging.info("Initialized MakeFileSpec(RefactorSpec)")
 
     def init(self):
         agent_intros = self.get_agent_intros()

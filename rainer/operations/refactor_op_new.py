@@ -12,25 +12,25 @@ from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_BLACKSOCKET, AGENT_GU
     AGENT_CASSETTEECHO
 from rainer.fileapi import unpack_file_ref
 from rainer.instructions import RefactorFile
-from rainer.operations.lib import OperationSpec
+from rainer.operations.lib import AgentOperationSpec
 
 
 # --- RefactorSpec Implementation ---
 
 @dataclass
-class RefactorSpec(OperationSpec):
+class RefactorSpec(AgentOperationSpec):
     step: int = 1
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        logging.info("Initialized RefactorSpec with parameters: %s", kwargs)
+        logging.info("Initialized RefactorSpec with parameters")
 
     def init(self):
         agent_intros = self.get_agent_intros()
         self.add_as_user([
             agent_intros,
             f"""## TASK
-### FROM PROJECT {self.project} REFACTOR FILE {self.path}
+### FROM PROJECT "{self.project}" REFACTOR FILE "{self.path}"
 ### REFACTOR INSTRUCTION: {self.instruction}
 ### OUTPUT INSTRUCTION: {self.output_instruction}
 
