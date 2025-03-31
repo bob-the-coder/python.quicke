@@ -8,7 +8,8 @@ from rainer import project_trees
 # Setting up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_BLACKSOCKET, AGENT_GUTTERZEN, AGENT_OVERDRIVE
+from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_BLACKSOCKET, AGENT_GUTTERZEN, AGENT_OVERDRIVE, \
+    AGENT_CASSETTEECHO
 from rainer.fileapi import unpack_file_ref
 from rainer.instructions import RefactorFile
 from rainer.operations.lib import OperationSpec
@@ -34,7 +35,8 @@ class RefactorSpec(OperationSpec):
 ### OUTPUT INSTRUCTION: {self.output_instruction}
 
 IMPLEMENT only what is REQUIRED by REFACTOR INSTRUCTION, and NOTHING ELSE!
-DO NOT MAKE ASSUMPTIONS! USE project_file_lookup TOOL to find out how existing code works!""",
+DO NOT MAKE ASSUMPTIONS! USE project_file_lookup TOOL to find out how existing code works!
+NO TEST IMPLEMENTATIONS REQUIRED, ONLY DOUBLE-CHECKING""",
 
             f"""PROJECT STRUCTURE: {json.dumps(project_trees.get(self.project, {}))}"""
         ])
@@ -96,7 +98,9 @@ DO NOT MAKE ASSUMPTIONS! USE project_file_lookup TOOL to find out how existing c
         self.add_as_user([
             f"""{self.lead.name}, if the current changes satisfy REFACTOR INSTRUCTION,
 > OUTPUT FULL, UPDATED CONTENTS FOR REFACTOR FILE AS PLAINTEXT, NO MARKDOWN ANNOTATIONS
-> OUTPUT SHOULD BEGIN WITH 'TASK_OUTPUT'"""
+> OUTPUT SHOULD BEGIN WITH 'TASK_OUTPUT'""",
+            "IF there is more work to be done, output only MOVE_ONE",
+            "IF the task has failed for whatever reason, output only FAILED {reason}"
         ])
         self.run_with_agent(self.lead)
 
@@ -115,7 +119,7 @@ def execute(refactor_file: RefactorFile):
         path=path,
         instruction=refactor_instruction,
         output_instruction="Output the full updated code for the file",
-        agents=[AGENT_BLACKSOCKET, AGENT_NEONRAIL, AGENT_GUTTERZEN],
+        agents=[AGENT_BLACKSOCKET, AGENT_NEONRAIL, AGENT_CASSETTEECHO],
         lead=AGENT_OVERDRIVE,
         trace=f"REFACTOR : {project} | {path}"
     ).run()
