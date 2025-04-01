@@ -1,0 +1,74 @@
+{
+  "results": {
+    "run_0": [
+      "Create a new file named 'README.md' in the project root directory.",
+      "Write a title for the project, e.g., '# Quicke'.",
+      "Add a brief description of the project, as inferred from 'pyproject.toml'.",
+      "List the dependencies extracted from 'pyproject.toml'.",
+      "Include the installation instructions for setting up the project.",
+      "Provide information on how to run the project (e.g., 'python main.py').",
+      "Mention additional available commands found in the management/commands directory.",
+      "Detail any environment variables required (e.g., API keys, database credentials).",
+      "Add instructions for contributing to the project, if applicable.",
+      "Include license information if applicable."
+    ],
+    "run_1": [
+      "Create a README.md file in the root directory.",
+      "Include the project name: 'Quicke'.",
+      "Add a brief description of what 'Quicke' does.",
+      "List the main features of the project.",
+      "Document any prerequisites to run the project.",
+      "Provide installation instructions.",
+      "Include usage examples.",
+      "Describe how to contribute to the project.",
+      "List the licenses and acknowledgments.",
+      "Consider adding a section for FAQ."
+    ],
+    "run_2": [
+      "Create a new file named 'README.md' in the project root directory.",
+      "Write a brief project description based on the 'description' field in 'pyproject.toml'.",
+      "List the project dependencies found in 'pyproject.toml'.",
+      "Include the project's installation instructions, mentioning users should use Python >=3.12.",
+      "Provide an example of how to run the application, referencing 'main.py'.",
+      "Mention the web framework used (Django) and its version from 'pyproject.toml'.",
+      "Add a section for environment variables required, referring to 'api/settings.py'.",
+      "Include a note on how to contribute to the project if applicable.",
+      "Add a license section if a license file exists or mention the absence of one."
+    ],
+    "run_3": [
+      "Create a README.md file in the project root.",
+      "Add a project title at the top of the README file.",
+      "Provide a brief description of the project, summarizing its purpose and functionality.",
+      "List the key features of the project.",
+      "Include installation instructions, outlining how to set up the project and install dependencies.",
+      "Explain how to run the project, including commands to start the server.",
+      "Add a section for usage examples, illustrating common use cases.",
+      "Provide information on how to contribute to the project.",
+      "Include a section for licensing, and state the license type.",
+      "Add a contact information section for users to reach out with questions."
+    ],
+    "run_5": [
+      "Create a README.md file in the root directory of the project.",
+      "Add a project title.",
+      "Include a brief description of the project.",
+      "List the dependencies used in the project as per the pyproject.toml.",
+      "Provide instructions on how to install the required dependencies.",
+      "Include a section on how to run the project.",
+      "Add any relevant information about how to contribute to the project.",
+      "Specify the license under which the project is distributed."
+    ],
+    "run_6": [
+      "Create a README.md file in the project root directory.",
+      "Add the project name 'firefly' to the README.",
+      "Include the current version '0.1.0' in the README.",
+      "Write a brief description of the project (placeholder it as 'Add your description here').",
+      "List the dependencies found in 'pyproject.toml' in the README.",
+      "Ensure the README includes a section for installation instructions (e.g., 'pip install -r requirements.txt').",
+      "Provide usage examples (e.g., running the main.py script).",
+      "Consider adding contribution guidelines if applicable."
+    ]
+  },
+  "errors": {
+    "run_4": "Max turns (7) exceeded"
+  }
+}

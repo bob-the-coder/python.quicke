@@ -1,6 +1,10 @@
 # management/commands/make_requirements.py
+import json
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
+
+from task_manager.management.lib import store_json_run
 from task_manager.operations.op_make_requirements import execute
 
 
@@ -16,7 +20,15 @@ class Command(BaseCommand):
             return
 
         self.stdout.write(self.style.NOTICE("✓ Running operation..."))
-        result = execute(project="Quicke", task_instruction=instruction)
+        success, result = execute(project="Quicke", task_instruction=instruction)
 
+        # --- Print final output ---
         self.stdout.write(self.style.SUCCESS("\nResult:\n" + "-" * 40))
         self.stdout.write(result.strip())
+
+        store_result = json.loads(result.lstrip(">>>TASK_RESULT").strip()) \
+            if success and result.lstrip().startswith(">>>TASK_RESULT") \
+            else (result or "Failed to generate result").strip()
+
+        store_json_run("gpt-4-turbo", f"{instruction[:20]}", success, store_result)
+

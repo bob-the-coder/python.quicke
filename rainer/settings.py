@@ -23,6 +23,7 @@ EXCLUDED_DIRS = {
     "venv",
     "node_modules",
     "migrations",
+    "op_results"
 }
 
 EXCLUDED_FILE_EXTENSIONS = {

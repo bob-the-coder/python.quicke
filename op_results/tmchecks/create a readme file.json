@@ -1,0 +1,65 @@
+{
+  "results": {
+    "run_0": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ],
+    "run_1": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ],
+    "run_2": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ],
+    "run_3": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ],
+    "run_4": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ],
+    "run_5": [
+      "Create a README.md file in the project root directory.",
+      "Define the project name and description based on pyproject.toml.",
+      "List the key features of the project.",
+      "Include installation instructions for the project, specifying dependencies from the pyproject.toml file.",
+      "Provide usage instructions demonstrating how to run the project.",
+      "Add any relevant links to documentation or resources.",
+      "Include a section for contributing to the project.",
+      "Add a license section."
+    ]
+  },
+  "errors": {}
+}
