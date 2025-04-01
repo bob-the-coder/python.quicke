@@ -8,7 +8,7 @@ from rainer import project_trees
 # Setting up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_BLACKSOCKET, AGENT_GUTTERZEN, AGENT_OVERDRIVE, \
+from gpt.the_a_team import AGENT_NEONRAIL, AGENT_BLACKSOCKET, AGENT_OVERDRIVE, \
     AGENT_CASSETTEECHO
 from rainer.fileapi import unpack_file_ref
 from rainer.instructions import RefactorFile

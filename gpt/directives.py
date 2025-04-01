@@ -1,6 +1,6 @@
 ﻿# ──────────────────────────────────────────────────────────────
 # OVERDRIVE — Squad Commander Directives
-from rainer.agents.all_directives import *
+from gpt.all_directives import *
 
 OVERDRIVE_PRAGMA = [
     PRAGMA_2, PRAGMA_3, PRAGMA_4, PRAGMA_6, PRAGMA_7, PRAGMA_8

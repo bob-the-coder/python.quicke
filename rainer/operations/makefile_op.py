@@ -8,10 +8,9 @@ from rainer.operations.refactor_op_new import RefactorSpec
 # Logging setup
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-from rainer.agents.the_a_team import AGENT_NEONRAIL, AGENT_SUGARBYTE, AGENT_HEXLACE, AGENT_OVERDRIVE
+from gpt.the_a_team import AGENT_NEONRAIL, AGENT_SUGARBYTE, AGENT_HEXLACE, AGENT_OVERDRIVE
 from rainer.fileapi import unpack_file_ref, project_trees
 from rainer.instructions import RefactorFile
-from rainer.operations.lib import AgentOperationSpec
 
 
 # --- MakeFileSpec Implementation ---

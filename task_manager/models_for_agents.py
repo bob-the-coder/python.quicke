@@ -1,33 +1,25 @@
+from typing import runtime_checkable, Protocol, cast
+
 import quicke
 from django.db import models
-from quicke.lib import BaseModel, quicke_choices
 
+from gpt.lib import GptAgentWithIntro
+from gpt.tools import project_file_lookup
+from quicke.lib import BaseModel
+from agents import Agent as GptAgent
 
-class DirectiveCategory(models.TextChoices):
-    PRAGMA = "PRAGMA", "Pragma"
-    COMM = "COMM", "Communication"
-    IGN = "IGN", "Ignore"
-    CLEANCODE = "CLEANCODE", "Clean Code"
-    ZEN = "ZEN", "Zen"
-
-
-@quicke.model({
-    "fields": {
-        "category": {
-            "type": quicke_choices(DirectiveCategory),
-        },
-    }
-})
+@quicke.model()
 class Directive(BaseModel):
     """
     Represents a directive string, classified into categories like PRAGMA, ZEN, etc.
     """
 
-    category: str = models.CharField(max_length=32, choices=DirectiveCategory.choices)
+    category: str = models.CharField(max_length=100)
     value: str = models.TextField(unique=True)
 
     class Meta:
         ordering = ["category", "name"]
+
 
 
 @quicke.model()
@@ -37,12 +29,26 @@ class Agent(BaseModel):
     """
     description: str = models.TextField(default="")
     model_name: str = models.CharField(max_length=255)
+    persona: str = models.TextField(default="")
     intro: str = models.TextField(default="")
     is_overseer: bool = models.BooleanField(default=False)
     active: bool = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["name"]
+
+    def to_runtime_agent(self, tools=None) -> GptAgentWithIntro:
+        agent_directives = "\n".join(d.directive.value for d in self.agent_directives.select_related("directive").all())
+
+        gpt_agent = GptAgent(
+            name=self.name,
+            instructions=(self.persona or "") + "\n\n",
+            model=self.model_name,
+            tools=tools or [project_file_lookup],
+        )
+        gpt_agent.intro = self.intro
+
+        return cast(GptAgentWithIntro, gpt_agent)
 
 
 @quicke.model({

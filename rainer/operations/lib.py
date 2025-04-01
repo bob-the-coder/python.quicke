@@ -5,8 +5,9 @@ from abc import ABC, abstractmethod
 from dataclasses import field
 from typing import List
 
-from agents import Agent
 from agents import trace, Runner, MessageOutputItem, ItemHelpers
+
+from gpt.lib import GptAgentWithIntro
 
 
 # --- Base OperationSpec ---
@@ -17,8 +18,8 @@ class AgentOperationSpec(ABC):
     path: str
     instruction: str
     output_instruction: str
-    agents: List[Agent]
-    lead: Agent
+    agents: List[GptAgentWithIntro]
+    lead: GptAgentWithIntro
     timeout_seconds: int = 300
     conversation: list = field(default_factory=list)
     last_message: str = ""

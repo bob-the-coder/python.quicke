@@ -1,22 +1,19 @@
+import json
 import mimetypes
 import os
 
+from django.db import models
 from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
+
 import quicke
+from rainer.models import CodeGenerationData
+from rainer.types import RainerFile
 from .fileapi import (
     get_rainer_file_contents, project_trees, update_rainer_file, unpack_file_ref,
     create_rainer_directory, create_rainer_file, delete_rainer_file, delete_rainer_directory,
     get_file_path
 )
-from rainer.gpt.gpt import get_gpt
-from rainer.instructions import build_refactor_instructions, get_file_ref_definitions
-from rainer.models import CodeGenerationData
-from rainer.types import RainerFile
-from django.db import models
-
-from .operations import refactor_op
 from .settings import DEFAULT_GPT_MODEL
 
 

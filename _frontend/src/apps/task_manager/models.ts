@@ -13,6 +13,7 @@ export interface Agent {
   deleted_at: Date;
   description: string;
   model_name: string;
+  persona: string;
   intro: string;
   is_overseer: boolean;
   active: boolean;
@@ -48,7 +49,7 @@ export interface Directive {
   created_at: Date;
   updated_at: Date;
   deleted_at: Date;
-  category: 'PRAGMA' | 'COMM' | 'IGN' | 'CLEANCODE' | 'ZEN';
+  category: string;
   value: string;
 }
 

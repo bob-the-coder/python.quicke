@@ -1,7 +1,7 @@
 from agents import Agent
 from .tools import project_tree, project_file_lookup
 from .lib import load_directives, load_persona
-from ..settings import DEFAULT_GPT_MODEL
+from rainer.settings import DEFAULT_GPT_MODEL
 from . import personas, directives, intros, models  # New module: `intros.py` stores *_INTRO constants
 
 

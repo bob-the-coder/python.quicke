@@ -12,7 +12,7 @@ from agents import (
     ToolCallItem,  # 🛠️ Represents a call to a tool
     ToolCallOutputItem,  # 🔧 Output of a tool call
 )
-from rainer.agents.the_a_team import AGENT_BLACKSOCKET  # ⚙️ Agent specialized for refactoring
+from gpt.the_a_team import AGENT_BLACKSOCKET  # ⚙️ Agent specialized for refactoring
 from rainer.fileapi import unpack_file_ref  # 📦 Unpack file references
 from rainer.instructions import RefactorFile  # 📜 Definition for refactoring files
 
