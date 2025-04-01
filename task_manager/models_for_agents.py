@@ -1,20 +1,20 @@
 import quicke
 from django.db import models
-from quicke.lib import BaseModel
+from quicke.lib import BaseModel, quicke_choices
 
-CATEGORY_CHOICES = [
-    ("PRAGMA", "Pragma"),
-    ("COMM", "Communication"),
-    ("IGN", "Ignore"),
-    ("CLEANCODE", "Clean Code"),
-    ("ZEN", "Zen"),
-]
+
+class DirectiveCategory(models.TextChoices):
+    PRAGMA = "PRAGMA", "Pragma"
+    COMM = "COMM", "Communication"
+    IGN = "IGN", "Ignore"
+    CLEANCODE = "CLEANCODE", "Clean Code"
+    ZEN = "ZEN", "Zen"
 
 
 @quicke.model({
     "fields": {
         "category": {
-            "type": " | ".join(f"'{c}'" for c in CATEGORY_CHOICES)
+            "type": quicke_choices(DirectiveCategory),
         },
     }
 })
@@ -23,7 +23,7 @@ class Directive(BaseModel):
     Represents a directive string, classified into categories like PRAGMA, ZEN, etc.
     """
 
-    category: str = models.CharField(max_length=32, choices=CATEGORY_CHOICES)
+    category: str = models.CharField(max_length=32, choices=DirectiveCategory.choices)
     value: str = models.TextField(unique=True)
 
     class Meta:

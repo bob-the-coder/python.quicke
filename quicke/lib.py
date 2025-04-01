@@ -108,6 +108,5 @@ def parse_ts_import(base_path: str, ts_imports: List[Dict[str, Union[str, List[s
             "default": default_export
         })
 
-def parse_django_url(url_pattern: str) -> str:
-    """Converts Django URL pattern to TypeScript string interpolation."""
-    return re.sub(r"<(?:\w+:)?(\w+)>", r"${params.\1}", url_pattern).replace("'", "")
+def quicke_choices(choices_cls: models.TextChoices):
+    return " | ".join(f"'{c}'" for c in [k for k, v in choices_cls.choices])

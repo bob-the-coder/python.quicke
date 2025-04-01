@@ -9,20 +9,14 @@ from quicke.util import merge_imports
 
 
 class ModelDiscoveryResult(TypedDict):
-    """Explicitly defines the return type for discover_models."""
     imports: List[Tuple[str, List[str]]]
-    """List of TypeScript imports where each tuple represents (import_path, [imported_names])."""
     models: Dict[str, Dict[str, str]]
-    """Mapping of model names to their TypeScript field definitions."""
 
 
 def discover_models(module: ModuleType) -> ModelDiscoveryResult:
-    """Discover decorated models (Django or plain Python) within the given module and generate TypeScript mappings."""
-
     if not isinstance(module, ModuleType):
         raise TypeError(f"Expected a module, got {type(module).__name__}")
 
-    # Load models.py dynamically
     try:
         models_module = importlib.import_module(f"{module.__name__}.models")
     except ModuleNotFoundError:
@@ -31,29 +25,19 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
     imports: List[Tuple[str, List[str]]] = []
     model_mappings = {}
 
-
     all_classes = inspect.getmembers(models_module, inspect.isclass)
 
-    # Filter only classes defined in this module (not imported)
-    local_classes = {
-        name: cls
-        for name, cls in all_classes
-        if cls.__module__ == models_module.__name__
-    }
-
-    for model_name, model_cls in local_classes.items():
+    for model_name, model_cls in all_classes:
         if not hasattr(model_cls, "__quicke_model_metadata__"):
-            continue  # Skip non-decorated classes
+            continue
 
         metadata = model_cls.__quicke_model_metadata__ or {}
         ts_model_name = metadata.get("name", model_name)
         exclude_fields = set(metadata.get("exclude_fields", []))
         model_imports = metadata.get("imports", [])
 
-        # Collect imports
         imports.extend(model_imports)
 
-        # Map model fields to TypeScript
         map_params = model_cls, metadata, exclude_fields
 
         if issubclass(model_cls, models.Model):
@@ -61,17 +45,15 @@ def discover_models(module: ModuleType) -> ModelDiscoveryResult:
         else:
             field_mappings = map_python_class(map_params)
 
-        # Store TypeScript mapping
         model_mappings[ts_model_name] = field_mappings
 
     return {
-        "imports": merge_imports(imports),  # Merging new import format
+        "imports": merge_imports(imports),
         "models": model_mappings
     }
 
 
 def field_type_from_metadata(metadata, field_name):
-    # Check for explicit field type overrides
     if "fields" in metadata and field_name in metadata["fields"]:
         return metadata["fields"][field_name]["type"]
 
@@ -82,16 +64,14 @@ def map_django_model(map_params) -> Dict[str, str]:
 
     for field in model_cls._meta.get_fields():
         if field.name in exclude_fields:
-            continue  # Skip excluded fields
+            continue
 
-        # Infer TypeScript types based on Django field types
         field_mappings[field.name] = field_type_from_metadata(metadata, field.name) or map_django_field(field)
 
     return field_mappings
 
 
 def map_django_field(field) -> str:
-    """Map Django field types to TypeScript types."""
     if isinstance(field, (models.CharField, models.TextField)):
         return "string"
     elif isinstance(field, (models.IntegerField, models.FloatField, models.DecimalField)):
@@ -117,16 +97,13 @@ def map_python_class(map_params) -> Dict[str, str]:
     field_mappings: Dict[str, str] = {}
     type_hints = get_type_hints(model_cls)
 
-    # Extract class attributes (including those without type hints)
     for field_name, field_type in type_hints.items():
         if field_name == "__quicke_model_metadata__":
-            continue  # Skip metadata field added by decorator
-
+            continue
         if field_name.startswith("__"):
-            continue  # Skip dunder methods and class methods
-
+            continue
         if field_name in exclude_fields:
-            continue  # Skip excluded fields
+            continue
 
         field_mappings[field_name] = field_type_from_metadata(metadata, field_name) or \
                                      map_python_type(type_hints[field_name])
@@ -135,7 +112,6 @@ def map_python_class(map_params) -> Dict[str, str]:
 
 
 def map_python_type(py_type) -> str:
-    """Map Python type hints to TypeScript types."""
     type_mapping = {
         str: "string",
         int: "number",
@@ -144,11 +120,10 @@ def map_python_type(py_type) -> str:
         list: "any[]",
         dict: "Record<string, any>",
     }
-    return type_mapping.get(py_type, "unknown")  # Default to "unknown" if type is not mapped
+    return type_mapping.get(py_type, "unknown")
 
 
 def infer_type_from_value(value: Any) -> str:
-    """Infer TypeScript type based on the default value of a class attribute."""
     if isinstance(value, str):
         return "string"
     elif isinstance(value, (int, float)):
@@ -161,4 +136,4 @@ def infer_type_from_value(value: Any) -> str:
         return "Record<string, any>"
     elif value is None:
         return "unknown"
-    return "unknown"  # Fallback for unrecognized types
+    return "unknown"

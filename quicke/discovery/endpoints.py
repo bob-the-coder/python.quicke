@@ -25,6 +25,7 @@ def discover_endpoints(module: ModuleType) -> EndpointDiscoveryResult:
         return {"imports": [], "endpoints": {}}
 
     imports: List[Tuple[str, Union[str, List[str]]]] = []
+    print(imports)
     endpoint_mappings: Dict[str, Dict[str, Union[str, List[str]]]] = {}
 
     for attr_name in dir(endpoints_module):

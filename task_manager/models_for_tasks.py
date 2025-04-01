@@ -3,7 +3,7 @@ from django.db import models
 
 from task_manager.enums import TaskType
 from task_manager.models_for_agents import Agent
-from quicke.lib import BaseModel
+from quicke.lib import BaseModel, quicke_choices
 
 
 @quicke.model()
@@ -33,8 +33,8 @@ class TaskStatus(models.TextChoices):
 
 @quicke.model({
     "fields": {
-        "type": {"type": " | ".join(f"'{c}'" for c in TaskType.choices)},
-        "status": {"type": " | ".join(f"'{c}'" for c in TaskStatus.choices)},
+        "type": {"type": quicke_choices(TaskType)},
+        "status": {"type": quicke_choices(TaskStatus)},
         "checklist": {"type": "Array<{ label: string; checked: boolean }>"},
     }
 })
