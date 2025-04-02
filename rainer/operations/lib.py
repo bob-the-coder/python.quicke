@@ -110,7 +110,7 @@ class AgentOperationSpec(ABC):
         return None
 
     def get_agent_intros(self):
-        return "### Meet the A-Team\n\n\n".join(
+        return "\n\n".join(
             [f"{a.name}: \"{getattr(a, 'intro', 'NO_INTRO')}\"" for a in self.agents])
 
     def run(self) -> Tuple[bool, str]:

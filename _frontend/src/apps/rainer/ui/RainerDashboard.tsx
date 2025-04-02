@@ -210,7 +210,7 @@ function TextView({text}: { text: string }) {
                                  text={text}/>
             )
             }
-            <p className="p-4 w-full whitespace-pre font-geist-mono text-sm text-muted-foreground">
+            <p className="p-4 w-full whitespace-pre-wrap font-geist-mono text-sm text-muted-foreground">
                 {text} 
             </p>
         </div>

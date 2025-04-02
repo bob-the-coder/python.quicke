@@ -79,6 +79,7 @@ def create_rainer_file(project: str, relative_path: str, text_content: str = "")
         os.makedirs(os.path.dirname(abs_path), exist_ok=True)
         with open(abs_path, "w", encoding="utf-8") as f:
             f.write(text_content)
+            print(f"Created {abs_path}")
         refresh_trees()
 
 

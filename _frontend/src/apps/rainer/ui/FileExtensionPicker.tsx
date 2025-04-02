@@ -16,7 +16,7 @@ interface FileExtensionPickerProps {
 }
 
 const all_extensions = [".js", ".jsx", ".ts", ".tsx", ".css", ".scss", ".html", ".json"].concat(
-    [".py", ".java", ".rb", ".php", ".go", ".js", ".csharp", ".xml"]
+    [".py", ".java", ".rb", ".php", ".go", ".js", ".csharp", ".xml", ".md"]
 );
 
 const FileExtensionPicker: FC<FileExtensionPickerProps> = ({value, onChange}) => {

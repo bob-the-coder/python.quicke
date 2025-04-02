@@ -3,57 +3,77 @@ import uuid
 import logging
 from dataclasses import dataclass
 
-from rainer.operations.refactor_op_new import RefactorSpec
+from rainer import project_trees
+from task_manager.models import Agent
+from rainer.operations.lib import AgentOperationSpec
+from rainer.fileapi import unpack_file_ref
+from rainer.instructions import RefactorFile
 
 # Logging setup
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-from gpt.the_a_team import AGENT_NEONRAIL, AGENT_SUGARBYTE, AGENT_HEXLACE, AGENT_OVERDRIVE
-from rainer.fileapi import unpack_file_ref, project_trees
-from rainer.instructions import RefactorFile
 
-
-# --- MakeFileSpec Implementation ---
-
-@dataclass
-class MakeFileSpec(RefactorSpec):
-    step: int = 1
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        logging.info("Initialized MakeFileSpec(RefactorSpec)")
-
+class MakeFileSpec(AgentOperationSpec):
     def init(self):
-        agent_intros = self.get_agent_intros()
+        logging.info("Initialized MakeFileSpec with parameters")
         self.add_as_user([
-            f"Meet the A-Team\n\n{agent_intros}",
-            f"""## TASK
-        ### IN PROJECT {self.project} MAKE FILE {self.path}
-        ### MAKE FILE INSTRUCTION: {self.instruction}
-        ### OUTPUT INSTRUCTION: {self.output_instruction}
+            f"""
+--- PROJECT FILES ---
+--- THESE ARE ALL THE FILES THAT CURRENTLY EXIST IN THE PROJECT ---
+{json.dumps(project_trees.get(self.project, {}))}
+""",
+            f"""
+--- FILE CREATION REQUEST ---
+PROJECT (CASE SENSITIVE): {self.project}
+TARGET FILE: {self.path}
+INSTRUCTION: {self.instruction}
 
-        IMPLEMENT only what is REQUIRED by MAKE FILE INSTRUCTION, and NOTHING ELSE!
-        DO NOT MAKE ASSUMPTIONS! USE project_file_lookup TOOL to find out how existing code works!""",
-
-            f"""PROJECT STRUCTURE: {json.dumps(project_trees.get(self.project, {}))}"""
+--- GUIDELINES ---
+- Implement only what is required by the file creation instruction and nothing else.
+- Use `project_file_lookup` to inspect existing code if needed.
+- Do not assume or create dependencies unless explicitly required.
+- If the request is ambiguous, output only `>>>TASK_FAILED`.
+- Otherwise, generate a complete and functional file following the given instruction.
+- The final output must begin with `>>>TASK_RESULT` and nothing else.
+"""
         ])
-        logging.info("Initialized task for file creation in project: %s", self.project)
+
+        logging.info("Initialized OVERDRIVE for file creation")
+
+    def loop(self):
+        self.add_as_user([
+            f"""
+OVERDRIVE, implement the file creation task.
+IF the output needs refinement, return only >>>TASK_REFINEMENT.
+ELSE return the final file content as a plaintext string.
+REMEMBER: Final task output must start with >>>TASK_RESULT or >>>TASK_FAILED and contain the full file contents."""
+        ])
+        self.run_with_agent(self.lead)
+
+    def done_if(self) -> bool:
+        return (self.last_message or "").strip().startswith(">>>TASK_RESULT") or \
+               (self.last_message or "").strip().startswith(">>>TASK_FAILED")
 
 
-# --- Runtime Entry Point ---
+# --- Execution Entry Point ---
 
 def execute(refactor_file: RefactorFile):
     conversation_id = uuid.uuid4().hex[:16]
     project, path = unpack_file_ref(refactor_file)
     file_instruction = refactor_file.get("content", "") if isinstance(refactor_file, dict) else refactor_file.content or ""
 
+    # Load agents from DB
+    overdrive_agent = Agent.objects.get(name="OVERDRIVE")
+    supporting_agents = list(Agent.objects.filter(name__in=["NEONRAIL", "SUGARBYTE", "HEXLACE"]))
+
     return MakeFileSpec(
         conversation_id=conversation_id,
         project=project,
         path=path,
         instruction=file_instruction,
-        output_instruction="Output the full file contents, and nothing else",
-        agents=[AGENT_NEONRAIL, AGENT_SUGARBYTE, AGENT_HEXLACE],
-        lead=AGENT_OVERDRIVE,
+        max_steps=10,
+        output_instruction="Output the full file contents as plaintext.",
+        agents=supporting_agents,
+        lead=overdrive_agent.to_runtime_agent(),
         trace=f"MAKEFILE : {project} | {path}"
     ).run()

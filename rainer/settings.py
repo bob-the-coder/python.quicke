@@ -21,6 +21,7 @@ EXCLUDED_DIRS = {
     ".venv",
     "env",
     "venv",
+    "myenv",
     "node_modules",
     "migrations",
     "op_results"

@@ -69,11 +69,12 @@ def create_file(request):
     project, path = unpack_file_ref(refactor_file)
 
     from rainer.operations import makefile_op
-    response = makefile_op.execute(refactor_file)
-    if not response.strip() or response.strip().startswith("FAILED"):
+    success, response = makefile_op.execute(refactor_file)
+    if not success or response.strip().startswith(">>>TASK_FAILED"):
         print("failed")
         return JsonResponse({"project": project, "path": path}, status=200)
 
+    print(response)
     create_rainer_file(project, path, f"{response}\n")
 
     CodeGenerationData.objects.create(
