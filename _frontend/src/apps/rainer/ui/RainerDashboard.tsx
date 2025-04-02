@@ -16,6 +16,7 @@ import {FaFile, FaMinus, FaPlus} from "react-icons/fa6";
 import {Button} from "@/components/ui/button";
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import {cn} from "@/lib/utils";
+import {TiFlowSwitch} from "react-icons/ti";
 
 export default function RainerDashboard() {
 
@@ -65,9 +66,13 @@ export default function RainerDashboard() {
     return (
         <div className="grid grid-cols-[300px_1fr] h-screen">
             <div className="border-r border-muted h-full flex flex-col">
-                <div className="w-full flex items-center justify-between p-4 border-b">
+                <div className="w-full flex items-center justify-between p-4 border-b gap-2">
                     <DropdownMenu>
-                        <DropdownMenuTrigger className="border rounded px-4">{project}</DropdownMenuTrigger>
+                        <DropdownMenuTrigger asChild={true}>
+                            <Button variant={'outline'}>
+                                <TiFlowSwitch/> {project}
+                            </Button>
+                        </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             {projects.map((proj) => (
                                 <DropdownMenuItem key={proj} onClick={() => changeProject(proj)}>

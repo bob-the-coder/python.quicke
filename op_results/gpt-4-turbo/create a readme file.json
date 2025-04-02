@@ -10,6 +10,25 @@
       "Make required changes based on feedback and proofread to ensure accuracy and readability.",
       "Commit `README.md` to the project's repository with a commit message that indicates adding or updating the README.",
       "Check the display of `README.md` on the home page of the repository to ensure proper formatting and clear visibility of all sections."
+    ],
+    "run_1": [
+      "Create a new file named README.md in the project root directory.",
+      "Include a brief project description outlining its purpose and functionality.",
+      "List the prerequisites required for the project, such as Python version and any required libraries.",
+      "Provide installation instructions detailing how to set up the project environment.",
+      "Add usage instructions with example commands, referencing how to run the application.",
+      "Detail how to contribute to the project, including coding standards and pull request guidelines.",
+      "Include links to relevant documentation, issue tracking, and contact information for maintainers."
+    ],
+    "run_2": [
+      "Create a new file named 'README.md' in the project root.",
+      "Write a brief description of the project including its purpose and functionality.",
+      "Include installation instructions for dependencies, indicating how to set up the environment.",
+      "Document usage examples, covering common scenarios for using the application.",
+      "Outline the project structure, explaining the organization of key files and directories.",
+      "Include any relevant links to documentation or resources.",
+      "Provide instructions for contributing to the project and raising issues.",
+      "Mention any known issues or limitations of the application."
     ]
   },
   "errors": {}

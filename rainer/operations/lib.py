@@ -91,7 +91,7 @@ class AgentOperationSpec(ABC):
         return self
 
     def run_with_agent(self, agent):
-        result = Runner.run_sync(agent, self.conversation, max_turns=7)
+        result = Runner.run_sync(agent, self.conversation, max_turns=13)
         self.conversation = result.to_input_list()
 
         for new_item in result.new_items:

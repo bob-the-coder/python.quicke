@@ -24,7 +24,7 @@ class RequirementsSpec(AgentOperationSpec):
 --- TASK DECOMPOSITION REQUEST ---
 PROJECT (CASE SENSITIVE): {self.project}
 INTENDED OUTCOME: {self.instruction}
-TASK INSTRUCTION: Generate a PLAINTEXT JSON list of strings representing minimal, explicit, actionable checklist items which, if implemented, result in the INTENDED OUTCOME
+TASK INSTRUCTION: {self.output_instruction}
 
 --- GUIDELINES ---
 - Use only information that can be reasonably inferred or verified by accessing project files through `project_file_lookup`.
@@ -65,7 +65,8 @@ def execute(project: str, task_instruction: str):
         conversation_id=conversation_id,
         project=project,
         instruction=task_instruction,
-        output_instruction="Produce a checklist of steps needed to complete the TASK INSTRUCTION",
+        max_steps=10,
+        output_instruction="Generate a PLAINTEXT JSON list of strings representing minimal, explicit, actionable checklist items which, if implemented, result in the INTENDED OUTCOME",
         lead=overdrive_agent.to_runtime_agent(),
         trace=f"CHECKLIST : {project} | {task_instruction}"
     ).run()
